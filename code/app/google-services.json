@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "789198890277",
+    "project_id": "qreate-bb8b8",
+    "storage_bucket": "qreate-bb8b8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789198890277:android:61c8f99eb737578c3e26cc",
+        "android_client_info": {
+          "package_name": "com.example.qreate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmLP39PwwIJ2wsAn8pyG3EXWf3JFdoacw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
