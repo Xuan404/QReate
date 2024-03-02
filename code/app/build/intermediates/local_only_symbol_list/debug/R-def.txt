@@ -38,6 +38,7 @@ id buttonConfirm
 id buttonEventList
 id buttonGenerateQRcode
 id buttonReuseQRcode
+id buttonSendNotif
 id buttonShareQRcode
 id imageButtonConfirm
 id imageView
@@ -49,11 +50,17 @@ id qr_menu
 id radioButtonAttendee
 id radioButtonPromo
 id spinner
+id textViewAddText
 id textViewQRCodeLabel
+id textViewSendNotifLabel
 layout activity_main
+layout attendee_management_screen
 layout event_list
 layout generate_qr_screen
+layout notif_menu_screen
 layout qr_menu_screen
+layout send_notif_screen
+layout share_qr_screen
 layout spinner_items
 menu bottom_menu
 mipmap ic_launcher

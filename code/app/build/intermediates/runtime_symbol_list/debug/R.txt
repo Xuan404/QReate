@@ -3267,6 +3267,7 @@ int id buttonEventList 0x7f090214
 int id buttonGenerateQRcode 0x7f090215
 int id buttonPanel 0x7f090068
 int id buttonReuseQRcode 0x7f090216
+int id buttonSendNotif 0x7f090218
 int id buttonShareQRcode 0x7f090217
 int id cache_measures 0x7f090069
 int id callMeasure 0x7f09006a
@@ -3632,7 +3633,9 @@ int id textSpacerNoButtons 0x7f0901d1
 int id textSpacerNoTitle 0x7f0901d2
 int id textStart 0x7f0901d3
 int id textTop 0x7f0901d4
+int id textViewAddText 0x7f090219
 int id textViewQRCodeLabel 0x7f0901d5
+int id textViewSendNotifLabel 0x7f09021a
 int id text_input_end_icon 0x7f0901d6
 int id text_input_error_icon 0x7f0901d7
 int id text_input_start_icon 0x7f0901d8
@@ -3811,6 +3814,7 @@ int layout abc_search_view 0x7f0c0019
 int layout abc_select_dialog_material 0x7f0c001a
 int layout abc_tooltip 0x7f0c001b
 int layout activity_main 0x7f0c001c
+int layout attendee_management_screen 0x7f0c007c
 int layout custom_dialog 0x7f0c001d
 int layout design_bottom_navigation_item 0x7f0c001e
 int layout design_bottom_sheet_dialog 0x7f0c001f
@@ -3880,6 +3884,7 @@ int layout mtrl_picker_text_input_date 0x7f0c005e
 int layout mtrl_picker_text_input_date_range 0x7f0c005f
 int layout mtrl_search_bar 0x7f0c0060
 int layout mtrl_search_view 0x7f0c0061
+int layout notif_menu_screen 0x7f0c007a
 int layout notification_action 0x7f0c0062
 int layout notification_action_tombstone 0x7f0c0063
 int layout notification_media_action 0x7f0c0064
@@ -3899,6 +3904,8 @@ int layout qr_menu_screen 0x7f0c0071
 int layout select_dialog_item_material 0x7f0c0072
 int layout select_dialog_multichoice_material 0x7f0c0073
 int layout select_dialog_singlechoice_material 0x7f0c0074
+int layout send_notif_screen 0x7f0c007b
+int layout share_qr_screen 0x7f0c0079
 int layout spinner_items 0x7f0c0075
 int layout support_simple_spinner_dropdown_item 0x7f0c0076
 int layout zxing_barcode_scanner 0x7f0c0077

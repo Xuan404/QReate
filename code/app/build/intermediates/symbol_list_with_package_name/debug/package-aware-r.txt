@@ -3268,6 +3268,7 @@ id buttonEventList
 id buttonGenerateQRcode
 id buttonPanel
 id buttonReuseQRcode
+id buttonSendNotif
 id buttonShareQRcode
 id cache_measures
 id callMeasure
@@ -3633,7 +3634,9 @@ id textSpacerNoButtons
 id textSpacerNoTitle
 id textStart
 id textTop
+id textViewAddText
 id textViewQRCodeLabel
+id textViewSendNotifLabel
 id text_input_end_icon
 id text_input_error_icon
 id text_input_start_icon
@@ -3812,6 +3815,7 @@ layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_main
+layout attendee_management_screen
 layout custom_dialog
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog
@@ -3881,6 +3885,7 @@ layout mtrl_picker_text_input_date
 layout mtrl_picker_text_input_date_range
 layout mtrl_search_bar
 layout mtrl_search_view
+layout notif_menu_screen
 layout notification_action
 layout notification_action_tombstone
 layout notification_media_action
@@ -3900,6 +3905,8 @@ layout qr_menu_screen
 layout select_dialog_item_material
 layout select_dialog_multichoice_material
 layout select_dialog_singlechoice_material
+layout send_notif_screen
+layout share_qr_screen
 layout spinner_items
 layout support_simple_spinner_dropdown_item
 layout zxing_barcode_scanner
