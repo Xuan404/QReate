@@ -1397,6 +1397,7 @@ color common_google_signin_btn_text_light_pressed
 color common_google_signin_btn_tint
 color dark_blue
 color dark_blue_button
+color dark_grey
 color design_bottom_navigation_shadow_color
 color design_box_stroke_color
 color design_dark_default_color_background
@@ -3053,6 +3054,8 @@ drawable design_ic_visibility
 drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
+drawable edit_text_bubble
+drawable empty_profile_pic
 drawable garbageicon
 drawable googleg_disabled_color_18
 drawable googleg_standard_color_18
@@ -3147,6 +3150,7 @@ drawable notify_panel_notification_icon_bg
 drawable organizerattendeeart
 drawable organizermapart
 drawable organizernotificationart
+drawable plus_button
 drawable profileicon
 drawable qrgeneratorart
 drawable qricon
@@ -3157,6 +3161,8 @@ drawable test_level_drawable
 drawable texticon
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
+font abhaya_libre_extrabold
+font inter_semibold
 font poppins_bold
 font poppins_light
 font poppins_thin
@@ -3296,6 +3302,7 @@ id collapseActionView
 id compress
 id confirm_button
 id constraint
+id contact_info_text
 id container
 id content
 id contentPanel
@@ -3344,9 +3351,16 @@ id easeInOut
 id easeOut
 id east
 id edge
+id edit_homepage
+id edit_name
+id edit_name_text
+id edit_number
+id edit_phone_number
+id edit_profile_title
 id edit_query
 id elastic
 id embed
+id empty_profile_pic
 id end
 id endToStart
 id end_padder
@@ -3372,6 +3386,7 @@ id forever
 id fragment_container_view_tag
 id frost
 id fullscreen_header
+id geolocation_text
 id ghost_view
 id ghost_view_holder
 id gone
@@ -3384,6 +3399,7 @@ id header_title
 id hideable
 id home
 id homeAsUp
+id homepage_text
 id honorRequest
 id horizontal_only
 id icon
@@ -3613,6 +3629,7 @@ id stretch
 id submenuarrow
 id submit_area
 id supportScrollUp
+id switchCompat
 id tabMode
 id tag_accessibility_actions
 id tag_accessibility_clickable_spans
@@ -3832,8 +3849,10 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
+layout edit_profile_info
 layout event_list
 layout generate_qr_screen
+layout geo_location_screen
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
 layout m3_alert_dialog_title
