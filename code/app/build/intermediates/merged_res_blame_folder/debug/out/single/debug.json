@@ -1,0 +1,106 @@
+[
+    {
+        "merged": "com.example.qreate.app-merged_res-37:/drawable_arrow.png.flat",
+        "source": "com.example.qreate.app-main-39:/drawable/arrow.png"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\layout_generate_qr_screen.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\layout\\generate_qr_screen.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\drawable_qrgeneratorart.png.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\drawable\\qrgeneratorart.png"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\layout_event_list.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\layout\\event_list.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-xhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\drawable_rounded_blue_buttons.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\drawable\\rounded_blue_buttons.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-xxhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-hdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.qreate.app-merged_res-37:/layout_generate_qr_screen.xml.flat",
+        "source": "com.example.qreate.app-main-39:/layout/generate_qr_screen.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-xxhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-xxxhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-xhdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\drawable_rounded_dark_blue.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\drawable\\rounded_dark_blue.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-mdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\layout_spinner_items.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\layout\\spinner_items.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-hdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\mipmap-mdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\xml_data_extraction_rules.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\xml\\data_extraction_rules.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\xml_backup_rules.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\xml\\backup_rules.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-merged_res-37:\\drawable_qrimage.png.flat",
+        "source": "C:\\Users\\denis\\.gradle\\daemon\\8.2\\com.example.qreate.app-main-39:\\drawable\\qrimage.png"
+    }
+]
