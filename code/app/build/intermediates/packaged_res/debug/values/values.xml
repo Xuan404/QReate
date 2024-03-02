@@ -4,6 +4,7 @@
     <color name="blue_button">#006FFD</color>
     <color name="dark_blue">#0A191E</color>
     <color name="dark_blue_button">#14213D</color>
+    <color name="dark_grey">#282828</color>
     <color name="white">#FFFFFF</color>
     <color name="white_grey">#E5E5E5</color>
     <color name="yellow">#FCA311</color>
