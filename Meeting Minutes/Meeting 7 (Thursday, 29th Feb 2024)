@@ -1,0 +1,3 @@
+- Organizers & Administrators should be able to attend events, so all users can attend events but Organizer and Administrators have special power.
+- Resuing QR code from any existing QR code (scan, convert to byte
+- When a user creates an account, they will automatically have an attendee account and will be able to switch to that account from administrator and organizer.
