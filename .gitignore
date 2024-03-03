@@ -45,4 +45,4 @@ google-services.json
 .DS_Store
 
 
-code/app/build/
+code/app/build/intermediates
