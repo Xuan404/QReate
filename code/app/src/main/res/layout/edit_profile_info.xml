@@ -7,19 +7,16 @@
     android:background="@color/dark_blue"
     android:foregroundTint="#FF9800">
 
-
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/edit_profile_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="650dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/poppins_bold"
         android:text="Edit Profile"
         android:textColor="@color/white_grey"
         android:textSize="40sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/edit_profile_title"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
@@ -46,68 +43,62 @@
         android:backgroundTint="#00FFFFFF"
         android:contentDescription="add button for adding a profile pic"
         android:src="@drawable/plus_button"
-        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintBottom_toTopOf="@+id/edit_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.696"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/edit_profile_title"
+        app:layout_constraintVertical_bias="0.0"
         app:tint="@color/white" />
-
 
     <EditText
         android:id="@+id/edit_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="273dp"
-        android:layout_marginBottom="410dp"
+        android:layout_marginTop="52dp"
         android:background="@drawable/edit_text_bubble"
         android:hint="Enter name here"
         android:paddingStart="12dp"
         android:textColor="@color/dark_grey"
         android:textColorHint="@color/dark_grey"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintHorizontal_bias="0.581"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/empty_profile_pic" />
 
     <EditText
         android:id="@+id/edit_homepage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="52dp"
         android:background="@drawable/edit_text_bubble"
         android:hint="Website (http://example.com)"
         android:paddingStart="12dp"
         android:textColor="@color/dark_grey"
         android:textColorHint="@color/dark_grey"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintHorizontal_bias="0.674"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_phone_number"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_phone_number" />
+
 
     <EditText
         android:id="@+id/edit_phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/edit_text_bubble"
         android:hint="Email (e.g., example@gmail.com)"
         android:paddingStart="12dp"
         android:textColor="@color/dark_grey"
         android:textColorHint="@color/dark_grey"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.627"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_number"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_number" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/homepage_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
@@ -115,25 +106,27 @@
         android:fontFamily="@font/abhaya_libre_extrabold"
         android:text="HomePage"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="27sp"
         app:layout_constraintBottom_toTopOf="@+id/edit_homepage"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.085"
+        app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_phone_number"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.523" />
 
     <TextView
+        android:id="@+id/contact_info_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
         android:fontFamily="@font/abhaya_libre_extrabold"
         android:text="Contact Information"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="27sp"
         app:layout_constraintBottom_toTopOf="@+id/edit_number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.117"
+        app:layout_constraintHorizontal_bias="0.139"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_name"
         app:layout_constraintVertical_bias="1.0" />
@@ -142,8 +135,7 @@
         android:id="@+id/edit_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="313dp"
+        android:layout_marginTop="48dp"
         android:background="@drawable/edit_text_bubble"
         android:hint="Mobile Number (e.g., 123-456-7890)"
         android:paddingStart="12dp"
@@ -151,13 +143,13 @@
         android:textColorHint="@color/dark_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintHorizontal_bias="0.627"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_name"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.013" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/edit_name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
@@ -165,47 +157,51 @@
         android:fontFamily="@font/abhaya_libre_extrabold"
         android:text="Name"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="27sp"
         app:layout_constraintBottom_toTopOf="@+id/edit_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.067"
+        app:layout_constraintHorizontal_bias="0.066"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/empty_profile_pic"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.25" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/geolocation_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="208dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="160dp"
+        android:layout_marginBottom="6dp"
         android:fontFamily="@font/abhaya_libre_extrabold"
         android:text="Geolocation"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="27sp"
         app:layout_constraintBottom_toTopOf="@+id/confirm_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/switchCompat"
         app:layout_constraintTop_toBottomOf="@+id/edit_homepage"
-        app:layout_constraintVertical_bias="0.521" />
+        app:layout_constraintVertical_bias="0.482" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switchCompat"
         android:layout_width="58dp"
         android:layout_height="53dp"
-        android:layout_marginStart="16dp"
         android:textColor="#FFC107"
         app:layout_constraintBottom_toTopOf="@+id/confirm_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.082"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_homepage"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.577"
         app:thumbTint="@color/blue_button"
         app:trackTint="@color/yellow" />
 
     <Button
         android:id="@+id/confirm_button"
         android:layout_width="368dp"
-        android:layout_height="46dp"
+        android:layout_height="52dp"
+        android:layout_marginBottom="24dp"
         android:backgroundTint="@color/blue_button"
         android:fontFamily="@font/inter_semibold"
         android:text="Confirm"
@@ -213,20 +209,10 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintHorizontal_bias="0.627"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_homepage"
-        app:layout_constraintVertical_bias="0.408" />
-
-
-    <RelativeLayout
-        android:layout_width="402dp"
-        android:layout_height="55dp"
-        android:background="@color/yellow"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/confirm_button" />
+        app:layout_constraintVertical_bias="0.873" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
