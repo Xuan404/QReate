@@ -6,7 +6,7 @@
     android:background="#0A191E">
     
     <RelativeLayout
-        android:layout_width="500dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#000000"
         android:paddingLeft="15dp">
@@ -35,7 +35,7 @@
             android:src="@drawable/profileicon" />
 
     </RelativeLayout>
-    
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="300dp"
@@ -101,20 +101,18 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomMenu"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/bottom_menu_background"
-        app:itemIconTint="@color/black"
+        app:itemIconTint="@color/bottom_menu_selector"
         android:elevation="2dp"
-        app:itemIconSize="50dp"
-        app:itemPaddingTop="0dp"
-        app:itemPaddingBottom="0dp"
+        app:itemIconSize="35dp"
         app:menu="@menu/bottom_menu"
-        app:labelVisibilityMode="unlabeled"/>
+        />
+
 
 
 </RelativeLayout>

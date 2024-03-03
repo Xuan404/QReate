@@ -16,4 +16,9 @@
         android:id="@+id/map"
         android:icon="@drawable/mapicon"
         android:title="Map"/>
+    <item
+        android:id="@+id/defaultNavPlaceholder"
+        android:icon="@drawable/mapicon"
+        android:title="Default"
+        android:visible="false"/>
 </menu>
