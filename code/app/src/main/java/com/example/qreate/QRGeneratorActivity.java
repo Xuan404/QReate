@@ -62,7 +62,7 @@ public class QRGeneratorActivity extends AppCompatActivity {
         backButton.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(QRGeneratorActivity.this, QRMenuScreenActivity.class);
+                Intent intent = new Intent(QRGeneratorActivity.this, OrganizerActivity.class);
                 startActivity(intent);
             }
         }));
