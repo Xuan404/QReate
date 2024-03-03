@@ -16,6 +16,7 @@ public class OrganizerActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder); // 'none' is a fake ID.
         //bottomNavigationView.setVisibility(View.INVISIBLE);
 
+        //I AM STILL TESTING OUT HOW THIS WORKS
         HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.organizer_handler_frame,homeScreenFragment).commit();
