@@ -3253,6 +3253,7 @@ id animateToStart
 id antiClockwise
 id anticipate
 id arc
+id artImage
 id asConfigured
 id async
 id attendees_menu
@@ -3372,6 +3373,7 @@ id end_padder
 id enterAlways
 id enterAlwaysCollapsed
 id eventlist
+id eventspinner
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
@@ -3415,6 +3417,7 @@ id ifRoom
 id ignore
 id ignoreRequest
 id image
+id imageButtonBack
 id imageButtonConfirm
 id imageView
 id imageViewQRCode
@@ -3559,6 +3562,7 @@ id pressed
 id profile_button
 id progress_circular
 id progress_horizontal
+id qrTypeGroup
 id qr_menu
 id radio
 id radioButtonAttendee

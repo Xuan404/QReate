@@ -41,6 +41,7 @@ font poppins_bold
 font poppins_light
 font poppins_thin
 id accounticon
+id artImage
 id attendees_menu
 id bottomMenu
 id buttonAccount
@@ -61,8 +62,10 @@ id edit_phone_number
 id edit_profile_title
 id empty_profile_pic
 id eventlist
+id eventspinner
 id geolocation_text
 id homepage_text
+id imageButtonBack
 id imageButtonConfirm
 id imageView
 id imageViewQRCode
@@ -70,6 +73,7 @@ id logouticon
 id map
 id notifications_menu
 id profile_button
+id qrTypeGroup
 id qr_menu
 id radioButtonAttendee
 id radioButtonPromo
