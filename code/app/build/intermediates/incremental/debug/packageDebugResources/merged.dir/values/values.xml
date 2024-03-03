@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="blue_button">#006FFD</color>
+    <color name="dark_blue">#0A191E</color>
+    <color name="dark_blue_button">#14213D</color>
+    <color name="dark_grey">#282828</color>
+    <color name="white">#FFFFFF</color>
+    <color name="white_grey">#E5E5E5</color>
+    <color name="yellow">#FCA311</color>
+    <string name="app_name">QReate</string>
+    <string name="gcm_defaultSenderId" translatable="false">789198890277</string>
+    <string name="google_api_key" translatable="false">AIzaSyDmLP39PwwIJ2wsAn8pyG3EXWf3JFdoacw</string>
+    <string name="google_app_id" translatable="false">1:789198890277:android:61c8f99eb737578c3e26cc</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDmLP39PwwIJ2wsAn8pyG3EXWf3JFdoacw</string>
+    <string name="google_storage_bucket" translatable="false">qreate-bb8b8.appspot.com</string>
+    <string name="project_id" translatable="false">qreate-bb8b8</string>
+    <style name="Base.Theme.QReate" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        
+    </style>
+    <style name="Theme.QReate" parent="Base.Theme.QReate"/>
+</resources>

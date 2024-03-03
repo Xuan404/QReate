@@ -3057,6 +3057,7 @@ drawable design_snackbar_background
 drawable edit_text_bubble
 drawable empty_profile_pic
 drawable garbageicon
+drawable gearicon
 drawable googleg_disabled_color_18
 drawable googleg_standard_color_18
 drawable ic_arrow_back_black_24
@@ -3074,6 +3075,7 @@ drawable ic_mtrl_chip_checked_circle
 drawable ic_mtrl_chip_close_circle
 drawable ic_search_black_24
 drawable imgicon
+drawable logouticon
 drawable m3_avd_hide_password
 drawable m3_avd_show_password
 drawable m3_bottom_sheet_drag_handle
@@ -3214,6 +3216,7 @@ id accessibility_custom_action_6
 id accessibility_custom_action_7
 id accessibility_custom_action_8
 id accessibility_custom_action_9
+id accounticon
 id action0
 id actionDown
 id actionDownUp
@@ -3269,9 +3272,11 @@ id bounce
 id bounceBoth
 id bounceEnd
 id bounceStart
+id buttonAccount
 id buttonConfirm
 id buttonEventList
 id buttonGenerateQRcode
+id buttonLogout
 id buttonPanel
 id buttonReuseQRcode
 id buttonSendNotif
@@ -3366,6 +3371,7 @@ id endToStart
 id end_padder
 id enterAlways
 id enterAlwaysCollapsed
+id eventlist
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
@@ -3433,6 +3439,7 @@ id line3
 id linear
 id listMode
 id list_item
+id logouticon
 id m3_side_sheet
 id map
 id marquee
@@ -3851,6 +3858,7 @@ layout design_text_input_end_icon
 layout design_text_input_start_icon
 layout edit_profile_info
 layout event_list
+layout event_list_recycler_row_layout
 layout generate_qr_screen
 layout geo_location_screen
 layout m3_alert_dialog
@@ -3920,6 +3928,7 @@ layout notification_template_media
 layout notification_template_media_custom
 layout notification_template_part_chronometer
 layout notification_template_part_time
+layout pfp_click_fragment
 layout qr_menu_screen
 layout select_dialog_item_material
 layout select_dialog_multichoice_material

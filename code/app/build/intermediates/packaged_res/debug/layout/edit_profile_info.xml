@@ -7,7 +7,6 @@
     android:background="@color/dark_blue"
     android:foregroundTint="#FF9800">
 
-
     <TextView
         android:id="@+id/edit_profile_title"
         android:layout_width="wrap_content"
