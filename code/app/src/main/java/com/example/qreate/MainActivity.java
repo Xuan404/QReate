@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.generate_qr_code_screen);
+        setContentView(R.layout.welcome_screen);
         //Intent intent = new Intent(MainActivity.this, QRMenuScreenActivity.class);
         //startActivity(intent);
 
