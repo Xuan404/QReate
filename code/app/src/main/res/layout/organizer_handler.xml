@@ -6,6 +6,7 @@
     android:background="#0A191E">
 
     <FrameLayout
+        android:id="@+id/organizer_handler_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/organizer_handler_navigation_bar"

@@ -15,5 +15,11 @@ public class OrganizerActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.organizer_handler_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder); // 'none' is a fake ID.
         //bottomNavigationView.setVisibility(View.INVISIBLE);
+
+        HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.organizer_handler_frame,homeScreenFragment).commit();
     }
+
+
 }
