@@ -7,12 +7,14 @@
     android:background="#0A191E">
 
     <RelativeLayout
-        android:layout_width="500dp"
+        android:id="@+id/geolocation_menu_screen_top_bar"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#000000"
         android:paddingLeft="15dp">
 
         <TextView
+            android:id="@+id/geolocation_menu_screen_qreate_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -24,11 +26,11 @@
             android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/profile_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:id="@+id/geolocation_menu_screen_profile_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/circle_shape"
             android:padding="5dp"
@@ -38,31 +40,17 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/geolocation_menu_screen_image"
         android:layout_width="300dp"
         android:layout_height="120dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="85dp"
+        android:layout_centerVertical="true"
+        android:layout_below="@id/geolocation_menu_screen_top_bar"
+        android:layout_marginTop="20dp"
         android:src="@drawable/organizermapart" />
 
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomMenu"
-        android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/bottom_menu_background"
-        app:itemIconTint="@color/black"
-        android:elevation="2dp"
-        app:itemIconSize="50dp"
-        app:itemPaddingTop="0dp"
-        app:itemPaddingBottom="0dp"
-        app:menu="@menu/bottom_menu"
-        app:labelVisibilityMode="unlabeled"/>
+
 
 
 </RelativeLayout>
