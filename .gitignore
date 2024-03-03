@@ -44,5 +44,3 @@ google-services.json
 *.swo
 .DS_Store
 
-
-code/app/build/intermediates
