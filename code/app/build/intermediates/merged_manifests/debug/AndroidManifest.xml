@@ -66,20 +66,8 @@
             </intent-filter>
             -->
         </activity>
-        <activity
-            android:name="com.example.qreate.QRGeneratorActivity"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name="com.example.qreate.QRGeneratorActivity" >
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name="com.example.qreate.QRMenuScreenActivity" >
-        </activity>
-        <activity android:name="com.example.qreate.ShareQRScreenActivity" >
-
-            <!-- UNCOMMENT TO TEST -->
             <!--
             android:exported="true">
             <intent-filter>
@@ -88,6 +76,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             -->
+        </activity>
+        <activity android:name="com.example.qreate.QRMenuScreenActivity" >
+
+            <!--
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -->
+        </activity>
+        <activity
+            android:name="com.example.qreate.ShareQRScreenActivity"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <service

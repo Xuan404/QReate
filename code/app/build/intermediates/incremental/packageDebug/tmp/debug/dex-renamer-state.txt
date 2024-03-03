@@ -1,4 +1,4 @@
-#Sun Mar 03 00:10:25 MST 2024
+#Sun Mar 03 00:13:58 MST 2024
 base.0=C\:\\Users\\denis\\Documents\\School\\Cmput 301\\Qreate\\QReate\\code\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=C\:\\Users\\denis\\Documents\\School\\Cmput 301\\Qreate\\QReate\\code\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
 base.2=C\:\\Users\\denis\\Documents\\School\\Cmput 301\\Qreate\\QReate\\code\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\8\\classes.dex

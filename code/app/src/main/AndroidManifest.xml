@@ -18,13 +18,13 @@
         android:theme="@style/Theme.QReate"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity">
-            <!--android:exported="true">
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
         <activity android:name=".QRGeneratorActivity">
             <!--android:exported="true">
@@ -43,7 +43,6 @@
             </intent-filter>-->
         </activity>
         <activity android:name=".ShareQRScreenActivity">
-            <!--UNCOMMENT TO TEST-->
             <!--android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
