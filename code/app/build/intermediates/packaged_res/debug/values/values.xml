@@ -17,7 +17,7 @@
     <string name="project_id" translatable="false">qreate-bb8b8</string>
     <style name="Base.Theme.QReate" parent="Theme.Material3.DayNight.NoActionBar">
         
-        
+        <item name="colorPrimary">@color/black</item>
     </style>
     <style name="Theme.QReate" parent="Base.Theme.QReate"/>
 </resources>
