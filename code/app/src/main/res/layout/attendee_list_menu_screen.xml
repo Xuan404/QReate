@@ -75,7 +75,7 @@
             android:textColor="#F3F2F2" />
 
         <TextView
-            android:id="@+id/attendee_list_menu_screen_checkedin_text"
+            android:id="@+id/attendee_list_menu_screen_total_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

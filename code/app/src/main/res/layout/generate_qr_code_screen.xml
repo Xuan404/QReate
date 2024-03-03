@@ -105,7 +105,7 @@
                 android:id="@+id/generate_qr_code_radio_promo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/radioButtonAttendee"
+                android:layout_below="@id/generate_qr_code_radio_attendee"
                 android:layout_marginLeft="25dp"
                 android:fontFamily="@font/poppins_light"
                 android:text="Promo QR Code"
