@@ -43,3 +43,6 @@ google-services.json
 *.swp
 *.swo
 .DS_Store
+
+
+code/app/build/
