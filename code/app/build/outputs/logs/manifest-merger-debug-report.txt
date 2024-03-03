@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:2:1-37:12
-INJECTED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:2:1-37:12
-INJECTED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:2:1-37:12
-INJECTED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:2:1-37:12
+ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:2:1-52:12
+INJECTED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:2:1-52:12
+INJECTED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:2:1-52:12
+INJECTED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:2:1-52:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\denis\.gradle\caches\transforms-3\cc2d12b829148758ed6b3b42347dadc2\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\denis\.gradle\caches\transforms-3\241afb17a3857d8fe4aec61405a90878\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\denis\.gradle\caches\transforms-3\d50aae0f7ba54d4cd8c9f5975edf17d6\transformed\appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
@@ -90,8 +90,8 @@ MERGED from [com.journeyapps:zxing-android-embedded:4.2.0] C:\Users\denis\.gradl
 	android:name
 		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:8:22-62
 application
-ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:10:5-35:19
-INJECTED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:10:5-35:19
+ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:10:5-50:19
+INJECTED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:10:5-50:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\denis\.gradle\caches\transforms-3\cc2d12b829148758ed6b3b42347dadc2\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\denis\.gradle\caches\transforms-3\cc2d12b829148758ed6b3b42347dadc2\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\denis\.gradle\caches\transforms-3\241afb17a3857d8fe4aec61405a90878\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -150,28 +150,32 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\denis\.gradle\cach
 		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:12:9-65
 activity#com.example.qreate.MainActivity
 ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:20:9-28:20
-	android:exported
-		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:22:13-36
 	android:name
 		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:21:13-41
-intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:23:13-27:29
-action#android.intent.action.MAIN
-ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:24:17-69
-	android:name
-		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:24:25-66
-category#android.intent.category.LAUNCHER
-ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:26:17-77
-	android:name
-		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:26:27-74
 activity#com.example.qreate.QRGeneratorActivity
-ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:29:9-30:20
+ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:29:9-36:20
+	android:exported
+		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:30:13-36
 	android:name
 		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:29:19-54
-activity#com.example.qreate.QRMenuScreenActivity
-ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:31:9-32:20
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:31:13-35:29
+action#android.intent.action.MAIN
+ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:32:17-69
 	android:name
-		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:31:19-55
+		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:32:25-66
+category#android.intent.category.LAUNCHER
+ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:34:17-77
+	android:name
+		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:34:27-74
+activity#com.example.qreate.QRMenuScreenActivity
+ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:37:9-38:20
+	android:name
+		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:37:19-55
+activity#com.example.qreate.ShareQRScreenActivity
+ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:39:9-47:20
+	android:name
+		ADDED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml:39:19-56
 uses-sdk
 INJECTED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\denis\Documents\School\Cmput 301\Qreate\QReate\code\app\src\main\AndroidManifest.xml
