@@ -1,8 +1,8 @@
-#Sat Mar 02 19:39:29 PST 2024
-base.0=E\:\\University\\Year 2 Sem 2\\CMPUT 301\\Project\\QReate\\code\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
-base.1=E\:\\University\\Year 2 Sem 2\\CMPUT 301\\Project\\QReate\\code\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
-base.2=E\:\\University\\Year 2 Sem 2\\CMPUT 301\\Project\\QReate\\code\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\8\\classes.dex
-base.3=E\:\\University\\Year 2 Sem 2\\CMPUT 301\\Project\\QReate\\code\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
+#Sat Mar 02 21:16:08 MST 2024
+base.0=C\:\\Users\\denis\\Documents\\School\\Cmput 301\\Qreate\\QReate\\code\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
+base.1=C\:\\Users\\denis\\Documents\\School\\Cmput 301\\Qreate\\QReate\\code\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\0\\classes.dex
+base.2=C\:\\Users\\denis\\Documents\\School\\Cmput 301\\Qreate\\QReate\\code\\app\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\8\\classes.dex
+base.3=C\:\\Users\\denis\\Documents\\School\\Cmput 301\\Qreate\\QReate\\code\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes2.dex
 path.0=classes.dex
 path.1=0/classes.dex
 path.2=8/classes.dex

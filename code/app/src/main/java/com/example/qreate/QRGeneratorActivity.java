@@ -1,6 +1,7 @@
 package com.example.qreate;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -58,5 +59,13 @@ public class QRGeneratorActivity extends AppCompatActivity {
                 }
             }
         });
+        backButton.setOnClickListener((new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(QRGeneratorActivity.this, QRMenuScreenActivity.class);
+                startActivity(intent);
+            }
+        }));
+
     }
 }
