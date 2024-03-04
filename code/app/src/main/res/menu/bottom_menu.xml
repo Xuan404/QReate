@@ -9,11 +9,11 @@
         android:icon="@drawable/notificon"
         android:title="Notifications"/>
     <item
-        android:id="@+id/attendees_menu"
+        android:id="@+id/attendee_list_menu"
         android:icon="@drawable/attendeeicon"
         android:title="Attendees"/>
     <item
-        android:id="@+id/map"
+        android:id="@+id/geolocation_menu"
         android:icon="@drawable/mapicon"
         android:title="Map"/>
     <item
