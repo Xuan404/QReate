@@ -13,20 +13,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Change this to the appropriate layout after Ryan and Shradha have created the xml file
         setContentView(R.layout.activity_main);
-        //Intent intent = new Intent(MainActivity.this, QRMenuScreenActivity.class);
-        //startActivity(intent);
 
-        // Find the button by its ID
+        // The ids to the button will change as well after the layout has been created
         Button attendeeButton = findViewById(R.id.test_Attendee);
         Button organizerButton = findViewById(R.id.test_Organizer);
         Button administratorButton = findViewById(R.id.test_Administrator);
 
-        // Set a click listener on the button
+
+
+        //***************** IMPORTANT!!!!! ***********************************************************************
+        // Each interface will have its own Activity class that will handle everything
+        // This is so that we don't unnecessarily populate the main activity create merge conflicts
+        // Do Whatever you want to do with the other classes but DON'T TOUCH MainActivity for the time being
+        // You may change the .setOnClickListener stuff in regards to the UI that you are implementing
+        //*********************************************************************************************************
+
         attendeeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Code to execute when the button is clicked
 
             }
         });
@@ -43,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         administratorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Code to execute when the button is clicked
 
             }
         });

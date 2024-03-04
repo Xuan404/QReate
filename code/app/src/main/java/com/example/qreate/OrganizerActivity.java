@@ -12,9 +12,11 @@ public class OrganizerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_handler);
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.organizer_handler_navigation_bar);
-        bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder); // 'none' is a fake ID.
+        bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
         //bottomNavigationView.setVisibility(View.INVISIBLE);
+
 
         //I AM STILL TESTING OUT HOW THIS WORKS
         HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
