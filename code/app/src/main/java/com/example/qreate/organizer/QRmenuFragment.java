@@ -2,10 +2,12 @@ package com.example.qreate.organizer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,10 +23,13 @@ public class QRmenuFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.qr_menu_screen, container, false);
 
+        ImageButton profileButton = view.findViewById(R.id.qr_menu_screen_profile_button);
         Button generateButton = view.findViewById(R.id.qr_menu_screen_button_generate_qr_code);
         Button reuseExistingQRButton = view.findViewById(R.id.qr_menu_screen_button_reuse_qr_code);
         Button eventListButton = view.findViewById(R.id.qr_menu_screen_button_event_list);
         Button shareQRButton = view.findViewById(R.id.qr_menu_screen_button_share_qr_code);
+
+        registerForContextMenu(profileButton); //floating profile menu
 
         generateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,5 +61,15 @@ public class QRmenuFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        getActivity().getMenuInflater().inflate(R.menu.profile_menu, menu);
+    }
+    public void showPopUpMenu(View view){
+
     }
 }
