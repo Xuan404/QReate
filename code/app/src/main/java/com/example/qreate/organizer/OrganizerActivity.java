@@ -1,15 +1,14 @@
-package com.example.qreate;
+package com.example.qreate.organizer;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.qreate.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 public class OrganizerActivity extends AppCompatActivity {
     @Override
@@ -20,10 +19,24 @@ public class OrganizerActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.organizer_handler_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder); //This line is here so that there is no default item selected, it selects a menu item that is invisible
 
-        //inflates the homescreen fragment automatically
-        HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
+
+
+
+
+        EditProfileScreenFragment editProfileScreenFragment = new EditProfileScreenFragment();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.organizer_handler_frame,homeScreenFragment).commit();
+                .add(R.id.organizer_handler_frame,editProfileScreenFragment).commit();
+
+
+
+
+
+
+
+//        //inflates the homescreen fragment automatically
+//        HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
+//        getSupportFragmentManager().beginTransaction()
+//                .add(R.id.organizer_handler_frame,homeScreenFragment).commit();
 
         //Used if/else to check for selected id because switch is being a bitch
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {

@@ -26,9 +26,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".QRGeneratorActivity">
+        <activity android:name=".organizer.QRGeneratorActivity">
         </activity>
-        <activity android:name=".OrganizerActivity">
+        <activity android:name=".organizer.OrganizerActivity">
         </activity>
 
         <meta-data
