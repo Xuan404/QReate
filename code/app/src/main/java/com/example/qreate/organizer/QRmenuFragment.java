@@ -22,7 +22,9 @@ public class QRmenuFragment extends Fragment {
         View view = inflater.inflate(R.layout.qr_menu_screen, container, false);
 
         Button generateButton = view.findViewById(R.id.qr_menu_screen_button_generate_qr_code);
-        Button reuseExistingButton = view.findViewById(R.id.qr_menu_screen_button_reuse_qr_code);
+        Button reuseExistingQRButton = view.findViewById(R.id.qr_menu_screen_button_reuse_qr_code);
+        Button eventListButton = view.findViewById(R.id.qr_menu_screen_button_event_list);
+        Button shareQRButton = view.findViewById(R.id.qr_menu_screen_button_share_qr_code);
 
         generateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,10 +33,24 @@ public class QRmenuFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        reuseExistingButton.setOnClickListener(new View.OnClickListener() {
+        reuseExistingQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), QRReuseExistingActivity.class);
+                startActivity(intent);
+            }
+        });
+        eventListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), QREventListActivity.class);
+                startActivity(intent);
+            }
+        });
+        shareQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), QRShareActivity.class);
                 startActivity(intent);
             }
         });
