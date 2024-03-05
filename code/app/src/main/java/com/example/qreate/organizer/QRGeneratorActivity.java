@@ -25,6 +25,7 @@ public class QRGeneratorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.generate_qr_code_screen);
+
         ImageButton backButton = findViewById(R.id.generate_qr_code_screen_backbutton);
         Button createCodesButton = findViewById(R.id.generate_qr_code_confirmbutton);
         RadioGroup radioGroup = findViewById(R.id.generate_qr_code_radio_group);
