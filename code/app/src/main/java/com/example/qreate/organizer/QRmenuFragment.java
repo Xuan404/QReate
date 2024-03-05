@@ -1,9 +1,13 @@
 package com.example.qreate.organizer;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -63,13 +67,19 @@ public class QRmenuFragment extends Fragment {
         return view;
     }
 
+    //Creates the profile pop up menu
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-
         getActivity().getMenuInflater().inflate(R.menu.profile_menu, menu);
-    }
-    public void showPopUpMenu(View view){
 
+        //Colors the text color white
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem menuItem = menu.getItem(i);
+            SpannableString s = new SpannableString(menuItem.getTitle());
+            s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, s.length(), 0);
+            menuItem.setTitle(s);
+        }
     }
+
 }

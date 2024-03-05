@@ -3,10 +3,10 @@
     <item
         android:id="@+id/profile_account"
         android:icon="@drawable/gearicon"
-        android:title="Account"/>
+        android:title="Account" />
     <item
         android:id="@+id/rpofile_settings"
         android:icon="@drawable/logouticon"
-        android:title="Logout"/>
+        android:title="Logout" />
 
 </menu>
