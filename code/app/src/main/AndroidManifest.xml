@@ -30,6 +30,7 @@
         <activity android:name=".organizer.OrganizerActivity"/>
         <activity android:name=".organizer.NotificationsSendActivity"/>
         <activity android:name=".organizer.QRReuseExistingActivity"/>
+        <activity android:name=".administrator.AdministratorActivity"/>
 
 
 
