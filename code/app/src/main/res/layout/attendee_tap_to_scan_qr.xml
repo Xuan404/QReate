@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:background="#0A191E">
+
+    <TextView
+        android:id="@+id/welcome_screen_qreate_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="56dp"
+        android:fontFamily="cursive"
+        android:text="Qreate"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="bold"
+         />
+
+
+    <FrameLayout
+        android:id="@+id/attendee_nav_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/attendee_navigation_bar"
+        android:layout_marginBottom="-163dp">
+
+    </FrameLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/attendee_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="21dp"
+        android:background="@drawable/bottom_menu_background"
+        android:elevation="2dp"
+        app:itemIconSize="35dp"
+        app:itemIconTint="@color/bottom_menu_selector"
+        app:menu="@menu/administrator_bottom_menu" />
+
+
+</RelativeLayout>
