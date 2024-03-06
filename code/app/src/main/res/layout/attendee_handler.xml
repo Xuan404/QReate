@@ -1,27 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:background="#0A191E">
 
-    <TextView
-        android:id="@+id/welcome_screen_qreate_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="56dp"
-        android:fontFamily="cursive"
-        android:text="Qreate"
-        android:textColor="#FFFFFF"
-        android:textSize="34sp"
-        android:textStyle="bold"
-         />
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#0A191E">
 
 
     <FrameLayout
-        android:id="@+id/attendee_nav_frame"
+        android:id="@+id/attendee_handler_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/attendee_navigation_bar"
@@ -41,7 +29,7 @@ android:background="#0A191E">
         android:elevation="2dp"
         app:itemIconSize="35dp"
         app:itemIconTint="@color/bottom_menu_selector"
-        app:menu="@menu/administrator_bottom_menu" />
+        app:menu="@menu/attendee_bottom_menu" />
 
 
 </RelativeLayout>
