@@ -19,8 +19,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-
         // Change this to the appropriate layout after Ryan and Shradha have created the xml file
         setContentView(R.layout.activity_main);
 
