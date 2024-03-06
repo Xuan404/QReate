@@ -1,4 +1,4 @@
-package com.example.qreate.organizer;
+package com.example.qreate;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,10 +11,12 @@ import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
 
-public class WelcomeScreenFragment extends Fragment {
+public class EditProfileScreenFragment extends Fragment {
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.organizer_welcome_screen, container, false);
+        return inflater.inflate(R.layout.edit_profile_info, container, false);
     }
+
 }

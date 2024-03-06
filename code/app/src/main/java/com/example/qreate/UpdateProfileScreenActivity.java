@@ -1,4 +1,4 @@
-package com.example.qreate.organizer;
+package com.example.qreate;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
