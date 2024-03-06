@@ -19,7 +19,7 @@ public class AttendeeActivity extends AppCompatActivity {
         setContentView(R.layout.attendee_tap_to_scan_qr);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.attendee_navigation_bar);
-        bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder); //This line is here so that there is no default item selected, it selects a menu item that is invisible
+        bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
 
         //inflates the homescreen fragment automatically
         HomeScreenFragment homeScreenFragment = new HomeScreenFragment();

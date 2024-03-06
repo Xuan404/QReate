@@ -16,6 +16,6 @@ public class AttendeeHomePage extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.welcome_screen_attendee, container, false);
+        return inflater.inflate(R.layout.attendee_home_screen, container, false);
     }
 }
