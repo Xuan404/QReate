@@ -13,7 +13,7 @@ public class QREventListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_list_screen);
+        setContentView(R.layout.organizer_event_list_screen);
 
         //Back Button
         ImageButton backButton = findViewById(R.id.event_list_screen_backbutton);

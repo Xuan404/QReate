@@ -22,7 +22,7 @@ public class GeolocationMenuFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.geolocation_menu_screen, container, false);
+        View view = inflater.inflate(R.layout.organizer_geolocation_menu_screen, container, false);
         ImageButton profileButton = view.findViewById(R.id.geolocation_menu_screen_profile_button);
 
         registerForContextMenu(profileButton); //floating profile menu

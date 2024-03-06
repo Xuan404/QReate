@@ -1,7 +1,6 @@
 package com.example.qreate.organizer;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -24,7 +23,7 @@ public class QRGeneratorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.generate_qr_code_screen);
+        setContentView(R.layout.organizer_generate_qr_code_screen);
 
         ImageButton backButton = findViewById(R.id.generate_qr_code_screen_backbutton);
         Button createCodesButton = findViewById(R.id.generate_qr_code_confirmbutton);

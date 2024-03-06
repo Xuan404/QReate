@@ -24,7 +24,7 @@ public class NotificationsMenuFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.notifications_menu_screen, container, false);
+        View view = inflater.inflate(R.layout.organizer_notifications_menu_screen, container, false);
 
         ImageButton profileButton = view.findViewById(R.id.notifications_menu_screen_profile_button);
         Button button = view.findViewById(R.id.notifications_menu_screen_send_notifications);

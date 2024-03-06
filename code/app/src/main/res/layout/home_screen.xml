@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0A191E"
@@ -25,7 +25,7 @@
         android:layout_height="200dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="100dp"
         android:layout_below="@id/home_screen_qreate_title"
         android:src="@drawable/empty_profile_pic"
         android:layout_gravity="center"/>
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/home_screen_empty_profile_pic"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="80dp"
         android:layout_marginStart="30dp"
         android:layout_marginBottom="6dp"
         android:fontFamily="@font/abhaya_libre_extrabold"
@@ -66,27 +66,6 @@
         android:fontFamily="@font/inter_light"
         android:textColor="@color/white"
         android:text="example@yahoo.com" />
-    <Button
-        android:id="@+id/update_profile_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/blue_button"
-        android:text="Update Profile +"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="46dp">
-    </Button>
-
-    <Button
-        android:id="@+id/logout_button_attendee"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#CD2020"
-        android:text="Logout"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="5dp">
-    </Button>
 
 
-</LinearLayout>
+</RelativeLayout>
