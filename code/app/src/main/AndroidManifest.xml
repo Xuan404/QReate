@@ -35,6 +35,7 @@
         <activity android:name=".organizer.QRShareActivity"/>
         <activity android:name=".administrator.AdministratorActivity"/>
         <activity android:name=".organizer.NotificationsSendActivity"/>
+
         <activity android:name=".administrator.AdministratorDashboardActivity"/>
 
         <meta-data
