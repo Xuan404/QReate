@@ -1,14 +1,11 @@
 package com.example.qreate.administrator;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
-
+import com.example.qreate.HomeScreenFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AdministratorActivity extends AppCompatActivity {
@@ -22,14 +19,9 @@ public class AdministratorActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.administrator_handler_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder); //This line is here so that there is no default item selected, it selects a menu item that is invisible
 
-
-
         //inflates the homescreen fragment automatically
         HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.administrator_handler_frame,homeScreenFragment).commit();
-
-
-
     }
 }
