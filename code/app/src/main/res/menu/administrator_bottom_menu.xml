@@ -10,7 +10,6 @@
         android:title="Account"/>
     <item
         android:id="@+id/defaultNavPlaceholder"
-        android:icon="@drawable/mapicon"
         android:title="Default"
         android:visible="false"/>
 </menu>
