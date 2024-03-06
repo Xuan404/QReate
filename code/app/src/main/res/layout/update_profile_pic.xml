@@ -4,7 +4,7 @@
     android:background="#0A191E">
 
     <RelativeLayout
-        android:id="@+id/share_qr_code_screen_top_bar"
+        android:id="@+id/update_profile_screen_top_bar"
         android:layout_width="500dp"
         android:layout_height="60dp"
         android:background="#000000">
@@ -15,13 +15,13 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:fontFamily="cursive"
-            android:text="qreate"
+            android:text="Qreate"
             android:textColor="#FFFFFF"
             android:textSize="34sp"
             android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/share_qr_code_screen_backbutton"
+            android:id="@+id/update_profile_screen_backbutton"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="5dp"

@@ -31,6 +31,8 @@ public class OrganizerActivity extends AppCompatActivity {
 //                .add(R.id.organizer_handler_frame,editProfileScreenFragment).commit();
 
 
+
+
         //Used if/else to check for selected id because switch was being a bitch
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
@@ -58,6 +60,9 @@ public class OrganizerActivity extends AppCompatActivity {
 
 
     }
+
+
+    //public void addOrganizer
 
 
 
