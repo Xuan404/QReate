@@ -61,7 +61,7 @@
         android:layout_marginTop="52dp"
         android:background="@drawable/edit_text_bubble"
         android:fontFamily="@font/inter_semibold"
-        android:hint="ex. John Smith"
+        android:hint="Enter Name (ex. John Smith)"
         android:inputType="textPersonName"
         android:maxLength="30"
         android:padding="12dp"
