@@ -34,10 +34,10 @@
 
     <TextView
         android:id="@+id/announcements_text"
-        android:layout_width="409dp"
-        android:layout_height="74dp"
-        android:gravity="center"
+        android:layout_width="407dp"
+        android:layout_height="97dp"
         android:fontFamily="@font/poppins_bold"
+        android:gravity="center"
         android:text="Announcements"
         android:textColor="@color/white"
         android:textSize="40sp"
