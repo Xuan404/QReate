@@ -52,49 +52,59 @@
         app:layout_constraintVertical_bias="0.0"
         app:tint="@color/white" />
 
+
     <EditText
         android:id="@+id/edit_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="354dp"
+        android:layout_height="48dp"
+        android:autofillHints="name"
         android:layout_marginTop="52dp"
         android:background="@drawable/edit_text_bubble"
-        android:hint="Enter name here"
-        android:paddingStart="12dp"
+        android:fontFamily="@font/inter_semibold"
+        android:hint="Enter Name (ex. John Smith)"
+        android:inputType="textPersonName"
+        android:maxLength="30"
+        android:padding="12dp"
         android:textColor="@color/dark_grey"
-        android:textColorHint="@color/dark_grey"
+        android:textColorHint="@color/light_grey"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.581"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/empty_profile_pic" />
 
     <EditText
-        android:id="@+id/edit_homepage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:id="@+id/edit_homepage_website"
+        android:layout_width="354dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="44dp"
         android:background="@drawable/edit_text_bubble"
-        android:hint="Website (http://example.com)"
-        android:paddingStart="12dp"
+        android:fontFamily="@font/inter_semibold"
+        android:hint="http://example.com"
+        android:inputType="text"
+        android:padding="12dp"
         android:textColor="@color/dark_grey"
-        android:textColorHint="@color/dark_grey"
+        android:textColorHint="@color/light_grey"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.674"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_phone_number" />
-
+        app:layout_constraintTop_toBottomOf="@+id/edit_email" />
 
     <EditText
-        android:id="@+id/edit_phone_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:id="@+id/edit_email"
+        android:layout_width="354dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:autofillHints="emailAddress"
         android:background="@drawable/edit_text_bubble"
-        android:hint="Email (e.g., example@gmail.com)"
-        android:paddingStart="12dp"
+        android:fontFamily="@font/inter_semibold"
+        android:hint="Email (example@gmail.com)"
+        android:inputType="textEmailAddress"
+        android:maxLength="50"
+        android:padding="12dp"
         android:textColor="@color/dark_grey"
-        android:textColorHint="@color/dark_grey"
+        android:textColorHint="@color/light_grey"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.627"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_number" />
 
@@ -108,12 +118,12 @@
         android:text="HomePage"
         android:textColor="@color/white"
         android:textSize="27sp"
-        app:layout_constraintBottom_toTopOf="@+id/edit_homepage"
+        app:layout_constraintBottom_toTopOf="@+id/edit_homepage_website"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_phone_number"
-        app:layout_constraintVertical_bias="0.523" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_email"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/contact_info_text"
@@ -127,44 +137,43 @@
         android:textSize="27sp"
         app:layout_constraintBottom_toTopOf="@+id/edit_number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.139"
+        app:layout_constraintHorizontal_bias="0.162"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_name"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/edit_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_width="354dp"
+        android:layout_height="48dp"
+        android:autofillHints="phone"
+        android:layout_marginBottom="300dp"
         android:background="@drawable/edit_text_bubble"
-        android:hint="Mobile Number (e.g., 123-456-7890)"
-        android:paddingStart="12dp"
+        android:fontFamily="@font/inter_semibold"
+        android:hint="Phone Number (123-456-7890)"
+        android:inputType="phone"
+        android:maxLength="15"
+        android:padding="12dp"
         android:textColor="@color/dark_grey"
-        android:textColorHint="@color/dark_grey"
+        android:textColorHint="@color/light_grey"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.627"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_name"
-        app:layout_constraintVertical_bias="0.013" />
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/edit_name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="@font/abhaya_libre_extrabold"
         android:text="Name"
         android:textColor="@color/white"
         android:textSize="27sp"
-        app:layout_constraintBottom_toTopOf="@+id/edit_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.066"
+        app:layout_constraintHorizontal_bias="0.083"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/empty_profile_pic"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintTop_toBottomOf="@+id/empty_profile_pic" />
 
     <TextView
         android:id="@+id/geolocation_text"
@@ -181,8 +190,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/switchCompat"
-        app:layout_constraintTop_toBottomOf="@+id/edit_homepage"
-        app:layout_constraintVertical_bias="0.482" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_homepage_website"
+        app:layout_constraintVertical_bias="0.6" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switchCompat"
@@ -191,10 +200,9 @@
         android:textColor="#FFC107"
         app:layout_constraintBottom_toTopOf="@+id/confirm_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.082"
+        app:layout_constraintHorizontal_bias="0.084"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_homepage"
-        app:layout_constraintVertical_bias="0.577"
+        app:layout_constraintTop_toBottomOf="@+id/edit_homepage_website"
         app:thumbTint="@color/blue_button"
         app:trackTint="@color/yellow" />
 
@@ -210,10 +218,10 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.627"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_homepage"
-        app:layout_constraintVertical_bias="0.873" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_homepage_website"
+        app:layout_constraintVertical_bias="0.884" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
