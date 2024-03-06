@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.qreate.administrator.AdministratorActivity;
+import com.example.qreate.attendee.AttendeeActivity;
 import com.example.qreate.organizer.OrganizerActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         attendeeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AttendeeActivity.class);
+                startActivity(intent);
 
             }
         });

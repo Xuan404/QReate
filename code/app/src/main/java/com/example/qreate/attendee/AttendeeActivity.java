@@ -9,14 +9,12 @@ import com.example.qreate.organizer.HomeScreenFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AttendeeActivity extends AppCompatActivity {
-
     /*
-     This class is used as a MainActivity class for the Attendee UI
+    This class is used as the MainActivity class for the Administrator UI
      */
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.attendee_tap_to_scan_qr);
+        setContentView(R.layout.attendee_handler);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.attendee_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
@@ -24,6 +22,7 @@ public class AttendeeActivity extends AppCompatActivity {
         //inflates the homescreen fragment automatically
         HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.attendee_nav_frame,homeScreenFragment).commit();
+                .add(R.id.attendee_handler_frame,homeScreenFragment).commit();
     }
+
 }
