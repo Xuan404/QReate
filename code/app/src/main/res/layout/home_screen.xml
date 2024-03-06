@@ -39,7 +39,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginBottom="6dp"
         android:fontFamily="@font/abhaya_libre_extrabold"
-        android:text="Welcome User"
+        android:text="User Name"
         android:textColor="@color/white"
         android:textSize="27sp" />
 

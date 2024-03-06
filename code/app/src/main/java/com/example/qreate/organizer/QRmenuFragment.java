@@ -64,6 +64,7 @@ public class QRmenuFragment extends Fragment {
             }
         });
 
+
         return view;
     }
 
