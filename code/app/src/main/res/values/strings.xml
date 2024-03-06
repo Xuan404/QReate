@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">QReate</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="events">Events</string>
+    <string name="profiles">Profiles</string>
+    <string name="images">Images</string>
 </resources>
