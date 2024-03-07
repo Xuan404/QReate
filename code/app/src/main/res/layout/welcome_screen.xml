@@ -67,6 +67,7 @@
     <Button
         android:id="@+id/welcome_screen_updatebutton"
         android:layout_width="350dp"
+
         android:layout_height="54dp"
         android:layout_below="@+id/welcome_screen_email_text"
         android:layout_marginTop="41dp"

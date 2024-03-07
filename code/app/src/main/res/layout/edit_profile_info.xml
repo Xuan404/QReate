@@ -185,6 +185,7 @@
 
     <Button
         android:id="@+id/edit_profile_confirm_button"
+
         android:layout_width="354dp"
         android:layout_height="54dp"
         android:layout_below="@+id/homepage_text"
@@ -196,6 +197,7 @@
         android:layout_centerHorizontal="true"
         android:textColor="@color/white"
         android:textSize="18dp" />
+
 
 
 </RelativeLayout>

@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
 
-public class AdministratorHomeScreen extends Fragment {
+public class AdministratorHomeScreenFragment extends Fragment {
     /*
     This class is for the homescreen after user clicks on administrator
      */

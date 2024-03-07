@@ -73,8 +73,6 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
         bottomNavigationView.setVisibility(View.INVISIBLE);
         WelcomeScreenFragment welcomeScreenFragment = new WelcomeScreenFragment("organizer");
 
-        sendUserIdToFirestore(this); //Sends user android id to database
-
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.organizer_handler_frame,welcomeScreenFragment).commit();
 
@@ -82,6 +80,8 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
     }
 
     public void homeScreenOrganizer() {
+
+        //sendUserIdToFirestore(this); //Sends user android id to database
 
         bottomNavigationView.setVisibility(View.VISIBLE);
         HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
@@ -98,30 +98,30 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
     }
 
-    private void sendUserIdToFirestore(Context context) {
-
-        // Get a Firestore instance
-        db = FirebaseFirestore.getInstance();
-        Log.d("FirestoreConnection", "Firestore has been initialized.");
-        // Get the unique Android ID
-        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        // Prepare the data to send
-        Map<String, Object> device = new HashMap<>();
-        device.put("device_id", device_id);
-
-        // Send the unique ID to Firestore
-        db.collection("Users").add(device)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestoredemo", "DocumentSnapshot successfully written!");
-                    // Show a Toast message
-                    //Toast.makeText(context, "It worked", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Log.w("Firestoredemo", "Error writing document", e);
-                    // Optionally, you could also show a Toast on failure
-                    //Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
-                });
-    }
+//    private void sendUserIdToFirestore(Context context) {
+//
+//        // Get a Firestore instance
+//        db = FirebaseFirestore.getInstance();
+//        Log.d("FirestoreConnection", "Firestore has been initialized.");
+//        // Get the unique Android ID
+//        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+//        // Prepare the data to send
+//        Map<String, Object> device = new HashMap<>();
+//        device.put("device_id", device_id);
+//
+//        // Send the unique ID to Firestore
+//        db.collection("Users").add(device)
+//                .addOnSuccessListener(aVoid -> {
+//                    Log.d("Firestoredemo", "DocumentSnapshot successfully written!");
+//                    // Show a Toast message
+//                    //Toast.makeText(context, "It worked", Toast.LENGTH_SHORT).show();
+//                })
+//                .addOnFailureListener(e -> {
+//                    Log.w("Firestoredemo", "Error writing document", e);
+//                    // Optionally, you could also show a Toast on failure
+//                    //Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
+//                });
+//    }
 
     private void checkIfUserExists(String collectionName, String fieldName, String uniqueId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -154,7 +154,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
         String collectionName = "Users";
         String fieldName = "device_id";
 
-        //Checks to see if user exisits
+        //Checks to see if user exists
         checkIfUserExists(collectionName, fieldName, device_id);
 
     }
