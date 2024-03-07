@@ -184,13 +184,13 @@
 
     <Button
         android:id="@+id/edit_profile_confirm_button"
-        android:layout_width="354dp"
+        android:layout_width="380dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/homepage_text"
         android:layout_alignStart="@+id/homepage_text"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="130dp"
+        android:layout_marginStart="-16dp"
+        android:layout_marginTop="139dp"
         android:backgroundTint="@color/blue_button"
         android:gravity="center"
         android:text="Confirm"
