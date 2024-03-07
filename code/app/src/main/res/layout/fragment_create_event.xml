@@ -67,6 +67,18 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/imageName"
+        android:layout_below="@id/uploadPosterText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:text="Image Name.png"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
+
     <ImageButton
         android:id="@+id/buttonUploadPoster"
         android:src="@drawable/uploadimgicon"
@@ -76,7 +88,9 @@
         android:layout_width="250dp"
         android:layout_height="125dp"
         android:background="@android:color/transparent"
-        android:scaleType="fitCenter"/>
+        android:scaleType="fitCenter"
+        android:visibility="visible"
+        />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonCreateEvent"
