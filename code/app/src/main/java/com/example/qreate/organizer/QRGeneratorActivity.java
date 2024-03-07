@@ -5,17 +5,14 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.qreate.Event;
-import com.example.qreate.EventArrayAdapter;
+import com.example.qreate.EventSpinnerArrayAdapter;
 import com.example.qreate.R;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -28,7 +25,7 @@ import java.util.ArrayList;
 public class QRGeneratorActivity extends AppCompatActivity {
     ArrayList<Event> events;
     Spinner eventsSpinner;
-    EventArrayAdapter eventArrayAdapter;
+    EventSpinnerArrayAdapter eventSpinnerArrayAdapter;
 
 
     @Override
@@ -44,7 +41,7 @@ public class QRGeneratorActivity extends AppCompatActivity {
 
         addEventsInit();
 
-        eventArrayAdapter = new EventArrayAdapter(this, events);
+        eventSpinnerArrayAdapter = new EventSpinnerArrayAdapter(this, events);
 
         //NEED TO GRAB THE ARRAY FROM FIREBASE THEN PARSE IT INTO THIS
         eventsSpinner = findViewById(R.id.generate_qr_code_spinner);
@@ -53,7 +50,6 @@ public class QRGeneratorActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();
-                Toast.makeText(QRGeneratorActivity.this, item, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -63,9 +59,9 @@ public class QRGeneratorActivity extends AppCompatActivity {
         });
         addEventsInit();
 
-        eventArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
+        eventSpinnerArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
 
-        eventsSpinner.setAdapter(eventArrayAdapter);
+        eventsSpinner.setAdapter(eventSpinnerArrayAdapter);
 
         ImageView qrCodeSolo = findViewById(R.id.generate_qr_code_qr_image);
 
@@ -74,7 +70,8 @@ public class QRGeneratorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try{
-                    BitMatrix bitMatrix = multiFormatWriter.encode("REPLACE THIS WITH THE SELECTED EVENT TEXT", BarcodeFormat.QR_CODE, 250,250);
+                    //this code needs to be changed to the actual text on the selected spinner item
+                    BitMatrix bitMatrix = multiFormatWriter.encode(eventsSpinner.getSelectedItem().toString(), BarcodeFormat.QR_CODE, 250,250);
                     BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
                     Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
                     qrCodeSolo.setImageBitmap(bitmap);
