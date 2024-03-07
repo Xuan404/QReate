@@ -63,7 +63,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
         // Inflates the welcomescreen fragment if its the user's first time logging in
         bottomNavigationView.setVisibility(View.INVISIBLE);
-        WelcomeScreenFragment welcomeScreenFragment = new WelcomeScreenFragment();
+        WelcomeScreenFragment welcomeScreenFragment = new WelcomeScreenFragment("organizer");
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.organizer_handler_frame,welcomeScreenFragment).commit();
 
