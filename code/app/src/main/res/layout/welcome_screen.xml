@@ -49,7 +49,7 @@
         android:textSize="16sp"
         android:fontFamily="@font/inter_light"
         android:textColor="@color/white"
-        android:text="You are now an Administrator" />
+        android:text="You are now a user_role" />
 
     <TextView
         android:id="@+id/welcome_screen_email_text"
