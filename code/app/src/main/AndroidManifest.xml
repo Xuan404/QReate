@@ -40,7 +40,6 @@
         <activity android:name=".organizer.NotificationsSendActivity"/>
         <activity android:name=".attendee.AttendeeActivity"/>
 
-        <activity android:name=".administrator.AdministratorDashboardActivity"/>
 
         <meta-data
             android:name="preloaded_fonts"
