@@ -1,4 +1,4 @@
-package com.example.qreate;
+package com.example.qreate.organizer;
 
 public class Event {
     private String event;

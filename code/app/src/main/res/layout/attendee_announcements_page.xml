@@ -79,9 +79,7 @@
             android:backgroundTint="@color/yellow"
             android:padding="2dp"
             android:text="Other Events"
-            android:textSize="12sp"
-
-            />
+            android:textSize="12sp" />
 
     </LinearLayout>
 

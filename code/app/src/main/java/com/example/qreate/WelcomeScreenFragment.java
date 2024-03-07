@@ -15,7 +15,14 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.qreate.R;
 import com.example.qreate.organizer.QRGeneratorActivity;
 
+import java.util.Objects;
+
 public class WelcomeScreenFragment extends Fragment {
+    String current_activity;
+    public WelcomeScreenFragment(String activity) {
+        current_activity = activity;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -29,7 +36,12 @@ public class WelcomeScreenFragment extends Fragment {
                 // Takes user to edit profile page
                 Fragment editProfile = new EditProfileScreenFragment();
                 FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.organizer_handler_frame, editProfile);
+                if (Objects.equals(current_activity, "organizer")){
+                    transaction.replace(R.id.organizer_handler_frame, editProfile);
+                } else if (Objects.equals(current_activity, "attendee")) {
+                    transaction.replace(R.id.attendee_handler_frame, editProfile);
+                }
+
                 transaction.commit();
             }
         });

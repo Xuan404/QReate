@@ -179,18 +179,16 @@
         android:layout_marginStart="0dp"
         android:layout_marginTop="69dp"
         android:textColor="#FFC107"
-        app:thumbTint="@color/blue_button"
+        app:thumbTint="@color/toggle_button_selector"
         app:trackTint="@color/yellow" />
 
     <Button
         android:id="@+id/edit_profile_confirm_button"
-        android:layout_width="380dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/homepage_text"
-        android:layout_alignStart="@+id/homepage_text"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="-16dp"
-        android:layout_marginTop="139dp"
+        android:layout_marginBottom="50dp"
         android:backgroundTint="@color/blue_button"
         android:gravity="center"
         android:text="Confirm"
