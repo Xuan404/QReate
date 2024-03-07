@@ -9,11 +9,6 @@
         android:icon="@drawable/qricon"
         android:title="Scan"/>
     <item
-        android:id="@+id/account_icon"
-        android:icon="@drawable/account_icon"
-        android:title="Account"
-        />
-    <item
         android:id="@+id/defaultNavPlaceholder"
         android:icon="@drawable/mapicon"
         android:title="Default"

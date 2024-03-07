@@ -70,9 +70,13 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
     public void firstTimeLoginOrganizer() {
         // Inflates the welcomescreen fragment if its the user's first time logging in
 
-        sendUserIdToFirestore(this); //Sends user android id to database
+        bottomNavigationView.setVisibility(View.INVISIBLE);
+        WelcomeScreenFragment welcomeScreenFragment = new WelcomeScreenFragment("organizer");
 
-        WelcomeScreenFragment welcomeScreenFragment = new WelcomeScreenFragment();
+
+//         sendUserIdToFirestore(this); //Sends user android id to database
+
+       
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.organizer_handler_frame,welcomeScreenFragment).commit();
 
