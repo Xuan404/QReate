@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0A191E">
@@ -81,7 +82,7 @@
             android:textSize="16sp" />
 
 
-        <TextView
+        <EditText
             android:id="@+id/send_notifications_screen_text_box"
             android:layout_width="250dp"
             android:layout_height="250dp"
@@ -89,7 +90,9 @@
             android:layout_below="@id/send_notifications_text"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
-            android:text="Add Text" />
+            android:hint="Add Text"
+            android:inputType="text"
+            android:autofillHints="" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/send_notifications_screen_condirmbutton"

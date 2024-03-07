@@ -25,7 +25,6 @@ import java.util.Map;
 
 public class OrganizerActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
 
-    private String device_id;
     private FirebaseFirestore db;
     private BottomNavigationView bottomNavigationView;
     @Override
@@ -150,7 +149,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
         bottomNavigationView.setVisibility(View.INVISIBLE);
         // Get the unique Android ID
-        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
         String collectionName = "Users";
         String fieldName = "device_id";
 

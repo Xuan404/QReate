@@ -185,18 +185,17 @@
 
     <Button
         android:id="@+id/edit_profile_confirm_button"
-
-        android:layout_width="354dp"
-        android:layout_height="54dp"
-        android:layout_below="@+id/homepage_text"
-        android:layout_marginTop="134dp"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="20dp"
         android:backgroundTint="@color/blue_button"
         android:fontFamily="@font/inter_semibold"
         android:gravity="center"
         android:text="Confirm"
         android:layout_centerHorizontal="true"
         android:textColor="@color/white"
-        android:textSize="18dp" />
+        android:textSize="20sp" />
 
 
 

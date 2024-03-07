@@ -27,6 +27,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         bottomNavigationView = findViewById(R.id.attendee_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
 
+        // U GUYS ARE NOT USING THIS FUNCTION PROPERLY AND THATS WHATS CAUSING THE ISSUES (AKIB)
         firstTimeLoginAttendee();
 
         //inflates the homescreen fragment automatically

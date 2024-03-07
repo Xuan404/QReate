@@ -67,17 +67,18 @@
     <Button
         android:id="@+id/welcome_screen_updatebutton"
         android:layout_width="350dp"
-
-        android:layout_height="54dp"
-        android:layout_below="@+id/welcome_screen_email_text"
-        android:layout_marginTop="41dp"
-        android:fontFamily="@font/inter_semibold"
-        android:backgroundTint="@color/blue_button"
-        android:gravity="center"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/blue_button"
+        android:fontFamily="@font/inter_semibold"
+        android:gravity="center"
         android:text="Update Personal Details+"
         android:textColor="@color/white"
-        android:textSize="18dp" />
+        android:textSize="20sp" />
 
 
 </RelativeLayout>
