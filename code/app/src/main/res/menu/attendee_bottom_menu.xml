@@ -9,6 +9,11 @@
         android:icon="@drawable/qricon"
         android:title="Scan"/>
     <item
+        android:id="@+id/events_icon_nav"
+        android:icon="@drawable/event_icon_attendee_nav"
+        android:title="Events"/>
+
+    <item
         android:id="@+id/defaultNavPlaceholder"
         android:icon="@drawable/mapicon"
         android:title="Default"

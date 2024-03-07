@@ -27,7 +27,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         bottomNavigationView = findViewById(R.id.attendee_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
 
-        firstTimeLoginOrganizer();
+        firstTimeLoginAttendee();
 
         //inflates the homescreen fragment automatically
 //        HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
@@ -36,7 +36,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     }
 //    Button update_profile = findViewById(R.id.welcome_screen_updatebutton);
 
-    public void firstTimeLoginOrganizer() {
+    public void firstTimeLoginAttendee() {
 
         // Inflates the welcomescreen fragment if its the user's first time logging in
         bottomNavigationView.setVisibility(View.INVISIBLE);
@@ -46,7 +46,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
 
     }
-    public void homeScreenOrganizer() {
+    public void homeScreenAttendee() {
 
         HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
         getSupportFragmentManager().beginTransaction()
@@ -58,6 +58,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     @Override
     public void onFragmentDestroyed() {
         bottomNavigationView.setVisibility(View.VISIBLE);
-        homeScreenOrganizer();
+        homeScreenAttendee();
     }
 }
