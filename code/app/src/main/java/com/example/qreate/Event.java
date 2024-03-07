@@ -9,7 +9,7 @@ public class Event {
         this.detail = detail;
     }
 
-    String getEventName(){
+    public String getEventName(){
         return this.event;
     }
 

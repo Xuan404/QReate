@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.qreate.Event;
 import com.example.qreate.EventListArrayAdapter;
-import com.example.qreate.EventSpinnerArrayAdapter;
 import com.example.qreate.R;
 
 import java.util.ArrayList;
