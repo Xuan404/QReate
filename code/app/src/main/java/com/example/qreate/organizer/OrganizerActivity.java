@@ -112,7 +112,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
                 .addOnSuccessListener(aVoid -> {
                     Log.d("Firestoredemo", "DocumentSnapshot successfully written!");
                     // Show a Toast message
-                    Toast.makeText(context, "It worked", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "It worked", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
                     Log.w("Firestoredemo", "Error writing document", e);
