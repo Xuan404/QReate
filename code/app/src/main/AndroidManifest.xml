@@ -6,6 +6,7 @@
         android:name="android.hardware.camera"
         android:required="false" />
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -37,7 +38,7 @@
         <activity android:name=".organizer.NotificationsSendActivity"/>
         <activity android:name=".attendee.AttendeeActivity"/>
 
-
+        <activity android:name=".administrator.AdministratorDashboardActivity"/>
 
         <meta-data
             android:name="preloaded_fonts"

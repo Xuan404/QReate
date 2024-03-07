@@ -15,7 +15,7 @@ public class QRShareActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.share_qr_code_screen);
+        setContentView(R.layout.organizer_share_qr_code_screen);
 
         Button shareButton = findViewById(R.id.share_qr_code_sharebutton);
 

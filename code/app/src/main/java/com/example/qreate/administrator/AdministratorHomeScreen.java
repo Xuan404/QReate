@@ -18,6 +18,6 @@ public class AdministratorHomeScreen extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.admin_welcome_screen, container, false);
+        return inflater.inflate(R.layout.welcome_screen, container, false);
     }
 }

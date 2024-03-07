@@ -21,7 +21,7 @@
             android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/update_profile_picture_back_button"
+            android:id="@+id/update_profile_screen_backbutton"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="5dp"
@@ -37,26 +37,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/share_qr_code_screen_top_bar"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="70dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="175dp"
         android:background="@drawable/rounded_dark_blue"
         android:gravity="center"
+        android:radius="45dp"
         android:orientation="vertical"
-        android:paddingBottom="25dp"
-        android:radius="45dp">
+        android:paddingBottom="25dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="45dp"
             android:fontFamily="@font/abhaya_libre_extrabold"
             android:text="options"
             android:textColor="#FFFFFF"
-            android:textSize="30sp" />
+            android:textSize="30sp"
+            android:layout_marginBottom="45dp"
+            android:layout_marginTop="20dp"/>
 
         <LinearLayout
             android:id="@+id/button_gallary"
@@ -73,25 +74,25 @@
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/update_profilepic_buttons"
                 android:backgroundTint="#E5E5E5"
-                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="7dp">
+                android:padding="7dp"
+                android:gravity="center_vertical">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/gallery" />
+                    android:background="@drawable/gallery"
+                    android:layout_gravity="center_vertical"/>
 
                 <Button
-                    android:id="@id/add_button_photo"
+                    android:id="@id/button_gallary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="#E5E5E5"
                     android:text="Choose from Library"
-                    android:textAlignment="center"
-                    android:textColor="#000000" />
+                    android:textColor="#000000"
+                    android:textAlignment="center"/>
 
             </LinearLayout>
 
@@ -101,15 +102,15 @@
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/update_profilepic_buttons"
                 android:backgroundTint="#E5E5E5"
-                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="7dp">
+                android:padding="7dp"
+                android:gravity="center_vertical">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/default_pic_icon" />
+                    android:background="@drawable/default_pic_icon"
+                    android:layout_gravity="center_vertical"/>
 
                 <Button
                     android:id="@+id/set_default_pic_button"
@@ -118,8 +119,8 @@
                     android:layout_weight="1"
                     android:backgroundTint="#E5E5E5"
                     android:text="Set Default Profile"
-                    android:textAlignment="center"
-                    android:textColor="#000000" />
+                    android:textColor="#000000"
+                    android:textAlignment="center"/>
 
             </LinearLayout>
 
@@ -128,44 +129,44 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/update_profilepic_buttons"
                 android:backgroundTint="#E5E5E5"
-                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="7dp">
+                android:padding="7dp"
+                android:gravity="center_vertical">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/garbage_icon" />
+                    android:background="@drawable/garbage_icon"
+                    android:layout_gravity="center_vertical"/>
 
                 <Button
-                    android:id="@+id/delete_button_profile_pic"
+                    android:id="@+id/delete_profile_pic_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:backgroundTint="#E5E5E5"
                     android:text="Delete Picture"
-                    android:textAlignment="center"
-                    android:textColor="#000000" />
+                    android:textColor="#000000"
+                    android:textAlignment="center"/>
 
             </LinearLayout>
 
 
         </LinearLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/save_changes_button"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/rounded_blue_buttons"
+            android:text="Save Changes"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
 
-<!--        <androidx.appcompat.widget.AppCompatButton-->
-<!--            android:id="@+id/button_save_changes"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="40dp"-->
-<!--            android:layout_marginStart="25dp"-->
-<!--            android:layout_marginTop="30dp"-->
-<!--            android:layout_marginEnd="25dp"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            android:background="@drawable/rounded_blue_buttons"-->
-<!--            android:text="Save Changes"-->
-<!--            android:textAllCaps="false"-->
-<!--            android:textColor="#FFFFFF"-->
-<!--            android:textStyle="bold" />-->
 
 
     </LinearLayout>

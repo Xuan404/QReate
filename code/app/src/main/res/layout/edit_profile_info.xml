@@ -207,7 +207,7 @@
         app:trackTint="@color/yellow" />
 
     <Button
-        android:id="@+id/confirm_button"
+        android:id="@+id/edit_profile_confirm_button"
         android:layout_width="350dp"
         android:layout_height="50dp"
         android:layout_marginBottom="24dp"

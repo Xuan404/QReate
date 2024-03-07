@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.qreate.R;
-import com.example.qreate.organizer.HomeScreenFragment;
+import com.example.qreate.HomeScreenFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AdministratorActivity extends AppCompatActivity {
