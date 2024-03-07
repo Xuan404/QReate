@@ -73,10 +73,8 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
         bottomNavigationView.setVisibility(View.INVISIBLE);
         WelcomeScreenFragment welcomeScreenFragment = new WelcomeScreenFragment("organizer");
 
+        sendUserIdToFirestore(this); //Sends user android id to database
 
-//         sendUserIdToFirestore(this); //Sends user android id to database
-
-       
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.organizer_handler_frame,welcomeScreenFragment).commit();
 
