@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/attendee_navigation_bar"
-        android:layout_marginBottom="-163dp">
+        android:layout_marginBottom="10dp">
 
     </FrameLayout>
 

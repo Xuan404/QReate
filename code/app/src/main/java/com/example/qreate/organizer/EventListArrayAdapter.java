@@ -1,4 +1,4 @@
-package com.example.qreate;
+package com.example.qreate.organizer;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.qreate.organizer.Event;
+import com.example.qreate.R;
 
 import java.util.ArrayList;
 

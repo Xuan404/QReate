@@ -66,6 +66,15 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
     }
 
+    public void onFragmentDestroyed() {
+        //After filling in user info from edit profile screen, this function is called
+
+        bottomNavigationView.setVisibility(View.VISIBLE);
+        homeScreenOrganizer();
+
+    }
+
+
     public void firstTimeLoginOrganizer() {
         // Inflates the welcomescreen fragment if its the user's first time logging in
 
@@ -89,38 +98,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
     }
 
-    public void onFragmentDestroyed() {
-        //After filling in user info from edit profile screen, this function is called
 
-        bottomNavigationView.setVisibility(View.VISIBLE);
-        homeScreenOrganizer();
-
-    }
-
-//    private void sendUserIdToFirestore(Context context) {
-//
-//        // Get a Firestore instance
-//        db = FirebaseFirestore.getInstance();
-//        Log.d("FirestoreConnection", "Firestore has been initialized.");
-//        // Get the unique Android ID
-//        device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-//        // Prepare the data to send
-//        Map<String, Object> device = new HashMap<>();
-//        device.put("device_id", device_id);
-//
-//        // Send the unique ID to Firestore
-//        db.collection("Users").add(device)
-//                .addOnSuccessListener(aVoid -> {
-//                    Log.d("Firestoredemo", "DocumentSnapshot successfully written!");
-//                    // Show a Toast message
-//                    //Toast.makeText(context, "It worked", Toast.LENGTH_SHORT).show();
-//                })
-//                .addOnFailureListener(e -> {
-//                    Log.w("Firestoredemo", "Error writing document", e);
-//                    // Optionally, you could also show a Toast on failure
-//                    //Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
-//                });
-//    }
 
     private void checkIfUserExists(String collectionName, String fieldName, String uniqueId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();

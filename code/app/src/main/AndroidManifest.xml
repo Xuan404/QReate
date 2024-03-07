@@ -31,13 +31,14 @@
         </activity>
 
         <activity android:name=".organizer.OrganizerActivity"/>
-
         <activity android:name=".organizer.QRGeneratorActivity"/>
         <activity android:name=".organizer.QRReuseExistingActivity"/>
         <activity android:name=".organizer.QREventListActivity"/>
         <activity android:name=".organizer.QRShareActivity"/>
-        <activity android:name=".administrator.AdministratorActivity"/>
         <activity android:name=".organizer.NotificationsSendActivity"/>
+
+        <activity android:name=".administrator.AdministratorActivity"/>
+
         <activity android:name=".attendee.AttendeeActivity"/>
 
 

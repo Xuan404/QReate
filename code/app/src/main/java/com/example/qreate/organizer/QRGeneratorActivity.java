@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
-import com.example.qreate.EventSpinnerArrayAdapter;
 import com.example.qreate.R;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;

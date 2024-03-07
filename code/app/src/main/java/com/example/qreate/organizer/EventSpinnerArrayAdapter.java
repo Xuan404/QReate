@@ -1,4 +1,4 @@
-package com.example.qreate;
+package com.example.qreate.organizer;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.qreate.R;
 import com.example.qreate.organizer.Event;
 
 import java.util.ArrayList;
