@@ -9,6 +9,8 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.qreate.organizer.Event;
+
 import java.util.ArrayList;
 
 public class EventListArrayAdapter extends RecyclerView.Adapter<AViewHolder> {

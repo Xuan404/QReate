@@ -7,7 +7,6 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.qreate.Event;
 import com.example.qreate.EventListArrayAdapter;
 import com.example.qreate.R;
 

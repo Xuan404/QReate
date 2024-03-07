@@ -8,7 +8,6 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.qreate.Event;
 import com.example.qreate.EventSpinnerArrayAdapter;
 import com.example.qreate.R;
 
