@@ -16,9 +16,9 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 
-public class ProfileArrayAdapter extends ArrayAdapter<Profile> {
+public class ProfileArrayAdapter extends ArrayAdapter<AdministratorProfile> {
     private int selectedPosition = -1; // Track the selected position
-    public ProfileArrayAdapter(Context context, ArrayList<Profile> profiles) {
+    public ProfileArrayAdapter(Context context, ArrayList<AdministratorProfile> profiles) {
         super(context, 0, profiles);
     }
 
@@ -32,7 +32,7 @@ public class ProfileArrayAdapter extends ArrayAdapter<Profile> {
             view = convertView;
         }
 
-        Profile profile = getItem(position);
+        AdministratorProfile profile = getItem(position);
         TextView profile_name = view.findViewById(R.id.profile_name_text);
         ImageView profile_image = view.findViewById(R.id.profile_image);
         RadioButton radioButton = view.findViewById(R.id.choose_profile_radio_button);

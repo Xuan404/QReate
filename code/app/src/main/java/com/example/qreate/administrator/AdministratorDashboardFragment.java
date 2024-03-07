@@ -1,10 +1,10 @@
 package com.example.qreate.administrator;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -14,6 +14,12 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +29,8 @@ public class AdministratorDashboardFragment extends Fragment {
     private Button profilesButton;
     private Button eventsButton;
     private ListView list;
+    private FirebaseFirestore db;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,25 +43,42 @@ public class AdministratorDashboardFragment extends Fragment {
         imagesButton = view.findViewById(R.id.images);
 
         list = view.findViewById(R.id.list);
+        db = FirebaseFirestore.getInstance();
 
         // Set click listeners for each button
         eventsButton.setOnClickListener(new View.OnClickListener() {
+            private CollectionReference eventsRef;
             @Override
             public void onClick(View v) {
                 eventsButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.blue_button));
                 profilesButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
                 imagesButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
 
-                ArrayList<Event> events = new ArrayList<>();
-                events.add(new Event("Event A", "Organizer A"));
-                events.add(new Event("Event B", "Organizer B"));
-                events.add(new Event("Event C", "Organizer C"));
-                events.add(new Event("Event D", "Organizer D"));
-                events.add(new Event("Event E", "Organizer E"));
+                eventsRef = db.collection("Events");
 
+                ArrayList<AdministratorEvent> events = new ArrayList<>();
                 EventArrayAdapter arrayAdapter = new EventArrayAdapter(getContext(), events);
                 list.setAdapter(arrayAdapter);
-                list.setVisibility(View.VISIBLE);
+
+                eventsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<AdministratorEvent> eventsList = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String eventName = document.getString("name");
+                                String eventOrganizer = document.getString("organizer");
+                                eventsList.add(new AdministratorEvent(eventName, eventOrganizer));
+                            }
+                            // Update the adapter with the new list
+                            arrayAdapter.clear();
+                            arrayAdapter.addAll(eventsList);
+                            arrayAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.d("Firestore", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
             }
         });
 
@@ -64,12 +89,12 @@ public class AdministratorDashboardFragment extends Fragment {
                 imagesButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
                 eventsButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
 
-                ArrayList<Profile> profiles = new ArrayList<>();
-                profiles.add(new Profile("Profile 1 Name", R.drawable.profile));
-                profiles.add(new Profile("Profile 2 Name",R.drawable.profile));
-                profiles.add(new Profile("Profile 3 Name", R.drawable.profile));
-                profiles.add(new Profile("Profile 4 Name", R.drawable.profile));
-                profiles.add(new Profile("Profile 5 Name", R.drawable.profile));
+                ArrayList<AdministratorProfile> profiles = new ArrayList<>();
+                profiles.add(new AdministratorProfile("Profile 1 Name", R.drawable.profile));
+                profiles.add(new AdministratorProfile("Profile 2 Name",R.drawable.profile));
+                profiles.add(new AdministratorProfile("Profile 3 Name", R.drawable.profile));
+                profiles.add(new AdministratorProfile("Profile 4 Name", R.drawable.profile));
+                profiles.add(new AdministratorProfile("Profile 5 Name", R.drawable.profile));
 
                 ProfileArrayAdapter arrayAdapter = new ProfileArrayAdapter(getContext(), profiles);
                 list.setAdapter(arrayAdapter);
@@ -84,12 +109,12 @@ public class AdministratorDashboardFragment extends Fragment {
                 eventsButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
                 profilesButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
 
-                ArrayList<Image> images = new ArrayList<>();
-                images.add(new Image("Profile 1 Image", R.drawable.profile));
-                images.add(new Image("Profile 2 Image",R.drawable.profile));
-                images.add(new Image("Profile 3 Image", R.drawable.profile));
-                images.add(new Image("Poster 1 Image", R.drawable.poster));
-                images.add(new Image("Poster 2 Image", R.drawable.poster));
+                ArrayList<AdministratorImage> images = new ArrayList<>();
+                images.add(new AdministratorImage("Profile 1 Image", R.drawable.profile));
+                images.add(new AdministratorImage("Profile 2 Image",R.drawable.profile));
+                images.add(new AdministratorImage("Profile 3 Image", R.drawable.profile));
+                images.add(new AdministratorImage("Poster 1 Image", R.drawable.poster));
+                images.add(new AdministratorImage("Poster 2 Image", R.drawable.poster));
 
                 ImageArrayAdapter arrayAdapter = new ImageArrayAdapter(getContext(), images);
                 list.setAdapter(arrayAdapter);

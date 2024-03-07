@@ -1,10 +1,10 @@
 package com.example.qreate.administrator;
 
-public class Image {
+public class AdministratorImage {
     private String imageName;
     private int image;
 
-    public Image(String imageName, int image) {
+    public AdministratorImage(String imageName, int image) {
         this.imageName = imageName;
         this.image = image;
     }
