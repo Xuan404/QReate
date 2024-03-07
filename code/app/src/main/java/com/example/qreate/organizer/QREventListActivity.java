@@ -2,6 +2,7 @@ package com.example.qreate.organizer;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +14,7 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 
-public class QREventListActivity extends AppCompatActivity {
+public class QREventListActivity extends AppCompatActivity implements CreateEventFragment.AddEventDialogListener {
     ArrayList<Event> events;
     RecyclerView eventsView;
     EventListArrayAdapter eventListArrayAdapter;
@@ -30,6 +31,13 @@ public class QREventListActivity extends AppCompatActivity {
 
         eventsView = findViewById(R.id.event_list_screen_eventlist);
         eventsView.setAdapter(eventListArrayAdapter);
+
+        //Create Event Button
+        Button createEventButton = findViewById(R.id.event_list_screen_confirmbutton);
+
+        createEventButton.setOnClickListener(v -> {
+            new CreateEventFragment().show(getSupportFragmentManager(), "Create Event");
+        });
 
         //Back Button
         ImageButton backButton = findViewById(R.id.event_list_screen_backbutton);
@@ -48,5 +56,10 @@ public class QREventListActivity extends AppCompatActivity {
         for(int i=0;i<cities.length;i++){
             events.add((new Event(cities[i], provinces[i])));
         }
+    }
+
+    @Override
+    public void addEvent(Event event) {
+        //add event stuff into the database TODO
     }
 }

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_white_ish">
+    <TextView
+        android:id="@+id/createEventFragTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:color="@color/black"
+        android:text="Add Event"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/eventNameText"
+        android:layout_below="@id/createEventFragTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:text="Event Name:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/editTextEventName"
+        android:layout_below="@+id/eventNameText"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="top|left"
+        android:background="@color/white"
+        android:layout_width="350dp"
+        android:layout_height="150dp" />
+
+    <TextView
+        android:id="@+id/eventDescriptionText"
+        android:layout_below="@id/editTextEventName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:text="Event Description:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/editTextEventDescription"
+        android:layout_below="@id/eventDescriptionText"
+        android:layout_marginLeft="15dp"
+        android:background="@color/white"
+        android:gravity="top|left"
+        android:layout_width="350dp"
+        android:layout_height="150dp" />
+
+    <TextView
+        android:id="@+id/uploadPosterText"
+        android:layout_below="@id/editTextEventDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:text="Upload Poster:"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <ImageButton
+        android:id="@+id/buttonUploadPoster"
+        android:src="@drawable/uploadimgicon"
+        android:layout_below="@id/uploadPosterText"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_width="250dp"
+        android:layout_height="125dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/buttonCreateEvent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonUploadPoster"
+        android:background="@drawable/rounded_blue_buttons"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:textColor="@color/white"
+        android:text="Create"
+        android:textStyle="bold" />
+
+</RelativeLayout>
