@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/top_action_bar_upcoming_event_details_menu"
+        android:id="@+id/top_action_bar_other_event_details_menu"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#000000"
@@ -26,7 +26,7 @@
             android:layout_weight="3"/>
 
         <ImageButton
-            android:id="@+id/upcoming_events_profile_pic_icon"
+            android:id="@+id/other_events_profile_pic_icon"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
@@ -60,27 +60,27 @@
         android:background="@drawable/rounded_dark_blue"
         android:orientation="vertical">
 
-
         <TextView
             android:id="@+id/upcoming_events_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:fontFamily="@font/poppins_bold"
-            android:padding="10dp"
-            android:text="Upcoming Events"
+            android:text="Other Events"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:padding="10dp"/>
+
 
         <ListView
-            android:id="@+id/upcoming_event_list"
+            android:id="@+id/other_event_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
         </ListView>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button_back_upcoming_event_details"
+            android:id="@+id/button_back_other_event_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
