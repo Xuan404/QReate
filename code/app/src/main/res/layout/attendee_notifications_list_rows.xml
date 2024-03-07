@@ -39,8 +39,12 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="232dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="2dp"
         android:buttonTint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/event_name_text"
-        tools:layout_editor_absoluteY="1dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
