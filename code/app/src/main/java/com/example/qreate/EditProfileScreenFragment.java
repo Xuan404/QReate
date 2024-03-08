@@ -63,7 +63,6 @@ public class EditProfileScreenFragment extends Fragment {
      * Furthermore it removes itself from the backstack of the fragment stack after the
      * user clicks the confirm button
      *
-     *
      * @param inflater The LayoutInflater object that can be used to inflate
      * any views in the fragment,
      * @param container If non-null, this is the parent view that the fragment's
