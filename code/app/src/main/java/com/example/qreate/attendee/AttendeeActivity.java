@@ -34,11 +34,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
- * The following class is responsible for all activities related to the Attendee <user role>
+ * AttendeeActivity manages the main UI for attendee users within the application,
+ * providing navigation through a bottom navigation bar to various fragments such as
+ * notifications, event scanning, and event details.
+ * It is responsible for initializing and managing the user interface related to attendee operations,
+ * handling navigation between different sections of the app, and performing initial user authentication.
+ * This class also implements the OnFragmentInteractionListener interface from the EditProfileScreenFragment
+ * to handle interaction events in the user profile editing scenario.
  *
- * Outstanding Issue: AttendeeActivityTest does not PASS unless line 61: authenticateUser(this); is commented.
+ * @author Akib Zaman Choudhury
  */
+
 public class AttendeeActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
     /*
     This class is used as the MainActivity class for the Administrator UI
@@ -46,6 +54,17 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     private FirebaseFirestore db;
     private BottomNavigationView bottomNavigationView;
+
+    /**
+     * Called when the activity is starting. This is where most initialization should go:
+     * calling setContentView(int) to inflate the activity's UI, using findViewById(int)
+     * to programmatically interact with widgets in the UI, setting up the bottom navigation
+     * to handle fragment switching, and authenticating the user.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                          Otherwise it should be null.
+     */
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +104,11 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         });
     }
 
+    /**
+     *  onFragmentDestroyed() is called when an interaction in the EditProfileScreenFragment
+     *  is detected thatmrequires the parent activity (AttendeeActivity) to perform a
+     *  subsequent action, such as returning to the home screen.
+     */
 
     public void onFragmentDestroyed() {
         //After filling in user info from edit profile screen, this function is called
@@ -93,7 +117,11 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         homeScreenAttendee();
     }
 
-
+    /**
+     * Initiates the first-time login process for a new attendee, inflating the WelcomeScreenFragment
+     * and making the bottom navigation bar invisible to focus the user's attention on the welcome
+     * content.
+     */
 
     public void firstTimeLoginAttendee() {
         // Inflates the welcomescreen fragment if its the user's first time logging in
@@ -105,6 +133,12 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                 .add(R.id.attendee_handler_frame,welcomeScreenFragment).commit();
     }
 
+    /**
+     * Transitions the user interface to display the HomeScreenFragment for an attendee,
+     * making the bottom navigation bar visible and replacing the current fragment container
+     * content with the home screen fragment.
+     */
+
     public void homeScreenAttendee() {
 
         //sendUserIdToFirestore(this); //Sends user android id to database
@@ -115,6 +149,16 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                 .add(R.id.attendee_handler_frame,homeScreenFragment).commit();
 
     }
+
+    /**
+     * Checks if the user's unique ID exists in the specified Firestore collection,
+     * directing the user either to the home screen or to the first-time login process
+     * based on whether the ID is found.
+     *
+     * @param collectionName The name of the Firestore collection to search.
+     * @param fieldName The document field name expected to contain the user's unique ID.
+     * @param uniqueId The unique ID of the device/user being authenticated.
+     */
 
 
     private void checkIfUserExists(String collectionName, String fieldName, String uniqueId) {
@@ -138,6 +182,15 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                     }
                 });
     }
+
+    /**
+     * Prepares for user authentication by making the bottom navigation bar invisible and
+     * calling the checkIfUserExists method with the user's device ID and the relevant Firestore
+     * collection details. This is an initial step in the app's security and personalization
+     * process.
+     *
+     * @param context The Context in which the authentication method is called, typically the current Activity.
+     */
 
     private void authenticateUser(Context context) {
         //Function to help set up checkIfUserExists

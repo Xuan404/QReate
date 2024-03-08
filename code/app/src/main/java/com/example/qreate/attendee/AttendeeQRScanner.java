@@ -20,11 +20,28 @@ import com.google.zxing.integration.android.IntentResult;
 
 import javax.annotation.Nullable;
 
+/**
+ * The AttendeeQRScanner activity provides QR code scanning functionality for attendees.
+ * Utilizing the ZXing library, this activity allows users to scan QR codes to retrieve information
+ * relevant to the event they are attending, such as checking in at an event.
+ *
+ * @author Shraddha Mehta
+ */
+
 public class AttendeeQRScanner extends AppCompatActivity implements View.OnClickListener{
 
     //variables
     ImageButton scanButton;
     TextView textContent;
+
+    /**
+     * Initializes the activity, setting up the UI components and button click listeners.
+     * This method is called when the activity is first created.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being
+     *                           shut down, then this Bundle contains the data it most recently
+     *                           supplied in onSaveInstanceState(Bundle).
+     */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +57,12 @@ public class AttendeeQRScanner extends AppCompatActivity implements View.OnClick
 
     }
 
+    /**
+     * Handles click events for the view. Specifically, it initiates the QR code scanning process.
+     *
+     * @param v The view that was clicked.
+     */
+
     @Override
     public void onClick(View v){
         //make object
@@ -48,6 +71,16 @@ public class AttendeeQRScanner extends AppCompatActivity implements View.OnClick
         intentIntegrator.setOrientationLocked(true);
         intentIntegrator.initiateScan();
     }
+
+    /**
+     * Processes the result of the QR code scan, displaying the scanned content in a TextView.
+     * If no content is found, it shows a toast message.
+     *
+     * @param requestCode The integer request code originally supplied to startActivityForResult(),
+     *                    allowing you to identify who this result came from.
+     * @param resultCode The integer result code returned by the child activity through its setResult().
+     * @param data An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+     */
 
     @Override
     protected void onActivityResult(int requestCode,int resultCode, @Nullable Intent data){
