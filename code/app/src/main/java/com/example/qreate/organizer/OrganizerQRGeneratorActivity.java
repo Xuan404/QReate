@@ -85,25 +85,15 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
         ImageView qrCodeSolo = findViewById(R.id.generate_qr_code_qr_image);
 
         createCodesButton.setOnClickListener(new View.OnClickListener() {
-            MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
-            /**
-             * generates bitmap of qr code based on string
-             *
-             * @param v current view
-             *
-             */
             @Override
             public void onClick(View v) {
-                try{
-                    //this code needs to be changed to the actual text on the selected spinner item
-                    BitMatrix bitMatrix = multiFormatWriter.encode(eventsSpinner.getSelectedItem().toString(), BarcodeFormat.QR_CODE, 250,250);
-                    BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-                    Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-                    qrCodeSolo.setImageBitmap(bitmap);
-                    // SAVE THE BITMAP TO DATA BASE
+                //this code needs to be changed to the actual text on the selected spinner item
+                try {
+                    qrCodeSolo.setImageBitmap(generateQR(eventsSpinner.getSelectedItem().toString()));
                 } catch (WriterException e) {
                     throw new RuntimeException(e);
                 }
+                // SAVE THE BITMAP TO DATA BASE
                 //This code is to make the qr code only generate when 1 of the options are selected not sure why it isn't working
                 /*if (selectedId != -1) {
                     RadioButton selectedRadioButton = findViewById(selectedId);
@@ -138,5 +128,17 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
         for(int i=0;i<cities.length;i++){
             events.add((new OrganizerEvent(cities[i], provinces[i])));
         }
+    }
+    /**
+     * generates bitmap of qr code based on string
+     *
+     * @param key string
+     *
+     */
+    public Bitmap generateQR(String key) throws WriterException {
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        BitMatrix bitMatrix = multiFormatWriter.encode(key, BarcodeFormat.QR_CODE, 250,250);
+        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+        return barcodeEncoder.createBitmap(bitMatrix);
     }
 }
