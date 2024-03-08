@@ -84,7 +84,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
     }
 
     /**
-     * interface method implemented for when the edit menu fragment is destroyed
+     * Interface method implemented for when the edit menu fragment is destroyed
      */
     public void onFragmentDestroyed() {
         //After filling in user info from edit profile screen, this function is called
@@ -95,7 +95,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
     }
 
     /**
-     * Sets buttom menu bar to be invisible and open up the welcome screen
+     * Sets bottom menu bar to be invisible and open up the welcome screen
      */
     public void firstTimeLoginOrganizer() {
         // Inflates the welcomescreen fragment if its the user's first time logging in
@@ -125,7 +125,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
 
     /**
-     * Sends a query to check if user's android id already exisits within the databse
+     * Sends a query to check if user's android id already exists within the database
      * If android id exists, then it send the user directly to the home page,
      * else the app sends the user to the welcome page
      *

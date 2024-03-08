@@ -16,12 +16,39 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 
+/**
+ * A custom ArrayAdapter designed to handle lists of {@link AdministratorProfile} objects. This adapter is tailored
+ * for displaying administrator profiles within a ListView in the administrator dashboard. Each list item features a
+ * profile name, an optional profile image, and a radio button to select a specific profile, allowing for single-choice
+ * selection behavior within the list.
+ */
 public class ProfileArrayAdapter extends ArrayAdapter<AdministratorProfile> {
     private int selectedPosition = -1; // Track the selected position
+
+    /**
+     * Constructs a new {@link ProfileArrayAdapter}.
+     *
+     * @param context  The current context. This value cannot be null.
+     * @param profiles An ArrayList of {@link AdministratorProfile} objects to be represented in the ListView.
+     *                 This value cannot be null.
+     */
     public ProfileArrayAdapter(Context context, ArrayList<AdministratorProfile> profiles) {
         super(context, 0, profiles);
     }
 
+    /**
+     * Provides a view (of profiles list) for the ListView
+     * @param position The position of the item within the adapter's data set of the item whose view
+     *        we want.
+     * @param convertView The old view to reuse, if possible. Note: You should check that this view
+     *        is non-null and of an appropriate type before using. If it is not possible to convert
+     *        this view to display the correct data, this method can create a new view.
+     *        Heterogeneous lists can specify their number of view types, so that this View is
+     *        always of the right type (see {@link #getViewTypeCount()} and
+     *        {@link #getItemViewType(int)}).
+     * @param parent The parent that this view will eventually be attached to
+     * @return view
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
