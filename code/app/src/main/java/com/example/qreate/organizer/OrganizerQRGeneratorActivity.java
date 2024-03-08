@@ -20,10 +20,10 @@ import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.ArrayList;
 
-public class QRGeneratorActivity extends AppCompatActivity {
-    ArrayList<Event> events;
+public class OrganizerQRGeneratorActivity extends AppCompatActivity {
+    ArrayList<OrganizerEvent> events;
     Spinner eventsSpinner;
-    EventSpinnerArrayAdapter eventSpinnerArrayAdapter;
+    OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
 
 
     @Override
@@ -35,11 +35,11 @@ public class QRGeneratorActivity extends AppCompatActivity {
         Button createCodesButton = findViewById(R.id.generate_qr_code_confirmbutton);
         RadioGroup radioGroup = findViewById(R.id.generate_qr_code_radio_group);
         int selectedId = radioGroup.getCheckedRadioButtonId();
-        events = new ArrayList<Event>();
+        events = new ArrayList<OrganizerEvent>();
 
         addEventsInit();
 
-        eventSpinnerArrayAdapter = new EventSpinnerArrayAdapter(this, events);
+        eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this, events);
 
         //NEED TO GRAB THE ARRAY FROM FIREBASE THEN PARSE IT INTO THIS
         eventsSpinner = findViewById(R.id.generate_qr_code_spinner);
@@ -109,7 +109,7 @@ public class QRGeneratorActivity extends AppCompatActivity {
         String []cities ={"Edmonton", "Vancouver", "Toronto", "Hamilton", "Denver", "Los Angeles"};
         String []provinces = {"AB", "BC", "ON", "ON", "CO", "CA"};
         for(int i=0;i<cities.length;i++){
-            events.add((new Event(cities[i], provinces[i])));
+            events.add((new OrganizerEvent(cities[i], provinces[i])));
         }
     }
 }

@@ -1,10 +1,10 @@
 package com.example.qreate.organizer;
 
-public class Event {
+public class OrganizerEvent {
     private String event;
     private String detail;
 
-    public Event(String event, String detail){
+    public OrganizerEvent(String event, String detail){
         this.event = event;
         this.detail = detail;
     }

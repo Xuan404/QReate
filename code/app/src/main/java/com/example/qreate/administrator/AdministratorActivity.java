@@ -1,7 +1,6 @@
 package com.example.qreate.administrator;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -16,9 +15,7 @@ import com.example.qreate.EditProfileScreenFragment;
 import com.example.qreate.R;
 import com.example.qreate.HomeScreenFragment;
 import com.example.qreate.WelcomeScreenFragment;
-import com.example.qreate.organizer.QRmenuFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 /**
@@ -47,7 +44,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         bottomNavigationView = findViewById(R.id.administrator_handler_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
 
-        authenticateUser(this);
+        //authenticateUser(this);
 
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

@@ -13,11 +13,11 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 
-public class EventListArrayAdapter extends RecyclerView.Adapter<AViewHolder> {
-    private ArrayList<Event> events;
+public class OrganizerEventListArrayAdapter extends RecyclerView.Adapter<AViewHolder> {
+    private ArrayList<OrganizerEvent> events;
     private Context context;
 
-    public EventListArrayAdapter(Context context, ArrayList<Event> events){
+    public OrganizerEventListArrayAdapter(Context context, ArrayList<OrganizerEvent> events){
         this.context = context;
         this.events = events;
     }

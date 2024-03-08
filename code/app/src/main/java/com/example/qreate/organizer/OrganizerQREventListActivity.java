@@ -15,10 +15,10 @@ import java.util.ArrayList;
 /**
  * Show the User a list of Events that he has created
  */
-public class QREventListActivity extends AppCompatActivity implements CreateEventFragment.AddEventDialogListener {
-    ArrayList<Event> events;
+public class OrganizerQREventListActivity extends AppCompatActivity implements OrganizerCreateEventFragment.AddEventDialogListener {
+    ArrayList<OrganizerEvent> events;
     RecyclerView eventsView;
-    EventListArrayAdapter eventListArrayAdapter;
+    OrganizerEventListArrayAdapter eventListArrayAdapter;
     //Not finished recycler view is more annoying than i though gonna probably swap to list view
 
     /**
@@ -32,11 +32,11 @@ public class QREventListActivity extends AppCompatActivity implements CreateEven
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_event_list_screen);
-        events = new ArrayList<Event>();
+        events = new ArrayList<OrganizerEvent>();
 
         addEventsInit();
 
-        eventListArrayAdapter = new EventListArrayAdapter(this, events);
+        eventListArrayAdapter = new OrganizerEventListArrayAdapter(this, events);
 
         eventsView = findViewById(R.id.event_list_screen_eventlist);
         eventsView.setAdapter(eventListArrayAdapter);
@@ -45,7 +45,7 @@ public class QREventListActivity extends AppCompatActivity implements CreateEven
         Button createEventButton = findViewById(R.id.event_list_screen_confirmbutton);
 
         createEventButton.setOnClickListener(v -> {
-            new CreateEventFragment().show(getSupportFragmentManager(), "Create Event");
+            new OrganizerCreateEventFragment().show(getSupportFragmentManager(), "Create Event");
         });
 
         //Back Button
@@ -63,7 +63,7 @@ public class QREventListActivity extends AppCompatActivity implements CreateEven
         String []cities ={"Edmonton", "Vancouver", "Toronto", "Hamilton", "Denver", "Los Angeles"};
         String []provinces = {"AB", "BC", "ON", "ON", "CO", "CA"};
         for(int i=0;i<cities.length;i++){
-            events.add((new Event(cities[i], provinces[i])));
+            events.add((new OrganizerEvent(cities[i], provinces[i])));
         }
     }
 
@@ -72,7 +72,7 @@ public class QREventListActivity extends AppCompatActivity implements CreateEven
      * @param event
      */
     @Override
-    public void addEvent(Event event) {
+    public void addEvent(OrganizerEvent event) {
         //add event stuff into the database TODO
     }
 }

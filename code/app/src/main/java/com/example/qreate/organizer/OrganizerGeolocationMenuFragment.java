@@ -22,7 +22,7 @@ import com.example.qreate.R;
  *
  * @author Akib Zaman Choudhurhy
  */
-public class GeolocationMenuFragment extends Fragment {
+public class OrganizerGeolocationMenuFragment extends Fragment {
 
     /**
      * Creates the view and inflates the organizer_geolocation_menu_screen layout

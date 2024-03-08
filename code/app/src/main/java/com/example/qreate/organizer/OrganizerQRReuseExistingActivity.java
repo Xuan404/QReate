@@ -13,20 +13,20 @@ import com.example.qreate.R;
 import java.util.ArrayList;
 
 
-public class QRReuseExistingActivity extends AppCompatActivity {
-    ArrayList<Event> events;
+public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
+    ArrayList<OrganizerEvent> events;
     Spinner eventsSpinner;
-    EventSpinnerArrayAdapter eventSpinnerArrayAdapter;
+    OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_reuse_exisiting_qr_code_screen);
 
-        events = new ArrayList<Event>();
+        events = new ArrayList<OrganizerEvent>();
 
         addEventsInit();
 
-        eventSpinnerArrayAdapter = new EventSpinnerArrayAdapter(this, events);
+        eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this, events);
 
         //NEED TO GRAB THE ARRAY FROM FIREBASE THEN PARSE IT INTO THIS
         eventsSpinner = findViewById(R.id.reuse_existing_qr_code_screen_spinner);
@@ -62,7 +62,7 @@ public class QRReuseExistingActivity extends AppCompatActivity {
         String []cities ={"Edmonton", "Vancouver", "Toronto", "Hamilton", "Denver", "Los Angeles"};
         String []provinces = {"AB", "BC", "ON", "ON", "CO", "CA"};
         for(int i=0;i<cities.length;i++){
-            events.add((new Event(cities[i], provinces[i])));
+            events.add((new OrganizerEvent(cities[i], provinces[i])));
         }
     }
 }
