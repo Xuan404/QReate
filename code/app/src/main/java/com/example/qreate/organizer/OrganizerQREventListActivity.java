@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class OrganizerQREventListActivity extends AppCompatActivity implements OrganizerCreateEventFragment.AddEventDialogListener {
     ArrayList<OrganizerEvent> events;
     RecyclerView eventsView;
-    EventListArrayAdapter eventListArrayAdapter;
+    OrganizerEventListArrayAdapter eventListArrayAdapter;
     //Not finished recycler view is more annoying than i though gonna probably swap to list view
 
     /**
@@ -36,7 +36,7 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
 
         addEventsInit();
 
-        eventListArrayAdapter = new EventListArrayAdapter(this, events);
+        eventListArrayAdapter = new OrganizerEventListArrayAdapter(this, events);
 
         eventsView = findViewById(R.id.event_list_screen_eventlist);
         eventsView.setAdapter(eventListArrayAdapter);

@@ -33,7 +33,7 @@ public class AdministratorActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.administrator_handler_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
 
-        authenticateUser(this);
+        //authenticateUser(this);
 
 
 
