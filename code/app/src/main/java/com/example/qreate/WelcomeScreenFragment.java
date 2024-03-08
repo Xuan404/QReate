@@ -41,7 +41,7 @@ public class WelcomeScreenFragment extends Fragment {
                 } else if (Objects.equals(current_activity, "attendee")) {
                     transaction.replace(R.id.attendee_handler_frame, editProfile);
                 }else if (Objects.equals(current_activity, "administrator")) {
-                    transaction.replace(R.id.attendee_handler_frame, editProfile);
+                    transaction.replace(R.id.administrator_handler_frame, editProfile);
                 }
 
                 transaction.commit();
