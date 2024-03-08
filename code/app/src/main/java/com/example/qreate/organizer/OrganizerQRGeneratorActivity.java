@@ -19,13 +19,25 @@ import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import java.util.ArrayList;
-
+/**
+ * The following class is responsible for the qr generator screen and functionality
+ *
+ * Outstanding Issue: Qr code is generated from spinner item  but doesn't get sent to firebase just yet spinner is also not pulling from firebase
+ * @author Denis Soh
+ */
 public class OrganizerQRGeneratorActivity extends AppCompatActivity {
     ArrayList<OrganizerEvent> events;
     Spinner eventsSpinner;
     OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
 
 
+    /**
+     * Creates the view and inflates the organizer_generate_qr_code_screen layout
+     *
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +57,15 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
         eventsSpinner = findViewById(R.id.generate_qr_code_spinner);
 
         eventsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            /**
+             * gets selected item string
+             *
+             * @param parent the adapter-view of the view
+             * @param view current view
+             * @param position current position in spinner
+             * @param id current id
+             *
+             */
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();
@@ -65,6 +86,12 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
 
         createCodesButton.setOnClickListener(new View.OnClickListener() {
             MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+            /**
+             * generates bitmap of qr code based on string
+             *
+             * @param v current view
+             *
+             */
             @Override
             public void onClick(View v) {
                 try{

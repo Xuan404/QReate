@@ -12,7 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.qreate.R;
 
 import java.util.ArrayList;
-
+/**
+ * The following class is responsible for adapting events into recycler views
+ *
+ * @author Denis Soh
+ */
 public class OrganizerEventListArrayAdapter extends RecyclerView.Adapter<AViewHolder> {
     private ArrayList<OrganizerEvent> events;
     private Context context;
@@ -22,6 +26,14 @@ public class OrganizerEventListArrayAdapter extends RecyclerView.Adapter<AViewHo
         this.events = events;
     }
 
+    /**
+     * generates view-holder
+     *
+     * @param parent the view-group of the view
+     * @param viewType view type index
+     *
+     * @return AViewHolder
+     */
     @NonNull
     @Override
     public AViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -29,19 +41,41 @@ public class OrganizerEventListArrayAdapter extends RecyclerView.Adapter<AViewHo
         return new AViewHolder(view);
     }
 
+    /**
+     * generates view-holder
+     *
+     * @param holder view-holder
+     * @param position current position in recycler
+     */
     @Override
     public void onBindViewHolder(@NonNull AViewHolder holder, int position) {
         holder.eventName.setText(events.get(position).getEventName());
 
     }
 
+    /**
+     *returns amount of items
+     *
+     * @return int of list size
+     */
     @Override
     public int getItemCount() {
         return events.size();
     }
 }
+
+/**
+ * View holder for the recycler view
+ *
+ */
 class AViewHolder extends RecyclerView.ViewHolder{
     Button eventName;
+    /**
+     * sets event names into recycler
+     *
+     * @param itemView the view
+     *
+     */
     public AViewHolder(@NonNull View itemView) {
         super(itemView);
         eventName = itemView.findViewById(R.id.event_list_item);

@@ -12,6 +12,13 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 
+
+/**
+ * The following class is responsible for allowing organizers to send notifications
+ *
+ * Outstanding Issue: Event spinner is set up but not pulling from firebase yet code for sending the notification has also yet to be done
+ * @author Denis Soh
+ */
 public class OrganizerNotificationsSendActivity extends AppCompatActivity {
     ArrayList<OrganizerEvent> events;
     Spinner eventsSpinner;
@@ -31,6 +38,16 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
         eventsSpinner = findViewById(R.id.send_notifications_screen_spinner);
 
         eventsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            /**
+             * changes the string in the spinner
+             *
+             * @param parent the adapter view of the item
+             * @param view the current view
+             * @param position the current position in spinner
+             * @param id the id
+             *
+             * @return
+             */
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();

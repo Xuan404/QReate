@@ -23,7 +23,12 @@ import androidx.fragment.app.DialogFragment;
 
 
 import com.example.qreate.R;
-
+/**
+ * The following class is responsible for the create event popup
+ *
+ * Outstanding Issue: Created event isn't stored in firebase yet
+ * @author Denis Soh
+ */
 public class OrganizerCreateEventFragment extends DialogFragment {
     private static final int REQUEST_IMAGE_PICKER = 1;
     private ImageView imageView;
@@ -31,6 +36,12 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         void addEvent(OrganizerEvent event);
     }
     private AddEventDialogListener listener;
+    /**
+     * attaches fragment and adds listener
+     *
+     * @param context current context
+     *
+     */
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -42,6 +53,14 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         }
     }
 
+    /**
+     * creates fragment
+     *
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return Dialog
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -52,7 +71,6 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         ImageButton addPoster = view.findViewById(R.id.buttonUploadPoster);
         TextView posterName = view.findViewById(R.id.imageName);
         addPoster.setOnClickListener(v -> {
-            //TODO add code for uploading image looks like we need to import another library
             openImagePicker();
             posterName.setVisibility(View.VISIBLE);
             addPoster.setVisibility(View.INVISIBLE);
@@ -70,6 +88,18 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         });
         return dialog;
     }
+    /**
+     * Creates the view and inflates the fragment_create_event layout
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -84,11 +114,19 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         return inflater.inflate(R.layout.fragment_create_event, container, false);
 
     }
+    /**
+     * opens image picker
+     *
+     */
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_IMAGE_PICKER);
     }
+    /**
+     * gets image picker result might need to be updated as there are depreciated components
+     *
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
