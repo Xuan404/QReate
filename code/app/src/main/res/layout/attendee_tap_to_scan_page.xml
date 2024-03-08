@@ -1,54 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/dark_blue">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".attendee.AttendeeQRScanner"
+    android:orientation="vertical"
+    android:background="@color/dark_blue"
+    >
 
     <TextView
         android:id="@+id/logo_text_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:fontFamily="cursive"
         android:text="Qreate"
         android:textColor="#FFFFFF"
-        android:textSize="34sp"
-        android:textStyle="bold"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/warning_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:text="This app requires access to the camera"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
+
+    <ImageButton
+        android:id="@+id/tap_to_scan_qr_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:backgroundTint="@color/white"
+        android:layout_gravity="center"
+        android:background="@drawable/tapscanimg"
         />
 
     <TextView
-        android:id="@+id/tap_to_scan_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/logo_text_top"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="122dp"
-        android:fontFamily="@font/abhaya_libre_extrabold"
-        android:text="Tap to Scan"
-        android:textColor="@color/white"
-        android:textSize="40sp" />
-
-    <TextView
-        android:id="@+id/normal_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tap_to_scan_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="This app will require access to the camera"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-
-    <ImageView
-        android:id="@+id/generate_qr_code_qr_image"
-        android:layout_width="280dp"
-        android:layout_height="280dp"
-        android:layout_below="@id/normal_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:src="@drawable/qrimage" />
+        android:id="@+id/text_content"
+        android:layout_width="268dp"
+        android:layout_height="43dp"
+        android:layout_gravity="center"
+        />
 
 
-</RelativeLayout>
+
+</LinearLayout>

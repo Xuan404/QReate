@@ -1,14 +1,18 @@
 package com.example.qreate.attendee;
 
+import android.app.Notification;
 import android.content.Context;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -20,26 +24,38 @@ import com.example.qreate.attendee.AttendeeEventDetailsFragment;
 import com.example.qreate.attendee.AttendeeNotificationsFragment;
 import com.example.qreate.attendee.AttendeeScanFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AttendeeActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
     /*
     This class is used as the MainActivity class for the Administrator UI
      */
+
     private FirebaseFirestore db;
     private BottomNavigationView bottomNavigationView;
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_handler);
 
+        db = FirebaseFirestore.getInstance();
+
         bottomNavigationView = findViewById(R.id.attendee_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholderAttendee);
 
+
         authenticateUser(this);
+
 
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
@@ -59,7 +75,8 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                     getSupportFragmentManager().beginTransaction().replace(R.id.attendee_handler_frame, selectedFragment).commit();
                     return true;
                 }
-                return true;
+
+                return false;
             }
         });
     }
@@ -71,7 +88,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         bottomNavigationView.setVisibility(View.VISIBLE);
         homeScreenAttendee();
     }
-
 
 
 
@@ -95,8 +111,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                 .add(R.id.attendee_handler_frame,homeScreenFragment).commit();
 
     }
-
-
 
 
     private void checkIfUserExists(String collectionName, String fieldName, String uniqueId) {
@@ -134,23 +148,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         checkIfUserExists(collectionName, fieldName, device_id);
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

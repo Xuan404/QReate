@@ -61,7 +61,7 @@
         android:background="@drawable/rounded_dark_blue">
 
         <ListView
-            android:id="@+id/list"
+            android:id="@+id/notif_list_view"
             android:layout_width="match_parent"
             android:layout_height="474dp">
 
