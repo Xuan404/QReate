@@ -29,7 +29,6 @@ public class OrganizerEventSpinnerArrayAdapter extends ArrayAdapter<OrganizerEve
      * @param context the current context
      * @param events the events to be parsed
      *
-     * @return the adapter
      */
 
     public OrganizerEventSpinnerArrayAdapter(Context context, ArrayList<OrganizerEvent> events){
