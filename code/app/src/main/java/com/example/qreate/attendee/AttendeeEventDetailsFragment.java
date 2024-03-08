@@ -28,7 +28,7 @@ public class AttendeeEventDetailsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.attendee_events_details_page, container, false);
+        View view = inflater.inflate(R.layout.attendee_event_menu_screen, container, false);
         return view;
     }
 }
