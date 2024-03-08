@@ -14,11 +14,35 @@ import androidx.fragment.app.Fragment;
 import com.example.qreate.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 
+/**
+ * AttendeeScanFragment provides a user interface for attendees to scan QR codes within the event app.
+
+ *
+ * It features a simple layout with a scan button that, when clicked,
+ * initiates the QR code scanning process.
+ * The fragment is designed to be embedded within the attendee section of the application.
+ *
+ * @author Shraddha Mehta
+ */
+
 public class AttendeeScanFragment extends Fragment implements View.OnClickListener{
 
     //variables
     ImageButton scanButton;
     TextView textContent;
+
+    /**
+     * This method inflates the layout for the attendee QR code scanning page, initializes UI components,
+     * and sets up a click listener for the scan button.
+     *
+     * @param inflater LayoutInflater: The LayoutInflater object that can be used to inflate
+     *                 any views in the fragment.
+     * @param container ViewGroup: If non-null, this is the parent view that the fragment's
+     *                 UI should be attached to.
+     * @param savedInstanceState Bundle: If non-null, this fragment is being re-constructed
+     *                 from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
 
     @Nullable
     @Override
@@ -34,6 +58,14 @@ public class AttendeeScanFragment extends Fragment implements View.OnClickListen
 
         return view;
     }
+
+    /**
+     * Handles click events for the view, this method initiates the QR code scanning process
+     * when the scan button is clicked.
+     *
+     * @param v The view that was clicked.
+     */
+
     @Override
     public void onClick(View v){
         //make object

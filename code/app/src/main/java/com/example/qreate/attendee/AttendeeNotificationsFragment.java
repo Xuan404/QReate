@@ -21,12 +21,35 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+/**
+ * A Fragment that displays notifications to the attendee. This class is responsible for
+ * fetching notification data from Firestore and displaying it in a ListView. Each notification
+ * consists of a message and details, encapsulated in a Notif object. The fragment uses a custom
+ * ArrayAdapter (NotifArrayAdapter) to display the notifications in the ListView.
+ *
+ * @author Shraddha Mehta
+ */
+
 public class AttendeeNotificationsFragment extends Fragment {
 
     private ListView notificationsListView;
     private ArrayList<Notif> notificationsArrayList;
     private NotifArrayAdapter notifArrayAdapter;
     private FirebaseFirestore db;
+
+    /**
+     * This method inflates the layout for the notifications page and sets up the
+     * ListView with a custom ArrayAdapter.
+     * It also initiates fetching of notification data from Firestore.
+     *
+     * @param inflater LayoutInflater: The LayoutInflater object that can be used to inflate
+     *                 any views in the fragment.
+     * @param container ViewGroup: If non-null, this is the parent view that the fragment's
+     *                 UI should be attached to.
+     * @param savedInstanceState Bundle: If non-null, this fragment is being re-constructed
+     *                 from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
 
 
     @Nullable
@@ -59,6 +82,13 @@ public class AttendeeNotificationsFragment extends Fragment {
 
         return view;
     }
+
+    /**
+     * Fetches notification data from Firestore, parses the data into Notif objects, and adds
+     * them to the notificationsArrayList. It then notifies the notifArrayAdapter of the data
+     * change to refresh the ListView. If there is an error fetching data, it logs the error.
+     */
+
 
     private void fetchNotificationsFromFireStore() {
         db.collection("notifications")
