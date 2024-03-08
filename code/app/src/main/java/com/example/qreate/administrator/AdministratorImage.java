@@ -1,10 +1,10 @@
 package com.example.qreate.administrator;
 
-public class Image {
+public class AdministratorImage {
     private String imageName;
-    private int image;
+    private String image;
 
-    public Image(String imageName, int image) {
+    public AdministratorImage(String imageName, String image) {
         this.imageName = imageName;
         this.image = image;
     }
@@ -13,7 +13,7 @@ public class Image {
         return imageName;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
@@ -21,7 +21,7 @@ public class Image {
         this.imageName = imageName;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 }

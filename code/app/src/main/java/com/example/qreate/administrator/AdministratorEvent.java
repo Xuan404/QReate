@@ -1,10 +1,10 @@
 package com.example.qreate.administrator;
 
-public class Event {
+public class AdministratorEvent {
     private String eventName;
     private String eventOrganizer;
 
-    public Event(String eventName, String eventOrganizer) {
+    public AdministratorEvent(String eventName, String eventOrganizer) {
         this.eventName = eventName;
         this.eventOrganizer = eventOrganizer;
     }
