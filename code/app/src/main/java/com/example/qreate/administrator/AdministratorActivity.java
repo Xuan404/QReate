@@ -20,6 +20,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 /**
  * The following class is responsible for all activities related to the Administrator <user role>
+ *
+ * Outstanding Issue: AdministratorActivityTest does not PASS unless line 48: authenticateUser(this); is commented.
  */
 public class AdministratorActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
     private BottomNavigationView bottomNavigationView;
@@ -31,9 +33,8 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
      * set up the navigation bar
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +55,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 if (itemId == R.id.dashboard_icon) {
                     selectedFragment = new AdministratorDashboardFragment();
                 } else if (itemId == R.id.account_icon) {
-                    selectedFragment = new HomeScreenFragment();
+                    selectedFragment = new EditProfileScreenFragment();
                 }
 
                 if (selectedFragment != null) {
@@ -86,7 +87,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         WelcomeScreenFragment welcomeScreenFragment = new WelcomeScreenFragment("administrator");
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.administrator_handler_frame,welcomeScreenFragment).commit();
+                .add(R.id.administrator_handler_frame, welcomeScreenFragment).commit();
     }
 
     /**
@@ -100,7 +101,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
         HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.administrator_handler_frame,homeScreenFragment).commit();
+                .add(R.id.administrator_handler_frame, homeScreenFragment).commit();
 
     }
 
@@ -110,8 +111,8 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
      * else the app sends the user to the welcome page
      *
      * @param collectionName Collection name called 'Users' in the database
-     * @param fieldName Field name called 'device_id' in the Users collection
-     * @param uniqueId Unique android id of the user which is checked for in the database
+     * @param fieldName      Field name called 'device_id' in the Users collection
+     * @param uniqueId       Unique android id of the user which is checked for in the database
      */
     private void checkIfUserExists(String collectionName, String fieldName, String uniqueId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -137,6 +138,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
 
     /**
      * This method sets up all necessary parameters for checkIfUserExists() method.
+     *
      * @param context
      */
     private void authenticateUser(Context context) {

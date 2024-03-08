@@ -34,7 +34,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * The following class is responsible for all activities related to the Attendee <user role>
+ *
+ * Outstanding Issue: AttendeeActivityTest does not PASS unless line 61: authenticateUser(this); is commented.
+ */
 public class AttendeeActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
     /*
     This class is used as the MainActivity class for the Administrator UI
