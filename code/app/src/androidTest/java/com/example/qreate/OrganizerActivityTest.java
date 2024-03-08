@@ -18,11 +18,40 @@ public class OrganizerActivityTest {
     public ActivityScenarioRule<OrganizerActivity> scenario = new ActivityScenarioRule<>(OrganizerActivity.class);
 
     @Test
-    public void testActivityChangeOrganizer() {
-        // Perform a click on the button that should start Organizer Activity
-        onView(withId(R.id.test_Organizer)).perform(click());
+    public void testFragmentChangeToQROrganizer() {
+        // Perform a click on the button that should start qr menu fragment
+        onView(withId(R.id.qr_menu)).perform(click());
 
         // Verify that Organizer Activity is launched by checking for a view that is unique to Organizer Activity
-        onView(withId(R.id.organizer_handler)).check(matches(isDisplayed()));
+        onView(withId(R.id.organizer_qr_menu_screen)).check(matches(isDisplayed()));
     }
+
+    @Test
+    public void testFragmentChangeToNotificationOrganizer() {
+        // Perform a click on the button that should start notification menu fragment
+        onView(withId(R.id.notifications_menu)).perform(click());
+
+        // Verify that Organizer Activity is launched by checking for a view that is unique to Organizer Activity
+        onView(withId(R.id.organizer_notifications_menu)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testFragmentChangeToAttendeeListOrganizer() {
+        // Perform a click on the button that should start attendee menu fragment
+        onView(withId(R.id.attendee_list_menu)).perform(click());
+
+        // Verify that Organizer Activity is launched by checking for a view that is unique to Organizer Activity
+        onView(withId(R.id.organizer_attendee_list_menu)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testFragmentChangeToGeolocationOrganizer() {
+        // Perform a click on the button that should start geolocation menu fragment
+        onView(withId(R.id.geolocation_menu)).perform(click());
+
+        // Verify that Organizer Activity is launched by checking for a view that is unique to Organizer Activity
+        onView(withId(R.id.organizer_geolocation_menu)).check(matches(isDisplayed()));
+    }
+
+
 }
