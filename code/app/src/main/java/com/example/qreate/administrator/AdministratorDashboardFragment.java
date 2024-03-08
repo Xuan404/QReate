@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -83,22 +84,38 @@ public class AdministratorDashboardFragment extends Fragment {
         });
 
         profilesButton.setOnClickListener(new View.OnClickListener() {
+            private CollectionReference profilesRef;
             @Override
             public void onClick(View v) {
                 profilesButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.blue_button));
                 imagesButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
                 eventsButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
 
-                ArrayList<AdministratorProfile> profiles = new ArrayList<>();
-                profiles.add(new AdministratorProfile("Profile 1 Name", R.drawable.profile));
-                profiles.add(new AdministratorProfile("Profile 2 Name",R.drawable.profile));
-                profiles.add(new AdministratorProfile("Profile 3 Name", R.drawable.profile));
-                profiles.add(new AdministratorProfile("Profile 4 Name", R.drawable.profile));
-                profiles.add(new AdministratorProfile("Profile 5 Name", R.drawable.profile));
+                profilesRef = db.collection("Users");
 
+                ArrayList<AdministratorProfile> profiles = new ArrayList<>();
                 ProfileArrayAdapter arrayAdapter = new ProfileArrayAdapter(getContext(), profiles);
                 list.setAdapter(arrayAdapter);
-                list.setVisibility(View.VISIBLE);
+
+                profilesRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<AdministratorProfile> profilesList = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String profileName = document.getString("name");
+                                String profileImage = document.getString("profile_picture");
+                                profilesList.add(new AdministratorProfile(profileName, profileImage));
+                            }
+                            // Update the adapter with the new list
+                            arrayAdapter.clear();
+                            arrayAdapter.addAll(profilesList);
+                            arrayAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.d("Firestore", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
             }
         });
 

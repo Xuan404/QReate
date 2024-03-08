@@ -38,7 +38,7 @@ public class ProfileArrayAdapter extends ArrayAdapter<AdministratorProfile> {
         RadioButton radioButton = view.findViewById(R.id.choose_profile_radio_button);
 
         profile_name.setText(profile.getProfileName());
-        profile_image.setImageResource(R.drawable.profile);
+        //profile_image.setImageResource(R.drawable.profile);
         radioButton.setChecked(position == selectedPosition);
 
         // Handle radio button clicks
