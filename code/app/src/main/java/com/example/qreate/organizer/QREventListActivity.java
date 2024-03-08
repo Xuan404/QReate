@@ -12,11 +12,22 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 
+/**
+ * Show the User a list of Events that he has created
+ */
 public class QREventListActivity extends AppCompatActivity implements CreateEventFragment.AddEventDialogListener {
     ArrayList<Event> events;
     RecyclerView eventsView;
     EventListArrayAdapter eventListArrayAdapter;
     //Not finished recycler view is more annoying than i though gonna probably swap to list view
+
+    /**
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +67,10 @@ public class QREventListActivity extends AppCompatActivity implements CreateEven
         }
     }
 
+    /**
+     *
+     * @param event
+     */
     @Override
     public void addEvent(Event event) {
         //add event stuff into the database TODO

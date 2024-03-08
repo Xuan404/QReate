@@ -23,10 +23,27 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * The following class is responsible for all activities related to the Organizer <user role>
+ *
+ * @author Akib Zaman Choudhury
+ */
 public class OrganizerActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
 
     private FirebaseFirestore db;
     private BottomNavigationView bottomNavigationView;
+
+    /**
+     * Creates the view and sets activity to the organizer_handler layout
+     * Authenticates user
+     * set up the navigation bar
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +83,9 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
     }
 
+    /**
+     * interface method implemented for when the edit menu fragment is destroyed
+     */
     public void onFragmentDestroyed() {
         //After filling in user info from edit profile screen, this function is called
 
@@ -74,7 +94,9 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
     }
 
-
+    /**
+     * Sets buttom menu bar to be invisible and open up the welcome screen
+     */
     public void firstTimeLoginOrganizer() {
         // Inflates the welcomescreen fragment if its the user's first time logging in
 
@@ -87,6 +109,9 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
     }
 
+    /**
+     * Sets buttom menu bar to be visible and open up the home screen
+     */
     public void homeScreenOrganizer() {
 
         //sendUserIdToFirestore(this); //Sends user android id to database
@@ -99,7 +124,15 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
     }
 
 
-
+    /**
+     * Sends a query to check if user's android id already exisits within the databse
+     * If android id exists, then it send the user directly to the home page,
+     * else the app sends the user to the welcome page
+     *
+     * @param collectionName
+     * @param fieldName
+     * @param uniqueId
+     */
     private void checkIfUserExists(String collectionName, String fieldName, String uniqueId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Users")
@@ -122,6 +155,10 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
                 });
     }
 
+    /**
+     * This method sets up all necessary parameters for checkIfUserExists() method.
+     * @param context
+     */
     private void authenticateUser(Context context) {
         //Function to help set up checkIfUserExists
 

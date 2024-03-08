@@ -19,7 +19,26 @@ import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
 
+/**
+ * Creates and handles all activities within the QR menu screen
+ * @author Akib Zaman Choudhury
+ */
 public class QRmenuFragment extends Fragment {
+
+    /**
+     * Creates the view and inflates the organizer_qr_menu_screen layout
+     * This method also handles all button interactions of the QR menu
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -68,7 +87,15 @@ public class QRmenuFragment extends Fragment {
         return view;
     }
 
-    //Creates the profile pop up menu
+    /**
+     * Implements the profile drop down menu
+     *
+     * @param menu The context menu that is being built
+     * @param v The view for which the context menu is being built
+     * @param menuInfo Extra information about the item for which the
+     *            context menu should be shown. This information will vary
+     *            depending on the class of v.
+     */
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
