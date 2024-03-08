@@ -44,7 +44,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         bottomNavigationView = findViewById(R.id.administrator_handler_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
 
-        //authenticateUser(this);
+        authenticateUser(this);
 
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -119,4 +119,36 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 .whereEqualTo(fieldName, uniqueId)
                 .limit(1) // Optimizes the query by limiting to the first match
                 .get()
-                .ad
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            homeScreenAdministrator(); // Takes user directly to the home screen
+                            Log.d("UniqueIDCheck", "The unique ID exists in the collection.");
+                        } else {
+                            firstTimeLoginAdministrator(); // Takes user to the profile page
+                            Log.d("UniqueIDCheck", "The unique ID does not exist in the collection.");
+                        }
+                    } else {
+                        Log.e("UniqueIDCheck", "Failed to perform the query.", task.getException());
+                    }
+                });
+    }
+
+    /**
+     * This method sets up all necessary parameters for checkIfUserExists() method.
+     * @param context
+     */
+    private void authenticateUser(Context context) {
+        //Function to help set up checkIfUserExists
+        bottomNavigationView.setVisibility(View.INVISIBLE);
+        // Get the unique Android ID
+        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String collectionName = "Users";
+        String fieldName = "device_id";
+
+        //Checks to see if user exists
+        checkIfUserExists(collectionName, fieldName, device_id);
+
+    }
+}
