@@ -120,22 +120,58 @@ public class AdministratorDashboardFragment extends Fragment {
         });
 
         imagesButton.setOnClickListener(new View.OnClickListener() {
+            private CollectionReference profilesImagesRef;
+            private CollectionReference postersImagesRef;
             @Override
             public void onClick(View v) {
                 imagesButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.blue_button));
                 eventsButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
                 profilesButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
 
-                ArrayList<AdministratorImage> images = new ArrayList<>();
-                images.add(new AdministratorImage("Profile 1 Image", R.drawable.profile));
-                images.add(new AdministratorImage("Profile 2 Image",R.drawable.profile));
-                images.add(new AdministratorImage("Profile 3 Image", R.drawable.profile));
-                images.add(new AdministratorImage("Poster 1 Image", R.drawable.poster));
-                images.add(new AdministratorImage("Poster 2 Image", R.drawable.poster));
+                profilesImagesRef = db.collection("Users");
+                postersImagesRef = db.collection("Events");
 
+                ArrayList<AdministratorImage> images = new ArrayList<>();
                 ImageArrayAdapter arrayAdapter = new ImageArrayAdapter(getContext(), images);
                 list.setAdapter(arrayAdapter);
-                list.setVisibility(View.VISIBLE);
+
+                profilesImagesRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<AdministratorImage> imagesList = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String imageName = document.getString("name");
+                                String image = document.getString("profile_picture");
+                                imagesList.add(new AdministratorImage(imageName, image));
+                            }
+                            // Update the adapter with the new list
+                            arrayAdapter.addAll(imagesList);
+                            arrayAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.d("Firestore", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+                postersImagesRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            List<AdministratorImage> imagesList = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String imageName = document.getString("name");
+                                String image = document.getString("profile_picture");
+                                imagesList.add(new AdministratorImage(imageName, image));
+                            }
+                            // Update the adapter with the new list
+                            arrayAdapter.addAll(imagesList);
+                            arrayAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.d("Firestore", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
             }
         });
 
