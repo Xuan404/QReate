@@ -18,7 +18,7 @@ import java.util.ArrayList;
  * This adapter is for displaying each notification's details, such as its description
  * and the organizer's name, in a structured format as defined in the attendee_notifications_list_rows layout.
  *
- * It extends ArrayAdapter<Notif> to leverage built-in Android functionality while providing a custom
+ * It extends ArrayAdapter to leverage built-in Android functionality while providing a custom
  * view for each item in the list.
  *
  * @author Shraddha Mehta

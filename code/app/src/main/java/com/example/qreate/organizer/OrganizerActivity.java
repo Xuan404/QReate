@@ -21,7 +21,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 
 /**
- * The following class is responsible for all activities related to the Organizer <user role>
+ * The following class is responsible for all activities related to the Organizer
  *
  * Outstanding Issue: OrganizerActivityTest does not PASS unless line 53: authenticateUser(this); is commented.
  * @author Akib Zaman Choudhury
