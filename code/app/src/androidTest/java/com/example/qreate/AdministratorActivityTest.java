@@ -19,6 +19,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+
+/**
+ * IMPORTANT!!! comment out the line 48: authenticateUser(this); of AdministratorActivity class otherwise this test will FAIL.
+ * The following test is only there to test out fragment changes for the navigation bar and not the whole activity.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class AdministratorActivityTest {

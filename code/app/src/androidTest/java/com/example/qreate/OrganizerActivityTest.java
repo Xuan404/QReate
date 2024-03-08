@@ -15,8 +15,8 @@ import org.junit.Test;
 
 
 /**
- * IMPORTANT!!! comment out the line 52: authenticateUser(this); otherwise this test will FAIL
- * The following test is only there to test out fragment changes for the nagivation bar and not the
+ * IMPORTANT!!! comment out the line 53: authenticateUser(this); otherwise this test will FAIL
+ * The following test is only there to test out fragment changes for the navigation bar and not the
  * whole activity
  */
 public class OrganizerActivityTest {
