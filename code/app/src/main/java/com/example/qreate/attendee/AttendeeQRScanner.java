@@ -25,6 +25,12 @@ import javax.annotation.Nullable;
  * Utilizing the ZXing library, this activity allows users to scan QR codes to retrieve information
  * relevant to the event they are attending, such as checking in at an event.
  *
+ * Outstanding: Not implemented fully yet. Make changes according to how it should look like and if we want any
+ *              restrictions.
+ *
+ * References: ankur035, GeeksforGeeks, How to Read QR Code using Zxing Library in Android?, Last Updated: 15 Jan,2021,
+ *                  https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
+ *
  * @author Shraddha Mehta
  */
 
@@ -68,7 +74,8 @@ public class AttendeeQRScanner extends AppCompatActivity implements View.OnClick
         //make object
         IntentIntegrator intentIntegrator = new IntentIntegrator(this);
         intentIntegrator.setPrompt("Scan a QR code");
-        intentIntegrator.setOrientationLocked(true);
+
+        //intentIntegrator.setOrientationLocked(true);
         intentIntegrator.initiateScan();
     }
 
@@ -88,12 +95,17 @@ public class AttendeeQRScanner extends AppCompatActivity implements View.OnClick
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
 
         if(intentResult != null){
-            if(intentResult.getContents()==null){
+            if(intentResult.getContents()== null){
                 Toast.makeText(getBaseContext(), "Aborted",Toast.LENGTH_SHORT).show();
-            } else{
+                finish();
+            }
+            else{
                 textContent.setText(intentResult.getContents());
             }
-        } else{
+        }
+        else {
+            //handle if null
+            Toast.makeText(getBaseContext(), "Scan cancelled",Toast.LENGTH_SHORT).show();
             super.onActivityResult(requestCode,resultCode,data);
         }
     }

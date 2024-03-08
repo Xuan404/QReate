@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,14 +14,17 @@ import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 /**
  * AttendeeScanFragment provides a user interface for attendees to scan QR codes within the event app.
-
  *
  * It features a simple layout with a scan button that, when clicked,
  * initiates the QR code scanning process.
  * The fragment is designed to be embedded within the attendee section of the application.
+ *
+ * References: ankur035, GeeksforGeeks, How to Read QR Code using Zxing Library in Android?,
+ *                  Last Updated: 15 Jan,2021, https://www.geeksforgeeks.org/how-to-read-qr-code-using-zxing-library-in-android/
  *
  * @author Shraddha Mehta
  */
@@ -69,7 +73,7 @@ public class AttendeeScanFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View v){
         //make object
-        IntentIntegrator intentIntegrator = new IntentIntegrator(getActivity());
+        IntentIntegrator intentIntegrator = new IntentIntegrator(requireActivity());
         intentIntegrator.setPrompt("Scan a QR code");
         intentIntegrator.setOrientationLocked(true);
         intentIntegrator.initiateScan();

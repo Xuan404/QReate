@@ -27,6 +27,8 @@ import java.util.ArrayList;
  * consists of a message and details, encapsulated in a Notif object. The fragment uses a custom
  * ArrayAdapter (NotifArrayAdapter) to display the notifications in the ListView.
  *
+ * Outstanding: Receiving from organizer from firebase
+ *
  * @author Shraddha Mehta
  */
 
