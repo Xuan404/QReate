@@ -34,7 +34,7 @@ public class AdministratorActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         bottomNavigationView = findViewById(R.id.administrator_handler_navigation_bar);
-        bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholderAttendee);
+        bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
 
         authenticateUser(this);
 
