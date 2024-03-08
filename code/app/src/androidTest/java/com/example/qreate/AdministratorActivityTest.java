@@ -33,9 +33,8 @@ public class AdministratorActivityTest {
         // Perform a click on the dashboard button
         onView(withId(R.id.dashboard_icon)).perform(click());
 
-        // Verify that Organizer Activity is launched by checking for a view that is unique to Organizer Activity
+        // Verify that Dashboard Fragment is launched by checking for a view that is unique to it
         onView(withId(R.id.admin_top_bar)).check(matches(isDisplayed()));
     }
-
 
 }
