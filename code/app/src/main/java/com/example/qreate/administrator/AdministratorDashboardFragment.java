@@ -25,6 +25,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The following class allows the administrator to see the Dashboard and view all {@link AdministratorEvent}, {@link AdministratorProfile} and {@link AdministratorImage}. (Deletion functionality will be implemented for Part 4)
+ */
 public class AdministratorDashboardFragment extends Fragment {
     private Button imagesButton;
     private Button profilesButton;
@@ -32,6 +35,19 @@ public class AdministratorDashboardFragment extends Fragment {
     private ListView list;
     private FirebaseFirestore db;
 
+    /**
+     * Creates the view and inflates the administrator_dashboard layout, changing the custom ArrayAdapter ({@link EventArrayAdapter}, {@link ProfileArrayAdapter}, {@link ImageArrayAdapter}) for the ListView according to what the user chooses.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -178,6 +194,12 @@ public class AdministratorDashboardFragment extends Fragment {
         return view;
     }
 
+    /**
+     * This method programmatically clicks the eventsButton as the events list is the one to be automatically viewed when the user click Dashboard in the menu bar.
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
