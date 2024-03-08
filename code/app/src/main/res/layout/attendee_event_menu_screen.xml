@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#0A191E"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/top_action_bar_attendee_events_menu"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#000000"
+        android:paddingLeft="15dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/qr_attendee_menu_screen_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="cursive"
+            android:text="Qreate"
+            android:textColor="#FFFFFF"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            android:layout_weight="3"/>
+
+        <ImageButton
+            android:id="@+id/profile"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/circle_shape"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/profileicon" />
+
+    </LinearLayout>
+
+
+
+    <ImageView
+        android:id="@+id/qr_menu_screen_image"
+        android:layout_width="300dp"
+        android:layout_height="175dp"
+        android:layout_below="@id/qr_menu_screen_top_bar"
+        android:src="@drawable/event_attendee_menu_pic"
+        android:layout_gravity="center"
+        android:background="@drawable/picture_attendee"
+        android:layout_marginTop="10dp"/>
+
+
+    <TextView
+        android:id="@+id/text_my_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="My Events"
+        android:textColor="@color/white"
+        android:textSize="20dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_current_events"
+        android:layout_width="300dp"
+        android:layout_height="75dp"
+
+        android:background="@drawable/rounded_dark_blue"
+        android:text="Current Events"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="7dp"
+        android:fontFamily="@font/poppins_bold"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_upcoming_events"
+        android:layout_width="300dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_dark_blue"
+        android:text="Upcoming Events"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="7dp"
+        android:fontFamily="@font/poppins_bold"/>
+    <TextView
+        android:id="@+id/text_other_events"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="Other Events"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:layout_gravity="left"
+        android:layout_marginStart="30dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_other_events"
+        android:layout_width="300dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_dark_blue"
+        android:text="View Other Events"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:fontFamily="@font/poppins_bold"/>
+
+
+
+
+</LinearLayout>

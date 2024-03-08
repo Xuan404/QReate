@@ -15,9 +15,9 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 
-public class EventArrayAdapter extends ArrayAdapter<Event> {
+public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
     private int selectedPosition = -1; // Track the selected position
-    public EventArrayAdapter(Context context, ArrayList<Event> events) {
+    public EventArrayAdapter(Context context, ArrayList<AdministratorEvent> events) {
         super(context, 0, events);
     }
 
@@ -31,7 +31,7 @@ public class EventArrayAdapter extends ArrayAdapter<Event> {
             view = convertView;
         }
 
-        Event event = getItem(position);
+        AdministratorEvent event = getItem(position);
         TextView event_name = view.findViewById(R.id.event_name_text);
         TextView event_organizer = view.findViewById(R.id.event_organizer_text);
         RadioButton radioButton = view.findViewById(R.id.choose_event_radio_button);

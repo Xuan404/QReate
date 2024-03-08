@@ -16,9 +16,9 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 
-public class ImageArrayAdapter extends ArrayAdapter<Image> {
+public class ImageArrayAdapter extends ArrayAdapter<AdministratorImage> {
     private int selectedPosition = -1; // Track the selected position
-    public ImageArrayAdapter(Context context, ArrayList<Image> images) {
+    public ImageArrayAdapter(Context context, ArrayList<AdministratorImage> images) {
         super(context, 0, images);
     }
 
@@ -32,7 +32,7 @@ public class ImageArrayAdapter extends ArrayAdapter<Image> {
             view = convertView;
         }
 
-        Image images = getItem(position);
+        AdministratorImage images = getItem(position);
         TextView image_name = view.findViewById(R.id.image_name_text);
         ImageView image = view.findViewById(R.id.image);
         RadioButton radioButton = view.findViewById(R.id.choose_image_radio_button);
