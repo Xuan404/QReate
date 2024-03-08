@@ -14,10 +14,23 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
+/**
+ * The following class is responsible for adapting events into spinners
+ *
+ * @author Denis Soh
+ */
 public class OrganizerEventSpinnerArrayAdapter extends ArrayAdapter<OrganizerEvent> {
     private ArrayList<OrganizerEvent> events;
     private Context context;
+
+    /**
+     * constructor for the adapter
+     *
+     * @param context the current context
+     * @param events the events to be parsed
+     *
+     * @return the adapter
+     */
 
     public OrganizerEventSpinnerArrayAdapter(Context context, ArrayList<OrganizerEvent> events){
         super(context,0, events);
@@ -26,6 +39,15 @@ public class OrganizerEventSpinnerArrayAdapter extends ArrayAdapter<OrganizerEve
     }
 
 
+    /**
+     * generates view
+     *
+     * @param parent the viewgroup of the view
+     * @param convertView the current view
+     * @param position the current position in spinner
+     *
+     * @return View
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -45,6 +67,15 @@ public class OrganizerEventSpinnerArrayAdapter extends ArrayAdapter<OrganizerEve
         return view;
     }
 
+    /**
+     * generates dropdown view
+     *
+     * @param parent the viewgroup of the view
+     * @param convertView the current view
+     * @param position the current position in spinner
+     *
+     * @return View
+     */
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         View customDropdownView = LayoutInflater.from(getContext())

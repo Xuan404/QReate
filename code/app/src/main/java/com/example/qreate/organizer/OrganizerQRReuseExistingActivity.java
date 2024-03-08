@@ -12,7 +12,12 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 
-
+/**
+ * The following class is responsible for the reuse existing qr code screen
+ *
+ * Outstanding Issue: Event spinner is not pulling from firebase
+ * @author Denis Soh
+ */
 public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
     ArrayList<OrganizerEvent> events;
     Spinner eventsSpinner;
@@ -32,6 +37,15 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
         eventsSpinner = findViewById(R.id.reuse_existing_qr_code_screen_spinner);
 
         eventsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            /**
+             * gets selected item string
+             *
+             * @param parent the adapter-view of the view
+             * @param view current view
+             * @param position current position in spinner
+             * @param id current id
+             *
+             */
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();
