@@ -23,7 +23,7 @@ import com.example.qreate.R;
  * Creates and handles all activities within the QR menu screen
  * @author Akib Zaman Choudhury
  */
-public class QRmenuFragment extends Fragment {
+public class OrganizerQRmenuFragment extends Fragment {
 
     /**
      * Creates the view and inflates the organizer_qr_menu_screen layout
@@ -57,28 +57,28 @@ public class QRmenuFragment extends Fragment {
         generateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), QRGeneratorActivity.class);
+                Intent intent = new Intent(getActivity(), OrganizerQRGeneratorActivity.class);
                 startActivity(intent);
             }
         });
         reuseExistingQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), QRReuseExistingActivity.class);
+                Intent intent = new Intent(getActivity(), OrganizerQRReuseExistingActivity.class);
                 startActivity(intent);
             }
         });
         eventListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), QREventListActivity.class);
+                Intent intent = new Intent(getActivity(), OrganizerQREventListActivity.class);
                 startActivity(intent);
             }
         });
         shareQRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), QRShareActivity.class);
+                Intent intent = new Intent(getActivity(), OrganizerQRShareActivity.class);
                 startActivity(intent);
             }
         });

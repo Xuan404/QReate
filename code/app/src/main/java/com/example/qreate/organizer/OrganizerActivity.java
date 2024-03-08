@@ -6,7 +6,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,9 +18,6 @@ import com.example.qreate.WelcomeScreenFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 /**
@@ -63,13 +59,13 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
                 int itemId = item.getItemId();
 
                 if (itemId == R.id.qr_menu) {
-                    selectedFragment = new QRmenuFragment();
+                    selectedFragment = new OrganizerQRmenuFragment();
                 } else if (itemId == R.id.notifications_menu) {
-                    selectedFragment = new NotificationsMenuFragment();
+                    selectedFragment = new OrganizerNotificationsMenuFragment();
                 } else if (itemId == R.id.attendee_list_menu) {
-                    selectedFragment = new AttendeeListMenuFragment();
+                    selectedFragment = new OrganizerAttendeeListMenuFragment();
                 } else if (itemId == R.id.geolocation_menu) {
-                    selectedFragment = new GeolocationMenuFragment();
+                    selectedFragment = new OrganizerGeolocationMenuFragment();
                 }
 
                 if (selectedFragment != null) {

@@ -24,7 +24,7 @@ import com.example.qreate.R;
  * The following class allows the User(Organizer) to send notifications to all Attendees
  * @author Akib Zaman Choudhurhy
  */
-public class NotificationsMenuFragment extends Fragment {
+public class OrganizerNotificationsMenuFragment extends Fragment {
 
     /**
      * Creates the view and inflates the organizer_notifications_menu_screen layout
@@ -52,7 +52,7 @@ public class NotificationsMenuFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), NotificationsSendActivity.class);
+                Intent intent = new Intent(getActivity(), OrganizerNotificationsSendActivity.class);
                 startActivity(intent);
             }
         });

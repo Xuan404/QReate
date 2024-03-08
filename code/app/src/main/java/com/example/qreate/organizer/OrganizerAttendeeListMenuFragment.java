@@ -21,11 +21,11 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 
-public class AttendeeListMenuFragment extends Fragment {
+public class OrganizerAttendeeListMenuFragment extends Fragment {
 
-    ArrayList<Event> events;
+    ArrayList<OrganizerEvent> events;
     Spinner eventsSpinner;
-    EventSpinnerArrayAdapter eventSpinnerArrayAdapter;
+    OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -34,11 +34,11 @@ public class AttendeeListMenuFragment extends Fragment {
         ImageButton profileButton = view.findViewById(R.id.attendee_list_menu_screen_profile_button);
 
         registerForContextMenu(profileButton); //floating profile menu
-        events = new ArrayList<Event>();
+        events = new ArrayList<OrganizerEvent>();
 
         addEventsInit();
 
-        eventSpinnerArrayAdapter = new EventSpinnerArrayAdapter(this.getActivity(), events);
+        eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this.getActivity(), events);
 
         //NEED TO GRAB THE ARRAY FROM FIREBASE THEN PARSE IT INTO THIS
         eventsSpinner = view.findViewById(R.id.attendee_list_menu_screen_spinner);
@@ -82,7 +82,7 @@ public class AttendeeListMenuFragment extends Fragment {
         String []cities ={"Edmonton", "Vancouver", "Toronto", "Hamilton", "Denver", "Los Angeles"};
         String []provinces = {"AB", "BC", "ON", "ON", "CO", "CA"};
         for(int i=0;i<cities.length;i++){
-            events.add((new Event(cities[i], provinces[i])));
+            events.add((new OrganizerEvent(cities[i], provinces[i])));
         }
     }
 }

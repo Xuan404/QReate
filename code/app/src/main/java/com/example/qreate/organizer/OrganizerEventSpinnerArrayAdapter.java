@@ -11,16 +11,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.qreate.R;
-import com.example.qreate.organizer.Event;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class EventSpinnerArrayAdapter extends ArrayAdapter<Event> {
-    private ArrayList<Event> events;
+public class OrganizerEventSpinnerArrayAdapter extends ArrayAdapter<OrganizerEvent> {
+    private ArrayList<OrganizerEvent> events;
     private Context context;
 
-    public EventSpinnerArrayAdapter(Context context, ArrayList<Event> events){
+    public OrganizerEventSpinnerArrayAdapter(Context context, ArrayList<OrganizerEvent> events){
         super(context,0, events);
         this.events = events;
         this.context = context;
@@ -37,7 +36,7 @@ public class EventSpinnerArrayAdapter extends ArrayAdapter<Event> {
             view = LayoutInflater.from(context).inflate(R.layout.organizer_spinner_items, parent,false);
         }
 
-        Event event = events.get(position);
+        OrganizerEvent event = events.get(position);
 
         TextView eventName = view.findViewById(R.id.event_name);
 
