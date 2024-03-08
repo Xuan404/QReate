@@ -23,6 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 /**
  * The following class is responsible for all activities related to the Organizer <user role>
  *
+ * Outstanding Issue: OrganizerActivityTest does not PASS unless line 53: authenticateUser(this); is commented.
  * @author Akib Zaman Choudhury
  */
 public class OrganizerActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
@@ -49,7 +50,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder); //This line is here so that there is no default item selected, it selects a menu item that is invisible
 
         // Authenticates if user exists and sends them to the appropriate page
-        // authenticateUser(this);
+        authenticateUser(this);
 
         //Used if/else to check for selected id because switch was being a bitch
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {

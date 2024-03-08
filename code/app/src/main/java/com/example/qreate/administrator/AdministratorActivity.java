@@ -20,6 +20,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 /**
  * The following class is responsible for all activities related to the Administrator <user role>
+ *
+ * Outstanding Issue: AdministratorActivityTest does not PASS unless line 48: authenticateUser(this); is commented.
  */
 public class AdministratorActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
     private BottomNavigationView bottomNavigationView;
@@ -43,7 +45,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         bottomNavigationView = findViewById(R.id.administrator_handler_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
 
-        //authenticateUser(this);
+        authenticateUser(this);
 
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
