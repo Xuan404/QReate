@@ -1,20 +1,18 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#0A191E"
-    android:orientation="vertical">
+    android:background="#0A191E">
 
-    <LinearLayout
-        android:id="@+id/top_action_bar_event_details_menu"
+    <RelativeLayout
+        android:id="@+id/geolocation_menu_screen_top_bar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#000000"
-        android:paddingLeft="15dp"
-        android:orientation="horizontal">
+        android:paddingLeft="15dp">
 
         <TextView
-            android:id="@+id/event_details_screen_qreate_title"
+            android:id="@+id/geolocation_menu_screen_qreate_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -23,8 +21,7 @@
             android:text="Qreate"
             android:textColor="#FFFFFF"
             android:textSize="34sp"
-            android:textStyle="bold"
-            android:layout_weight="3"/>
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/geolocation_menu_screen_profile_button"
@@ -36,22 +33,22 @@
             android:background="@drawable/circle_shape"
             android:padding="5dp"
             android:scaleType="centerInside"
-            android:src="@drawable/profileicon"
-            />
+            android:src="@drawable/profileicon" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/announcements_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/geolocation_menu_screen_top_bar"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:fontFamily="@font/poppins_bold"
         android:text="Event Details"
         android:textColor="@color/white"
-        android:textSize="35sp"
-        android:layout_gravity="center"/>
+        android:textSize="35sp" />
 
 
 
-</LinearLayout>
+</RelativeLayout>

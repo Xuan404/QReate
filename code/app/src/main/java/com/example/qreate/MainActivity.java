@@ -12,8 +12,22 @@ import com.example.qreate.attendee.AttendeeActivity;
 import com.example.qreate.organizer.OrganizerActivity;
 
 
+/**
+ * This Screen allows the user to login either as an Attendee/Organizer/Administrator
+ * Depending on what button the user clicks, he is takes to the screen
+ *
+ * @author Akib Zaman Choudhury
+ */
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Creates and Inflates the view
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

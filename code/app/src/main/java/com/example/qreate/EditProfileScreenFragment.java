@@ -22,11 +22,28 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This is the Edit profile screen fragment that allows the user to update his User info.
+ * After the use clicks the confirm button
+ * the Class validates the inserted User info and updates the database.
+ * Furthermore it also removes itself from the backstack of the fragment stack
+ *
+ * @author Akib Zaman Choudhury
+ */
 public class EditProfileScreenFragment extends Fragment {
 
+    /**
+     * Interface for implementing onFragmentDestroyed().
+     * which is methods for handling the UI after the EditProfileScreenFragment is removed from
+     * the back stack
+     */
     public interface OnFragmentInteractionListener {
         void onFragmentDestroyed();
     }
+
+    /**
+     * Interface for the fragment listener
+     */
     private OnFragmentInteractionListener mListener;
 
     @Override
@@ -40,6 +57,23 @@ public class EditProfileScreenFragment extends Fragment {
         }
     }
 
+    /**
+     * Creates view and inflates the edit_profile_info layout.
+     * The method also validates the inserted User info and updates the database.
+     * Furthermore it removes itself from the backstack of the fragment stack after the
+     * user clicks the confirm button
+     *
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -75,7 +109,14 @@ public class EditProfileScreenFragment extends Fragment {
     }
 
 
-
+    /**
+     * The following method is used to update the database
+     *
+     * @param name
+     * @param phone
+     * @param email
+     * @param homepage
+     */
     private void sendUserInfoToFirestore(String name, String phone, String email, String homepage) {
 
         // Get a Firestore instance
