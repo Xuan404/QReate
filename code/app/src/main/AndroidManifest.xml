@@ -33,9 +33,11 @@
         <activity android:name=".organizer.QRShareActivity"/>
         <activity android:name=".organizer.NotificationsSendActivity"/>
 
+
         <activity android:name=".administrator.AdministratorActivity"/>
 
         <activity android:name=".attendee.AttendeeActivity"/>
+        <activity android:name=".attendee.AttendeeQRScanner"/>
 
 
         <meta-data
