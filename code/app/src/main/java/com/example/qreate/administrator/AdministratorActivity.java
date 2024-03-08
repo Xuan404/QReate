@@ -54,7 +54,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 if (itemId == R.id.dashboard_icon) {
                     selectedFragment = new AdministratorDashboardFragment();
                 } else if (itemId == R.id.account_icon) {
-                    selectedFragment = new HomeScreenFragment();
+                    selectedFragment = new EditProfileScreenFragment();
                 }
 
                 if (selectedFragment != null) {
