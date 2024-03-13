@@ -47,10 +47,6 @@ public class OrganizerGeolocationMap extends AppCompatActivity implements OnMapR
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        // Add a marker in Sydney and move the camera
-//        LatLng test = new LatLng(53, -113);
-//        googleMap.addMarker(new MarkerOptions().position(test).title("Test Marker"));
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(test));
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
