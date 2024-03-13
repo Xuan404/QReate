@@ -17,8 +17,12 @@ import android.widget.PopupMenu;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.organizer.OrganizerActivity;
 
 /**
  * Creates and handles all activities within the QR menu screen
@@ -99,6 +103,7 @@ public class OrganizerQRmenuFragment extends Fragment {
         PopupMenu popupMenu = new PopupMenu(getActivity(), view); // For Fragment, use getActivity() instead of this
         popupMenu.getMenuInflater().inflate(R.menu.profile_menu, popupMenu.getMenu());
 
+        //Sets text color to white
         for (int i = 0; i < popupMenu.getMenu().size(); i++) {
             MenuItem item = popupMenu.getMenu().getItem(i);
             SpannableString spanString = new SpannableString(popupMenu.getMenu().getItem(i).getTitle().toString());
@@ -111,8 +116,9 @@ public class OrganizerQRmenuFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 if (id == R.id.profile_account) {
-                    // Handle Profile Action
+                    accountProfile();
                     return true;
+
                 } else if (id == R.id.profile_logout) {
                     getActivity().finish();
                     return true;
@@ -122,9 +128,19 @@ public class OrganizerQRmenuFragment extends Fragment {
             }
         });
 
-
         popupMenu.show();
     }
 
+    private void accountProfile() {
+        //Handles fragment transaction related to the account profile
+
+        ((OrganizerActivity)getActivity()).hideBottomNavigationBar();
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.organizer_handler_frame, new AccountProfileScreenFragment("organizer"));
+        transaction.addToBackStack(null); // Add this transaction to the back stack
+        transaction.commit();
+    }
 
 }

@@ -175,4 +175,16 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
     }
 
 
+
+    public void hideBottomNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.organizer_handler_navigation_bar);
+        navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar disappear
+    }
+
+    public void showBottomNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.organizer_handler_navigation_bar);
+        navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
+    }
+
+
 }
