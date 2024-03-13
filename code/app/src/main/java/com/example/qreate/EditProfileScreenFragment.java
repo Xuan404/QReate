@@ -3,15 +3,20 @@ package com.example.qreate;
 import android.content.Context;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -83,29 +88,74 @@ public class EditProfileScreenFragment extends Fragment {
         // on pressing confirm, validates user details and returns
 
         Button confirmDataButton = view.findViewById(R.id.edit_profile_confirm_button);
-        EditText editTextName = view.findViewById(R.id.edit_name);
-        EditText editTextPhone = view.findViewById(R.id.edit_number);
-        EditText editTextEmail = view.findViewById(R.id.edit_email);
-        EditText editTextHomepage = view.findViewById(R.id.edit_homepage_website);
-
 
         confirmDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Retrieve user input from EditTexts
-                String name = editTextName.getText().toString();
-                String phone = editTextPhone.getText().toString();
-                String email = editTextEmail.getText().toString();
-                String homepage = editTextHomepage.getText().toString();
-
-                sendUserInfoToFirestore(name, phone, email, homepage);
-                removeFragment(); //removes the fragment
+                authenticateUserInfo(view);
             }
         });
 
 
         return view;
     }
+
+
+    private void authenticateUserInfo(View view) {
+
+        boolean verified = true;
+
+        EditText editTextName = view.findViewById(R.id.edit_name);
+        EditText editTextPhone = view.findViewById(R.id.edit_number);
+        EditText editTextEmail = view.findViewById(R.id.edit_email);
+        EditText editTextHomepage = view.findViewById(R.id.edit_homepage_website);
+        SwitchCompat switchButton = view.findViewById(R.id.edit_profile_switchcompat);
+
+        // Retrieve user input from EditTexts
+        String name = editTextName.getText().toString();
+        String phone = editTextPhone.getText().toString();
+        String email = editTextEmail.getText().toString();
+        String homepage = editTextHomepage.getText().toString();
+
+
+
+
+
+        // Insert conditions as needed.
+        if (TextUtils.isEmpty(name)) {
+            verified = false;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(phone)) {
+            verified = false;
+        }
+
+        if (TextUtils.isEmpty(email)) {
+            verified = false;
+        }
+
+        if (TextUtils.isEmpty(homepage)) {
+            verified = false;
+        }
+        boolean status = switchButton.isChecked();
+
+
+
+        if (verified) {
+            sendUserInfoToFirestore(name, phone, email, homepage, status);
+            removeFragment(); //removes the fragment
+
+        } else {
+            Toast.makeText(getActivity(), "Please Enter Your Details", Toast.LENGTH_SHORT).show();
+
+        }
+
+
+
+
+    }
+
 
 
     /**
@@ -115,8 +165,9 @@ public class EditProfileScreenFragment extends Fragment {
      * @param phone
      * @param email
      * @param homepage
+     * @param status
      */
-    private void sendUserInfoToFirestore(String name, String phone, String email, String homepage) {
+    private void sendUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status) {
 
         // Get a Firestore instance
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -131,6 +182,7 @@ public class EditProfileScreenFragment extends Fragment {
         device.put("phone_number", phone);
         device.put("email", email);
         device.put("homepage", homepage);
+        device.put("allow_coordinates", status);
 
         // Send the unique ID to Firestore
         db.collection("Users").add(device)
@@ -145,39 +197,6 @@ public class EditProfileScreenFragment extends Fragment {
                     //Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
                 });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
