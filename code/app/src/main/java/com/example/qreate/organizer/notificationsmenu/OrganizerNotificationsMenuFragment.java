@@ -74,21 +74,6 @@ public class OrganizerNotificationsMenuFragment extends Fragment {
     }
 
 
-//    @Override
-//    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
-//        super.onCreateContextMenu(menu, v, menuInfo);
-//        getActivity().getMenuInflater().inflate(R.menu.profile_menu, menu);
-//
-//        //Colors the text color white
-//        for (int i = 0; i < menu.size(); i++) {
-//            MenuItem menuItem = menu.getItem(i);
-//            SpannableString s = new SpannableString(menuItem.getTitle());
-//            s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, s.length(), 0);
-//            menuItem.setTitle(s);
-//        }
-//    }
-
-
 
 
 
@@ -109,10 +94,9 @@ public class OrganizerNotificationsMenuFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 if (id == R.id.profile_account) {
-                    // Handle Profile Action
                     return true;
-                } else if (id == R.id.profile_settings) {
-                    // Handle Settings Action
+                } else if (id == R.id.profile_logout) {
+                    getActivity().finish();
                     return true;
                 } else {
                     return false;

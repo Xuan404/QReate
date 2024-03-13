@@ -5,7 +5,7 @@
         android:icon="@drawable/gearicon"
         android:title="Account" />
     <item
-        android:id="@+id/profile_settings"
+        android:id="@+id/profile_logout"
         android:icon="@drawable/logouticon"
         android:title="Logout" />
 

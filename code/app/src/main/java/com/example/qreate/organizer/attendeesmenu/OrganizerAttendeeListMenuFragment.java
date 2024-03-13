@@ -114,8 +114,8 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
                 if (id == R.id.profile_account) {
                     // Handle Profile Action
                     return true;
-                } else if (id == R.id.profile_settings) {
-                    // Handle Settings Action
+                } else if (id == R.id.profile_logout) {
+                    getActivity().finish();
                     return true;
                 } else {
                     return false;
