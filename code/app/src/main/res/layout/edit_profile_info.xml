@@ -179,7 +179,6 @@
         android:layout_alignStart="@id/homepage_text"
         android:layout_marginStart="0dp"
         android:layout_marginTop="69dp"
-        android:checked="true"
         android:textColor="#FFC107"
         app:thumbTint="@color/toggle_button_selector"
         app:trackTint="@color/yellow" />

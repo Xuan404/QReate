@@ -24,7 +24,7 @@
             android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/geolocation_menu_screen_profile_button"
+            android:id="@+id/profile"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"

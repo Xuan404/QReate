@@ -59,7 +59,7 @@ public class AccountProfileScreenFragment extends Fragment {
             if (Objects.equals(current_activity, "organizer")){
                 ((OrganizerActivity)getActivity()).showBottomNavigationBar();
             } else if (Objects.equals(current_activity, "attendee")) {
-                //((AttendeeActivity)getActivity()).showBottomNavigationBar();
+                ((AttendeeActivity)getActivity()).showBottomNavigationBar();
             }else if (Objects.equals(current_activity, "administrator")) {
                 //((AdministratorActivity)getActivity()).showBottomNavigationBar();
             }
