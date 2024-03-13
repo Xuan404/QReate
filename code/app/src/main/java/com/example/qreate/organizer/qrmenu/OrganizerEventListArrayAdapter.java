@@ -1,4 +1,4 @@
-package com.example.qreate.organizer;
+package com.example.qreate.organizer.qrmenu;
 
 import android.content.Context;
 import android.view.LayoutInflater;

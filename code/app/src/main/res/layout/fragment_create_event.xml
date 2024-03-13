@@ -31,7 +31,7 @@
         android:layout_below="@+id/eventNameText"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:gravity="top|left"
+        android:gravity="start"
         android:background="@color/white"
         android:layout_width="350dp"
         android:layout_height="150dp" />
@@ -51,8 +51,9 @@
         android:id="@+id/editTextEventDescription"
         android:layout_below="@id/eventDescriptionText"
         android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:background="@color/white"
-        android:gravity="top|left"
+        android:gravity="start"
         android:layout_width="350dp"
         android:layout_height="150dp" />
 

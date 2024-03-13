@@ -31,11 +31,12 @@
         </activity>
 
         <activity android:name=".organizer.OrganizerActivity"/>
-        <activity android:name=".organizer.OrganizerQRGeneratorActivity"/>
-        <activity android:name=".organizer.OrganizerQRReuseExistingActivity"/>
-        <activity android:name=".organizer.OrganizerQREventListActivity"/>
-        <activity android:name=".organizer.OrganizerQRShareActivity"/>
-        <activity android:name=".organizer.OrganizerNotificationsSendActivity"/>
+        <activity android:name=".organizer.qrmenu.OrganizerQRGeneratorActivity"/>
+        <activity android:name=".organizer.qrmenu.OrganizerQRReuseExistingActivity"/>
+        <activity android:name=".organizer.qrmenu.OrganizerQREventListActivity"/>
+        <activity android:name=".organizer.qrmenu.OrganizerQRShareActivity"/>
+        <activity android:name=".organizer.notificationsmenu.OrganizerNotificationsSendActivity"/>
+        <activity android:name=".organizer.geolocationmenu.OrganizerGeolocationMap"/>
 
 
         <activity android:name=".administrator.AdministratorActivity"/>

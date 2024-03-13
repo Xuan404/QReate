@@ -3,5 +3,5 @@
     <!-- Color for the ON state -->
     <item android:color="@color/blue_button" android:state_checked="true"/>
     <!-- Color for the OFF state -->
-    <item android:color="@color/black"/>
+    <item android:color="@color/dark_blue_button"/>
 </selector>

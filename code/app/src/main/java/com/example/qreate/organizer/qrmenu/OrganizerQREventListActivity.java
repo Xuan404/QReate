@@ -1,4 +1,4 @@
-package com.example.qreate.organizer;
+package com.example.qreate.organizer.qrmenu;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.qreate.R;
+import com.example.qreate.organizer.qrmenu.OrganizerCreateEventFragment;
+import com.example.qreate.organizer.qrmenu.OrganizerEvent;
+import com.example.qreate.organizer.qrmenu.OrganizerEventListArrayAdapter;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.qreate.organizer;
+package com.example.qreate.organizer.qrmenu;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,15 +19,15 @@ import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
 
-
 /**
- * The following class allows the User(Organizer) to send notifications to all Attendees
- * @author Akib Zaman Choudhurhy
+ * Creates and handles all activities within the QR menu screen
+ * @author Akib Zaman Choudhury
  */
-public class OrganizerNotificationsMenuFragment extends Fragment {
+public class OrganizerQRmenuFragment extends Fragment {
 
     /**
-     * Creates the view and inflates the organizer_notifications_menu_screen layout
+     * Creates the view and inflates the organizer_qr_menu_screen layout
+     * This method also handles all button interactions of the QR menu
      *
      * @param inflater The LayoutInflater object that can be used to inflate
      * any views in the fragment,
@@ -43,19 +43,47 @@ public class OrganizerNotificationsMenuFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.organizer_notifications_menu_screen, container, false);
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.organizer_qr_menu_screen, container, false);
 
-        ImageButton profileButton = view.findViewById(R.id.notifications_menu_screen_profile_button);
-        Button button = view.findViewById(R.id.notifications_menu_screen_send_notifications);
+        ImageButton profileButton = view.findViewById(R.id.qr_menu_screen_profile_button);
+        Button generateButton = view.findViewById(R.id.qr_menu_screen_button_generate_qr_code);
+        Button reuseExistingQRButton = view.findViewById(R.id.qr_menu_screen_button_reuse_qr_code);
+        Button eventListButton = view.findViewById(R.id.qr_menu_screen_button_event_list);
+        Button shareQRButton = view.findViewById(R.id.qr_menu_screen_button_share_qr_code);
 
         registerForContextMenu(profileButton); //floating profile menu
-        button.setOnClickListener(new View.OnClickListener() {
+
+        generateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), OrganizerNotificationsSendActivity.class);
+                Intent intent = new Intent(getActivity(), OrganizerQRGeneratorActivity.class);
                 startActivity(intent);
             }
         });
+        reuseExistingQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), OrganizerQRReuseExistingActivity.class);
+                startActivity(intent);
+            }
+        });
+        eventListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), OrganizerQREventListActivity.class);
+                startActivity(intent);
+            }
+        });
+        shareQRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), OrganizerQRShareActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
         return view;
     }
 
@@ -81,4 +109,5 @@ public class OrganizerNotificationsMenuFragment extends Fragment {
             menuItem.setTitle(s);
         }
     }
+
 }

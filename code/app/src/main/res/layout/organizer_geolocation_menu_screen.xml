@@ -50,6 +50,19 @@
         android:layout_marginTop="20dp"
         android:src="@drawable/organizermapart" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/geolocation_menu_screen_see_attendee_checkins"
+        android:layout_width="300dp"
+        android:layout_height="90dp"
+        android:layout_below="@id/geolocation_menu_screen_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rounded_dark_blue"
+        android:text="See Attendee Checkins"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
+
 
 
 

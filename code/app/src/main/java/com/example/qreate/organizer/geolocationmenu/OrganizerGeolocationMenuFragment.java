@@ -1,5 +1,6 @@
-package com.example.qreate.organizer;
+package com.example.qreate.organizer.geolocationmenu;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
+import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
 
 /**
  * The following class allows the user to see the map and check attendee checkin locations
@@ -42,9 +45,19 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.organizer_geolocation_menu_screen, container, false);
+
         ImageButton profileButton = view.findViewById(R.id.geolocation_menu_screen_profile_button);
+        Button seeMap = view.findViewById(R.id.geolocation_menu_screen_see_attendee_checkins);
 
         registerForContextMenu(profileButton); //floating profile menu
+
+        seeMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), OrganizerGeolocationMap.class);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }

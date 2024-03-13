@@ -1,4 +1,4 @@
-package com.example.qreate.organizer;
+package com.example.qreate.organizer.attendeesmenu;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
+import com.example.qreate.organizer.qrmenu.OrganizerEvent;
+import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
 
 import java.util.ArrayList;
 

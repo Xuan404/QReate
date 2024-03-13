@@ -1,4 +1,4 @@
-package com.example.qreate.organizer;
+package com.example.qreate.organizer.qrmenu;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
@@ -12,6 +12,8 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.example.qreate.R;
+import com.example.qreate.organizer.qrmenu.OrganizerEvent;
+import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;

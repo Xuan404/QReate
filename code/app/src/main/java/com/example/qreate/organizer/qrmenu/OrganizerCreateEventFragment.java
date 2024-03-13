@@ -1,4 +1,4 @@
-package com.example.qreate.organizer;
+package com.example.qreate.organizer.qrmenu;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -23,6 +23,7 @@ import androidx.fragment.app.DialogFragment;
 
 
 import com.example.qreate.R;
+
 /**
  * The following class is responsible for the create event popup
  *

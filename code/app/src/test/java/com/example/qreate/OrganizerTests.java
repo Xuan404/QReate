@@ -2,18 +2,16 @@ package com.example.qreate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 
-import com.example.qreate.organizer.OrganizerEvent;
-import com.example.qreate.organizer.OrganizerQRGeneratorActivity;
+import com.example.qreate.organizer.qrmenu.OrganizerEvent;
+import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 
 public class OrganizerTests {

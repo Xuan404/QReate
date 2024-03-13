@@ -63,7 +63,7 @@
         android:layout_below="@id/send_notifications_screen_spinner"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/rounded_dark_blue"
@@ -90,8 +90,8 @@
             android:layout_below="@id/send_notifications_text"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="15dp"
+            android:gravity="start"
             android:hint="Add Text"
-            android:inputType="text"
             android:autofillHints="" />
 
         <androidx.appcompat.widget.AppCompatButton
