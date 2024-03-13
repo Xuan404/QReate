@@ -29,6 +29,7 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
 
     /**
      * Creates the view and inflates the organizer_geolocation_menu_screen layout
+     * (MIGHT NEED TO IMPLEMENT A SPINNER TO SELECT WHICH EVENT TO SHOW)
      *
      * @param inflater The LayoutInflater object that can be used to inflate
      * any views in the fragment,

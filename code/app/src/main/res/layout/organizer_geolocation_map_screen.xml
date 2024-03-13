@@ -42,6 +42,12 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/geolocation_map_screen_top_bar">
 
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/geolocation_map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
     </FrameLayout>
 
 
