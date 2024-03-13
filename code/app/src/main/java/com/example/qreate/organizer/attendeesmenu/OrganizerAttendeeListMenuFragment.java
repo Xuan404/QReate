@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -46,8 +47,15 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.organizer_attendee_list_menu_screen, container, false);
         ImageButton profileButton = view.findViewById(R.id.attendee_list_menu_screen_profile_button);
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopupMenu(view);
+            }
+        });
 
-        registerForContextMenu(profileButton); //floating profile menu
+
+
         events = new ArrayList<OrganizerEvent>();
 
         addEventsInit();
@@ -87,19 +95,42 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
     }
 
     //Creates the profile pop up menu
-    @Override
-    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.profile_menu, menu);
+    private void showPopupMenu(View view) {
+        // Initialize the PopupMenu
+        PopupMenu popupMenu = new PopupMenu(getActivity(), view); // For Fragment, use getActivity() instead of this
+        popupMenu.getMenuInflater().inflate(R.menu.profile_menu, popupMenu.getMenu());
 
-        //Colors the text color white
-        for (int i = 0; i < menu.size(); i++) {
-            MenuItem menuItem = menu.getItem(i);
-            SpannableString s = new SpannableString(menuItem.getTitle());
-            s.setSpan(new ForegroundColorSpan(Color.WHITE), 0, s.length(), 0);
-            menuItem.setTitle(s);
+        for (int i = 0; i < popupMenu.getMenu().size(); i++) {
+            MenuItem item = popupMenu.getMenu().getItem(i);
+            SpannableString spanString = new SpannableString(popupMenu.getMenu().getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(Color.WHITE), 0, spanString.length(), 0); // Set color to white
+            item.setTitle(spanString);
         }
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id == R.id.profile_account) {
+                    // Handle Profile Action
+                    return true;
+                } else if (id == R.id.profile_settings) {
+                    // Handle Settings Action
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
+
+        popupMenu.show();
     }
+
+
+
+
+
     //Temporary to test swap this with the firebase data
     private void addEventsInit(){
         String []cities ={"Edmonton", "Vancouver", "Toronto", "Hamilton", "Denver", "Los Angeles"};
