@@ -83,7 +83,7 @@ public class EditProfileScreenFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.edit_profile_info, container, false);
-        //This one goes to the next screen, the class UserAccountScreenActivity pop back previous fragment
+        //This one goes to the next screen, wherease the class AccountProfileScreenFragment destroys itself and returns to previous fragment
         // so two classes, same fragment layout but different behaviour
         // on pressing confirm, validates user details and returns
 

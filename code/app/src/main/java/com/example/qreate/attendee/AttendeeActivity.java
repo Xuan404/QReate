@@ -206,6 +206,16 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     }
 
+    public void hideBottomNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.attendee_navigation_bar);
+        navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar disappear
+    }
+
+    public void showBottomNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.attendee_navigation_bar);
+        navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
+    }
+
 
 
 
