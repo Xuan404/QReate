@@ -23,6 +23,7 @@ import androidx.fragment.app.DialogFragment;
 
 
 import com.example.qreate.R;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * The following class is responsible for the create event popup
@@ -33,15 +34,17 @@ import com.example.qreate.R;
 public class OrganizerCreateEventFragment extends DialogFragment {
     private static final int REQUEST_IMAGE_PICKER = 1;
     private ImageView imageView;
+
     interface AddEventDialogListener {
         void addEvent(OrganizerEvent event);
     }
+
     private AddEventDialogListener listener;
+
     /**
      * attaches fragment and adds listener
      *
      * @param context current context
-     *
      */
 
     @Override
@@ -58,8 +61,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
      * creates fragment
      *
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
+     *                           from a previous saved state as given here.
      * @return Dialog
      */
     @NonNull
@@ -78,28 +80,29 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         });
         //TODO don't need this cancel button we should change it such that the fragment closes once you click off
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setView(view)
+        builder.setView(view)
                 .setNegativeButton("Cancel", null);
         AlertDialog dialog = builder.create();
         createButton.setOnClickListener(v -> {
             String eventName = addName.getText().toString();
             String eventDescription = addDescription.getText().toString();
             listener.addEvent(new OrganizerEvent(eventName, eventDescription));
+            uploadEventData(new OrganizerEvent(eventName, eventDescription));
             dialog.dismiss();
         });
         return dialog;
     }
+
     /**
      * Creates the view and inflates the fragment_create_event layout
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
+     *                           from a previous saved state as given here.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -115,18 +118,18 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         return inflater.inflate(R.layout.fragment_create_event, container, false);
 
     }
+
     /**
      * opens image picker
-     *
      */
     private void openImagePicker() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_IMAGE_PICKER);
     }
+
     /**
      * gets image picker result might need to be updated as there are depreciated components
-     *
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -137,5 +140,12 @@ public class OrganizerCreateEventFragment extends DialogFragment {
             // Load the image into your ImageView or process it further
             imageView.setImageURI(selectedImageUri);
         }
+    }
+
+    private void uploadEventData(OrganizerEvent event) {
+
+        // TODO date organizer location time the qr code
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Events").document(event.getEventName()).set(event);
     }
 }
