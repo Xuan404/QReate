@@ -1,5 +1,6 @@
 package com.example.qreate.attendee;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,10 +32,6 @@ import com.google.zxing.integration.android.IntentResult;
 
 public class AttendeeScanFragment extends Fragment implements View.OnClickListener{
 
-    //variables
-    ImageButton scanButton;
-    TextView textContent;
-
     /**
      * This method inflates the layout for the attendee QR code scanning page, initializes UI components,
      * and sets up a click listener for the scan button.
@@ -54,29 +51,21 @@ public class AttendeeScanFragment extends Fragment implements View.OnClickListen
 
         View view = inflater.inflate(R.layout.attendee_tap_to_scan_page, container, false);
 
-        //initializing
-        scanButton= view.findViewById(R.id.tap_to_scan_qr_button);
-        textContent = view.findViewById(R.id.text_content);
-        //button listener
+        ImageButton scanButton = view.findViewById(R.id.tap_to_scan_qr_button);
         scanButton.setOnClickListener(this);
 
         return view;
     }
 
-    /**
-     * Handles click events for the view, this method initiates the QR code scanning process
-     * when the scan button is clicked.
-     *
-     * @param v The view that was clicked.
-     */
-
     @Override
     public void onClick(View v){
-        //make object
-        IntentIntegrator intentIntegrator = new IntentIntegrator(requireActivity());
-        intentIntegrator.setPrompt("Scan a QR code");
-        intentIntegrator.setOrientationLocked(true);
-        intentIntegrator.initiateScan();
+        if (v.getId() == R.id.tap_to_scan_qr_button){
+            Intent intent = new Intent(getActivity(), AttendeeQRScanner.class);
+            startActivity(intent);
+        }
     }
+
+
+
 
 }
