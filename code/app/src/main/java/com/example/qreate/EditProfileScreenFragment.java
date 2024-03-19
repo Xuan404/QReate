@@ -188,8 +188,7 @@ public class EditProfileScreenFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         Log.d("FirestoreConnection", "Firestore has been initialized.");
         // Get the unique Android ID
-        Context context = getContext();
-        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         // Prepare the data to send
         Map<String, Object> device = new HashMap<>();
         device.put("device_id", device_id);
@@ -200,17 +199,8 @@ public class EditProfileScreenFragment extends Fragment {
         device.put("allow_coordinates", status);
 
         // Send the unique ID to Firestore
-        db.collection("Users").add(device)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("Firestoredemo", "DocumentSnapshot successfully written!");
-                    // Show a Toast message
-                    //Toast.makeText(context, "It worked", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Log.w("Firestoredemo", "Error writing document", e);
-                    // Optionally, you could also show a Toast on failure
-                    //Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
-                });
+        db.collection("Users").add(device);
+
     }
 
     /**

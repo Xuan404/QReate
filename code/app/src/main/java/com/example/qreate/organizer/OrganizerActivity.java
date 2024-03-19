@@ -20,8 +20,16 @@ import com.example.qreate.organizer.geolocationmenu.OrganizerGeolocationMenuFrag
 import com.example.qreate.organizer.notificationsmenu.OrganizerNotificationsMenuFragment;
 import com.example.qreate.organizer.qrmenu.OrganizerQRmenuFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -34,6 +42,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
     private FirebaseFirestore db;
     private BottomNavigationView bottomNavigationView;
+    private String retrievedDocumentId;
 
     /**
      * Creates the view and sets activity to the organizer_handler layout
@@ -84,46 +93,38 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
     }
 
-    /**
-     * Interface method implemented for when the edit menu fragment is destroyed
-     */
-    public void onFragmentDestroyed() {
-        //After filling in user info from edit profile screen, this function is called
-
-        bottomNavigationView.setVisibility(View.VISIBLE);
-        homeScreenOrganizer();
-
-    }
-
-    /**
-     * Sets bottom menu bar to be invisible and open up the welcome screen
-     */
-    public void firstTimeLoginOrganizer() {
-        // Inflates the welcomescreen fragment if its the user's first time logging in
-
-        bottomNavigationView.setVisibility(View.INVISIBLE);
-        WelcomeScreenFragment welcomeScreenFragment = new WelcomeScreenFragment("organizer");
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.organizer_handler_frame,welcomeScreenFragment).commit();
-
-
-    }
 
     /**
      * Sets buttom menu bar to be visible and open up the home screen
      */
     public void homeScreenOrganizer() {
 
-        //sendUserIdToFirestore(this); //Sends user android id to database
-
         bottomNavigationView.setVisibility(View.VISIBLE);
         HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.organizer_handler_frame,homeScreenFragment).commit();
-
     }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * This method sets up all necessary parameters for checkIfUserExists() method.
+     * @param context
+     */
+    private void authenticateUser(Context context) {
+        //Function to help set up checkIfUserExists
+
+        bottomNavigationView.setVisibility(View.INVISIBLE);
+        // Get the unique Android ID
+        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        String collectionName = "Users";
+        String fieldName = "device_id";
+
+        //Checks to see if user exists
+        checkIfUserExists(collectionName, fieldName, device_id);
+
+    }
 
     /**
      * Sends a query to check if user's android id already exists within the database
@@ -154,28 +155,42 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
                         Log.e("UniqueIDCheck", "Failed to perform the query.", task.getException());
                     }
                 });
+
+
+    }
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////// EVENT FOR WHEN USER LOGS IN FOR THE FIRST TIME //////////////////////////////////
+    /**
+     * Sets bottom menu bar to be invisible and open up the welcome screen
+     */
+    public void firstTimeLoginOrganizer() {
+        // Inflates the welcome screen fragment if its the user's first time logging in
+
+        bottomNavigationView.setVisibility(View.INVISIBLE);
+        WelcomeScreenFragment welcomeScreenFragment = new WelcomeScreenFragment("organizer");
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.organizer_handler_frame,welcomeScreenFragment).commit();
+
     }
 
     /**
-     * This method sets up all necessary parameters for checkIfUserExists() method.
-     * @param context
+     * Interface method implemented for when the edit menu fragment is destroyed
      */
-    private void authenticateUser(Context context) {
-        //Function to help set up checkIfUserExists
+    public void onFragmentDestroyed() {
+        //After filling in user info from edit profile screen, this function is called
 
-        bottomNavigationView.setVisibility(View.INVISIBLE);
-        // Get the unique Android ID
-        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-        String collectionName = "Users";
-        String fieldName = "device_id";
-
-        //Checks to see if user exists
-        checkIfUserExists(collectionName, fieldName, device_id);
+        bottomNavigationView.setVisibility(View.VISIBLE);
+        createOrganizerCollection();
+        homeScreenOrganizer();
 
     }
+///////////////////////////////////////////// END //////////////////////////////////////////////////
 
 
 
+    ///////////////////////////// NAVIGATION BAR VISIBILITY ///////////////////////////////////////////////
     public void hideBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.organizer_handler_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar disappear
@@ -185,6 +200,59 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
         BottomNavigationView navBar = findViewById(R.id.organizer_handler_navigation_bar);
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
     }
+///////////////////////////////////////////// END ///////////////////////////////////////////////
+
+
+
+////////////// FUNCTIONS FOR HANDLING ORGANIZER COLLECTION CREATION //////////////////////////////////
+
+    public interface DocumentIdCallback {
+        void onDocumentIdRetrieved(String documentId);
+        void onError(Exception e);
+    }
+
+    public void createOrganizerCollection() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        retrieveUserDocument(new DocumentIdCallback() {
+            @Override
+            public void onDocumentIdRetrieved(String documentId) {
+                DocumentReference docRef = db.collection("Users").document(documentId);
+                List<String> eventList = new ArrayList<>();
+                Map<String, Object> device = new HashMap<>();
+                device.put("user_document_id", docRef);
+                device.put("event_list", eventList);
+                db.collection("Organizers").add(device);
+                // Now safely inside the callback, knowing documentId is retrieved
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Handle the error, such as by logging or displaying a message
+            }
+        });
+    }
+
+    public void retrieveUserDocument(DocumentIdCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        db.collection("Users")
+                .whereEqualTo("device_id", device_id)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        String documentId = document.getId();
+                        callback.onDocumentIdRetrieved(documentId);
+                    } else {
+                        callback.onError(new Exception("Document not found or error in fetching document."));
+                    }
+                });
+    }
+//////////////////////////////////////////////// END //////////////////////////////////////////////////
+
 
 
 }
