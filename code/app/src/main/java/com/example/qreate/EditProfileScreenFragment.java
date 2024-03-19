@@ -169,9 +169,6 @@ public class EditProfileScreenFragment extends Fragment {
             removeFragment(); //removes the fragment
         }
 
-
-
-
     }
 
 

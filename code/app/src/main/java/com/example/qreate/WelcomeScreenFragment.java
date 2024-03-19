@@ -1,10 +1,12 @@
 package com.example.qreate;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,10 +46,16 @@ public class WelcomeScreenFragment extends Fragment {
      *
      * @return
      */
+    @SuppressLint("SetTextI18n")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.welcome_screen, container, false);
+        TextView userRole = view.findViewById(R.id.welcome_screen_role);
+        userRole.setText("You are now an " + current_activity);
+
+
 
         Button updateDetails = view.findViewById(R.id.welcome_screen_updatebutton);
 
