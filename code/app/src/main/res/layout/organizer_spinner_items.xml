@@ -3,7 +3,7 @@
     android:id="@+id/event_name"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@drawable/drop_down_menus"
+    android:background="@drawable/spinner_drop_down"
     android:paddingStart="25dp"
     android:paddingEnd="25dp"
     android:text="Event Name (do in code)"
