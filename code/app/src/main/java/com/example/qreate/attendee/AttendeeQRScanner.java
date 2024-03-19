@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
  * @author Shraddha Mehta
  */
 
-public class AttendeeQRScanner extends AppCompatActivity implements View.OnClickListener{
+public class AttendeeQRScanner extends AppCompatActivity{
 
     //variables
     ImageButton scanButton;
@@ -59,25 +59,35 @@ public class AttendeeQRScanner extends AppCompatActivity implements View.OnClick
         textContent = findViewById(R.id.text_content);
 
         //button listener
-        scanButton.setOnClickListener(this);
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //make object
+                IntentIntegrator intentIntegrator = new IntentIntegrator(AttendeeQRScanner.this);
+                intentIntegrator.setPrompt("Scan a QR code");
+
+                intentIntegrator.setOrientationLocked(true);
+                intentIntegrator.initiateScan();
+            }
+        });
 
     }
 
-    /**
-     * Handles click events for the view. Specifically, it initiates the QR code scanning process.
-     *
-     * @param v The view that was clicked.
-     */
-
-    @Override
-    public void onClick(View v){
-        //make object
-        IntentIntegrator intentIntegrator = new IntentIntegrator(this);
-        intentIntegrator.setPrompt("Scan a QR code");
-
-        //intentIntegrator.setOrientationLocked(true);
-        intentIntegrator.initiateScan();
-    }
+//    /**
+//     * Handles click events for the view. Specifically, it initiates the QR code scanning process.
+//     *
+//     * @param v The view that was clicked.
+//     */
+//
+//    @Override
+//    public void onClick(View v){
+//        //make object
+//        IntentIntegrator intentIntegrator = new IntentIntegrator(this);
+//        intentIntegrator.setPrompt("Scan a QR code");
+//
+//        intentIntegrator.setOrientationLocked(true);
+//        intentIntegrator.initiateScan();
+//    }
 
     /**
      * Processes the result of the QR code scan, displaying the scanned content in a TextView.
@@ -91,23 +101,27 @@ public class AttendeeQRScanner extends AppCompatActivity implements View.OnClick
 
     @Override
     protected void onActivityResult(int requestCode,int resultCode, @Nullable Intent data){
-        super.onActivityResult(requestCode,resultCode,data);
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+        super.onActivityResult(requestCode,resultCode,data);
 
         if(intentResult != null){
             if(intentResult.getContents()== null){
                 Toast.makeText(getBaseContext(), "Aborted",Toast.LENGTH_SHORT).show();
-                finish();
+
             }
             else{
+                Toast.makeText(getBaseContext(), "Successfully scanned", Toast.LENGTH_SHORT).show();
                 textContent.setText(intentResult.getContents());
+
             }
         }
         else {
             //handle if null
-            Toast.makeText(getBaseContext(), "Scan cancelled",Toast.LENGTH_SHORT).show();
-            super.onActivityResult(requestCode,resultCode,data);
+            Toast.makeText(AttendeeQRScanner.this, "Scan cancelled",Toast.LENGTH_SHORT).show();
+
         }
+
+
     }
 
 }
