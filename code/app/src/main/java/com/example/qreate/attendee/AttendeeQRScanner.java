@@ -2,6 +2,7 @@ package com.example.qreate.attendee;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,21 +74,6 @@ public class AttendeeQRScanner extends AppCompatActivity{
 
     }
 
-//    /**
-//     * Handles click events for the view. Specifically, it initiates the QR code scanning process.
-//     *
-//     * @param v The view that was clicked.
-//     */
-//
-//    @Override
-//    public void onClick(View v){
-//        //make object
-//        IntentIntegrator intentIntegrator = new IntentIntegrator(this);
-//        intentIntegrator.setPrompt("Scan a QR code");
-//
-//        intentIntegrator.setOrientationLocked(true);
-//        intentIntegrator.initiateScan();
-//    }
 
     /**
      * Processes the result of the QR code scan, displaying the scanned content in a TextView.
