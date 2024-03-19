@@ -24,6 +24,9 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.qreate.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +39,14 @@ import java.util.Map;
  * @author Akib Zaman Choudhury
  */
 public class EditProfileScreenFragment extends Fragment {
+
+    // Regex pattern for validating an email address
+    private static final String EMAIL_REGEX =
+            "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
+                    "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+
+    // Compile the regex into a Pattern object
+    private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
     /**
      * Interface for implementing onFragmentDestroyed().
@@ -103,7 +114,9 @@ public class EditProfileScreenFragment extends Fragment {
 
     private void authenticateUserInfo(View view) {
 
-        boolean verified = true;
+        boolean nonEmptyInput = true;
+        boolean validName = true;
+        boolean validEmail = true;
 
         EditText editTextName = view.findViewById(R.id.edit_name);
         EditText editTextPhone = view.findViewById(R.id.edit_number);
@@ -116,39 +129,44 @@ public class EditProfileScreenFragment extends Fragment {
         String phone = editTextPhone.getText().toString();
         String email = editTextEmail.getText().toString();
         String homepage = editTextHomepage.getText().toString();
-
-
-
-
-
-        // Insert conditions as needed.
+        
+        
+        // Name condition check.
         if (TextUtils.isEmpty(name)) {
-            verified = false;
+            nonEmptyInput = false;
         }
 
-        // Check for a valid email address.
+        // Phone condition check
         if (TextUtils.isEmpty(phone)) {
-            verified = false;
+            nonEmptyInput = false;
         }
 
+        // Email condition check.
         if (TextUtils.isEmpty(email)) {
-            verified = false;
+            nonEmptyInput = false;
+        }
+        if (!isValidEmail(email)) {
+            validEmail = false;
         }
 
+        // Homepage condition check
         if (TextUtils.isEmpty(homepage)) {
-            verified = false;
+            nonEmptyInput = false;
         }
+
+        // Button status
         boolean status = switchButton.isChecked();
 
-
-
-        if (verified) {
-            sendUserInfoToFirestore(name, phone, email, homepage, status);
-            removeFragment(); //removes the fragment
-
-        } else {
+        
+        if (!nonEmptyInput) {
             Toast.makeText(getActivity(), "Please Enter Your Details", Toast.LENGTH_SHORT).show();
 
+        } else if (!validEmail) {
+            Toast.makeText(getActivity(), "Invalid email address", Toast.LENGTH_SHORT).show();
+
+        } else {
+            sendUserInfoToFirestore(name, phone, email, homepage, status);
+            removeFragment(); //removes the fragment
         }
 
 
@@ -198,6 +216,19 @@ public class EditProfileScreenFragment extends Fragment {
                 });
     }
 
+    /**
+     * Validates if the given string is a valid email address.
+     *
+     * @param email the string to be validated
+     * @return true if the string is a valid email address; false otherwise
+     */
+    public static boolean isValidEmail(String email) {
+        if (email == null) {
+            return false;
+        }
+        Matcher matcher = EMAIL_PATTERN.matcher(email);
+        return matcher.matches();
+    }
 
 
     public void removeFragment() {
