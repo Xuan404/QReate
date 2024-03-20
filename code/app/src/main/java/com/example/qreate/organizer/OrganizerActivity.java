@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class OrganizerActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
 
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private BottomNavigationView bottomNavigationView;
     private String retrievedDocumentId;
 
@@ -95,10 +95,11 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
 
     /**
-     * Sets buttom menu bar to be visible and open up the home screen
+     * Sets bottom menu bar to be visible and open up the home screen
      */
     public void homeScreenOrganizer() {
 
+        authenticateOrganizer(); // creates the Organizers collection if it doesn't exist
         bottomNavigationView.setVisibility(View.VISIBLE);
         HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
         getSupportFragmentManager().beginTransaction()
@@ -136,7 +137,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
      * @param uniqueId
      */
     private void checkIfUserExists(String collectionName, String fieldName, String uniqueId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         db.collection("Users")
                 .whereEqualTo(fieldName, uniqueId)
                 .limit(1) // Optimizes the query by limiting to the first match
@@ -182,15 +183,13 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
         //After filling in user info from edit profile screen, this function is called
 
         bottomNavigationView.setVisibility(View.VISIBLE);
-        createOrganizerCollection();
         homeScreenOrganizer();
 
     }
 ///////////////////////////////////////////// END //////////////////////////////////////////////////
 
 
-
-    ///////////////////////////// NAVIGATION BAR VISIBILITY ///////////////////////////////////////////////
+///////////////////////////// NAVIGATION BAR VISIBILITY ///////////////////////////////////////////////
     public void hideBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.organizer_handler_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar disappear
@@ -212,16 +211,18 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
     }
 
     public void createOrganizerCollection() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         retrieveUserDocument(new DocumentIdCallback() {
             @Override
             public void onDocumentIdRetrieved(String documentId) {
+
                 DocumentReference docRef = db.collection("Users").document(documentId);
                 List<String> eventList = new ArrayList<>();
+
+                // Add all necessary document fields here
                 Map<String, Object> device = new HashMap<>();
                 device.put("user_document_id", docRef);
-                device.put("event_list", eventList);
+                device.put("created_event_list", eventList);
                 db.collection("Organizers").add(device);
                 // Now safely inside the callback, knowing documentId is retrieved
             }
@@ -233,8 +234,76 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
         });
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    private void authenticateOrganizer() {
+        //Function to help set up checkIfOrganizerExists
+
+        retrieveUserDocument(new DocumentIdCallback() {
+            @Override
+            public void onDocumentIdRetrieved(String documentId) {
+
+                DocumentReference docRef = db.collection("Users").document(documentId);
+                String collectionName = "Organizers";
+                String fieldName = "user_document_id";
+
+                checkIfOrganizersExist(collectionName, fieldName, docRef);
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Handle the error, such as by logging or displaying a message
+            }
+        });
+
+    }
+
+
+    public void checkIfOrganizersExist(String collectionName, String fieldName, DocumentReference documentReference) {
+
+
+        db.collection(collectionName)
+                .whereEqualTo(fieldName, documentReference)
+                .limit(1) // Optimizes the query by limiting to the first match
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            Log.d("UniqueIDCheck", "The unique ID exists in the collection.");
+                        } else {
+                            createOrganizerCollection(); // creates organizer collection
+                            Log.d("UniqueIDCheck", "The unique ID does not exist in the collection.");
+                        }
+                    } else {
+                        Log.e("UniqueIDCheck", "Failed to perform the query.", task.getException());
+                    }
+                });
+
+
+    }
+
+
+
+
+
+
+
+
+
     public void retrieveUserDocument(DocumentIdCallback callback) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         db.collection("Users")
