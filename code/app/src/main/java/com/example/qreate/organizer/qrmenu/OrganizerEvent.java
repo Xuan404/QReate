@@ -73,12 +73,12 @@ public class OrganizerEvent {
      *
      */
 
-    public OrganizerEvent(String event, String detail, String date){
+    public OrganizerEvent(String event, String detail, String date, String organizer){
         this.event = event;
         this.detail = detail;
         //TODO ORGANIZER POSTER AND QR URLS
         this.date = date;
-        getOrganizerInfo();
+        this.organizer = organizer;
     }
 
     /**
@@ -86,7 +86,5 @@ public class OrganizerEvent {
      *
      * @return String
      */
-    private void getOrganizerInfo(){
-        organizer = Settings.Secure.ANDROID_ID;
-    }
+    //THIS DOESNT WORK
 }

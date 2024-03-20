@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,8 +102,8 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         createButton.setOnClickListener(v -> {
             String eventName = addName.getText().toString();
             String eventDescription = addDescription.getText().toString();
-            listener.addEvent(new OrganizerEvent(eventName, eventDescription, dateText.getText().toString()));
-            uploadEventData(new OrganizerEvent(eventName, eventDescription,dateText.getText().toString()));
+            listener.addEvent(new OrganizerEvent(eventName, eventDescription, dateText.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID)));
+            uploadEventData(new OrganizerEvent(eventName, eventDescription,dateText.getText().toString(), Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID)));
             dialog.dismiss();
         });
         return dialog;
