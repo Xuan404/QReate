@@ -29,23 +29,19 @@ import java.util.List;
  * The following class allows the administrator to see the Dashboard and view all {@link AdministratorEvent}, {@link AdministratorProfile} and {@link AdministratorImage}. (Deletion functionality will be implemented for Part 4)
  */
 public class AdministratorDashboardFragment extends Fragment {
-    private Button imagesButton;
-    private Button profilesButton;
-    private Button eventsButton;
     private ListView list;
     private FirebaseFirestore db;
 
     /**
      * Creates the view and inflates the administrator_dashboard layout, changing the custom ArrayAdapter ({@link EventArrayAdapter}, {@link ProfileArrayAdapter}, {@link ImageArrayAdapter}) for the ListView according to what the user chooses.
      *
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
      * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     *
+     *                           from a previous saved state as given here.
      * @return view
      */
     @Nullable
@@ -55,159 +51,95 @@ public class AdministratorDashboardFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.administrator_dashboard, container, false);
 
-        eventsButton = view.findViewById(R.id.events);
-        profilesButton = view.findViewById(R.id.profiles);
-        imagesButton = view.findViewById(R.id.images);
-
         list = view.findViewById(R.id.list);
         db = FirebaseFirestore.getInstance();
-
-        // Set click listeners for each button
-        eventsButton.setOnClickListener(new View.OnClickListener() {
-            private CollectionReference eventsRef;
-            @Override
-            public void onClick(View v) {
-                eventsButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.blue_button));
-                profilesButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
-                imagesButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
-
-                eventsRef = db.collection("Events");
-
-                ArrayList<AdministratorEvent> events = new ArrayList<>();
-                EventArrayAdapter arrayAdapter = new EventArrayAdapter(getContext(), events);
-                list.setAdapter(arrayAdapter);
-
-                eventsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<AdministratorEvent> eventsList = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String eventName = document.getString("name");
-                                String eventOrganizer = document.getString("organizer");
-                                eventsList.add(new AdministratorEvent(eventName, eventOrganizer));
-                            }
-                            // Update the adapter with the new list
-                            arrayAdapter.clear();
-                            arrayAdapter.addAll(eventsList);
-                            arrayAdapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("Firestore", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-            }
-        });
-
-        profilesButton.setOnClickListener(new View.OnClickListener() {
-            private CollectionReference profilesRef;
-            @Override
-            public void onClick(View v) {
-                profilesButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.blue_button));
-                imagesButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
-                eventsButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
-
-                profilesRef = db.collection("Users");
-
-                ArrayList<AdministratorProfile> profiles = new ArrayList<>();
-                ProfileArrayAdapter arrayAdapter = new ProfileArrayAdapter(getContext(), profiles);
-                list.setAdapter(arrayAdapter);
-
-                profilesRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<AdministratorProfile> profilesList = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String profileName = document.getString("name");
-                                String profileImage = document.getString("profile_picture");
-                                profilesList.add(new AdministratorProfile(profileName, profileImage));
-                            }
-                            // Update the adapter with the new list
-                            arrayAdapter.clear();
-                            arrayAdapter.addAll(profilesList);
-                            arrayAdapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("Firestore", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-            }
-        });
-
-        imagesButton.setOnClickListener(new View.OnClickListener() {
-            private CollectionReference profilesImagesRef;
-            private CollectionReference postersImagesRef;
-            @Override
-            public void onClick(View v) {
-                imagesButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.blue_button));
-                eventsButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
-                profilesButton.setBackgroundColor(ContextCompat.getColor(getContext(), com.google.zxing.client.android.R.color.zxing_transparent));
-
-                profilesImagesRef = db.collection("Users");
-                postersImagesRef = db.collection("Events");
-
-                ArrayList<AdministratorImage> images = new ArrayList<>();
-                ImageArrayAdapter arrayAdapter = new ImageArrayAdapter(getContext(), images);
-                list.setAdapter(arrayAdapter);
-
-                profilesImagesRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<AdministratorImage> imagesList = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String imageName = document.getString("name");
-                                String image = document.getString("profile_picture");
-                                imagesList.add(new AdministratorImage(imageName, image));
-                            }
-                            // Update the adapter with the new list
-                            arrayAdapter.addAll(imagesList);
-                            arrayAdapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("Firestore", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-
-                postersImagesRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<AdministratorImage> imagesList = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String imageName = document.getString("name");
-                                String image = document.getString("profile_picture");
-                                imagesList.add(new AdministratorImage(imageName, image));
-                            }
-                            // Update the adapter with the new list
-                            arrayAdapter.addAll(imagesList);
-                            arrayAdapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("Firestore", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-            }
-        });
-
         return view;
     }
+    public void loadEvents() {
+        CollectionReference eventsRef = db.collection("Events");
+        ArrayList<AdministratorEvent> events = new ArrayList<>();
+        EventArrayAdapter arrayAdapter = new EventArrayAdapter(getContext(), events);
+        list.setAdapter(arrayAdapter);
 
-    /**
-     * This method programmatically clicks the eventsButton as the events list is the one to be automatically viewed when the user click Dashboard in the menu bar.
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
-     */
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        eventsButton = view.findViewById(R.id.events);
-
-        // Programmatically clicking the "Events" button
-        eventsButton.performClick();
+        eventsRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<AdministratorEvent> eventsList = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String eventName = document.getString("name");
+                    String eventOrganizer = document.getString("organizer");
+                    eventsList.add(new AdministratorEvent(eventName, eventOrganizer));
+                }
+                // Update the adapter with the new list
+                arrayAdapter.clear();
+                arrayAdapter.addAll(eventsList);
+                arrayAdapter.notifyDataSetChanged();
+            } else {
+                Log.d("Firestore", "Error getting documents: ", task.getException());
+            }
+        });
     }
 
+    public void loadProfiles() {
+        CollectionReference profilesRef = db.collection("Users");
+        ArrayList<AdministratorProfile> profiles = new ArrayList<>();
+        ProfileArrayAdapter arrayAdapter = new ProfileArrayAdapter(getContext(), profiles);
+        list.setAdapter(arrayAdapter);
+
+        profilesRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<AdministratorProfile> profilesList = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String profileName = document.getString("name");
+                    String profileImage = document.getString("profile_picture");
+                    profilesList.add(new AdministratorProfile(profileName, profileImage));
+                }
+                // Update the adapter with the new list
+                arrayAdapter.clear();
+                arrayAdapter.addAll(profilesList);
+                arrayAdapter.notifyDataSetChanged();
+            } else {
+                Log.d("Firestore", "Error getting documents: ", task.getException());
+            }
+        });
+    }
+
+    public void loadImages() {
+        CollectionReference profilesImagesRef = db.collection("Users");
+        CollectionReference postersImagesRef = db.collection("Events");
+        ArrayList<AdministratorImage> images = new ArrayList<>();
+        ImageArrayAdapter arrayAdapter = new ImageArrayAdapter(getContext(), images);
+        list.setAdapter(arrayAdapter);
+
+        profilesImagesRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<AdministratorImage> imagesList = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String imageName = document.getString("name");
+                    String image = document.getString("profile_picture");
+                    imagesList.add(new AdministratorImage(imageName, image));
+                }
+                // Update the adapter with the new list
+                arrayAdapter.addAll(imagesList);
+                arrayAdapter.notifyDataSetChanged();
+            } else {
+                Log.d("Firestore", "Error getting documents: ", task.getException());
+            }
+        });
+
+        postersImagesRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<AdministratorImage> imagesList = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String imageName = document.getString("name");
+                    String image = document.getString("profile_picture");
+                    imagesList.add(new AdministratorImage(imageName, image));
+                }
+                // Update the adapter with the new list
+                arrayAdapter.addAll(imagesList);
+                arrayAdapter.notifyDataSetChanged();
+            } else {
+                Log.d("Firestore", "Error getting documents: ", task.getException());
+            }
+        });
+    }
 }
