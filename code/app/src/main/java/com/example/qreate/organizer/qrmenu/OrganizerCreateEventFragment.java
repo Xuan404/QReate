@@ -28,6 +28,8 @@ import com.example.qreate.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The following class is responsible for the create event popup
@@ -181,6 +183,14 @@ public class OrganizerCreateEventFragment extends DialogFragment {
 
         // TODO date, organizer, location, time, the qr code
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Events").document(event.getEvent()).set(event);
+        //db.collection("Events").document(event.getEvent()).set(event);
+        Map<String, Object> eventHash = new HashMap<>();
+        eventHash.put("organizer", event.getOrganizer());
+        eventHash.put("name", event.getEvent());
+        eventHash.put("description", event.getDetail());
+        eventHash.put("date", event.getDate());
+
+        // Send the unique ID to Firestore
+        db.collection("Events").add(eventHash);
     }
 }

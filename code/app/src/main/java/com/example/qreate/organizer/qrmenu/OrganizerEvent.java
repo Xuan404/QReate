@@ -1,5 +1,20 @@
 package com.example.qreate.organizer.qrmenu;
 
+import android.provider.Settings;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
+
+import com.example.qreate.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.List;
 
 /**
@@ -63,6 +78,7 @@ public class OrganizerEvent {
         this.detail = detail;
         //TODO ORGANIZER POSTER AND QR URLS
         this.date = date;
+        getOrganizerInfo();
     }
 
     /**
@@ -70,4 +86,7 @@ public class OrganizerEvent {
      *
      * @return String
      */
+    private void getOrganizerInfo(){
+        organizer = Settings.Secure.ANDROID_ID;
+    }
 }
