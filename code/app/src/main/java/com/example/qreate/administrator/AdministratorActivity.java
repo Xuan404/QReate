@@ -78,6 +78,15 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         });
     }
 
+    public void hideBottomNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
+        navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar disappear
+    }
+
+    public void showBottomNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
+        navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
+    }
     /**
      * Interface method implemented for when the edit menu fragment is destroyed
      */

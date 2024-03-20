@@ -17,6 +17,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.qreate.administrator.AdministratorActivity;
 import com.example.qreate.attendee.AttendeeActivity;
 import com.example.qreate.organizer.OrganizerActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -278,7 +279,7 @@ public class AccountProfileScreenFragment extends Fragment {
             } else if (Objects.equals(current_activity, "attendee")) {
                 ((AttendeeActivity)getActivity()).showBottomNavigationBar();
             }else if (Objects.equals(current_activity, "administrator")) {
-                //((AdministratorActivity)getActivity()).showBottomNavigationBar();
+                ((AdministratorActivity)getActivity()).showBottomNavigationBar();
             }
         }
     }
