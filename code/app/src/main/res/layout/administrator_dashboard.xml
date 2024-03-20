@@ -9,19 +9,32 @@
         android:id="@+id/admin_top_bar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#000000">
+        android:background="#000000"
+        android:paddingLeft="15dp">
 
         <TextView
-            android:id="@+id/qreate_title"
+            android:id="@+id/admin_dashboard_qreate_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             android:fontFamily="cursive"
             android:text="Qreate"
             android:textColor="#FFFFFF"
             android:textSize="34sp"
             android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/admin_dashboard_profile_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/circle_shape"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/profileicon" />
     </RelativeLayout>
 
     <TextView

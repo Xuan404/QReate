@@ -1,20 +1,31 @@
 package com.example.qreate.administrator;
 
+import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.organizer.OrganizerActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -53,9 +64,17 @@ public class AdministratorDashboardFragment extends Fragment {
 
         list = view.findViewById(R.id.list);
         db = FirebaseFirestore.getInstance();
+
+        ImageButton profileButton = view.findViewById(R.id.admin_dashboard_profile_button);
+        profileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopupMenu(view);
+            }
+        });
+
         return view;
     }
-    
     public void loadEvents() {
         CollectionReference eventsRef = db.collection("Events");
         ArrayList<AdministratorEvent> events = new ArrayList<>();
@@ -142,5 +161,50 @@ public class AdministratorDashboardFragment extends Fragment {
                 Log.d("Firestore", "Error getting documents: ", task.getException());
             }
         });
+    }
+
+    private void accountProfile() {
+        //Handles fragment transaction related to the account profile
+
+        ((AdministratorActivity)getActivity()).hideBottomNavigationBar();
+
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.administrator_handler_frame, new AccountProfileScreenFragment("administrator"));
+        transaction.addToBackStack(null); // Add this transaction to the back stack
+        transaction.commit();
+    }
+
+    private void showPopupMenu(View view) {
+        // Initialize the PopupMenu
+        PopupMenu popupMenu = new PopupMenu(getActivity(), view); // For Fragment, use getActivity() instead of this
+        popupMenu.getMenuInflater().inflate(R.menu.profile_menu, popupMenu.getMenu());
+
+        //Sets text color to white
+        for (int i = 0; i < popupMenu.getMenu().size(); i++) {
+            MenuItem item = popupMenu.getMenu().getItem(i);
+            SpannableString spanString = new SpannableString(popupMenu.getMenu().getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(Color.WHITE), 0, spanString.length(), 0); // Set color to white
+            item.setTitle(spanString);
+        }
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                if (id == R.id.profile_account) {
+                    accountProfile();
+                    return true;
+
+                } else if (id == R.id.profile_logout) {
+                    getActivity().finish();
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
+        popupMenu.show();
     }
 }
