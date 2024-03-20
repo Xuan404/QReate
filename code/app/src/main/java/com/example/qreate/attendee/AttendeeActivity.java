@@ -23,8 +23,11 @@ import com.example.qreate.WelcomeScreenFragment;
 import com.example.qreate.attendee.AttendeeEventDetailsFragment;
 import com.example.qreate.attendee.AttendeeNotificationsFragment;
 import com.example.qreate.attendee.AttendeeScanFragment;
+import com.example.qreate.organizer.OrganizerActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -54,6 +57,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     private FirebaseFirestore db;
     private BottomNavigationView bottomNavigationView;
+    private String retrievedDocumentId;
 
     /**
      * Called when the activity is starting. This is where most initialization should go:
@@ -65,8 +69,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
      *                           then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
      *                          Otherwise it should be null.
      */
-
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_handler);
@@ -109,11 +111,11 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
      *  is detected thatmrequires the parent activity (AttendeeActivity) to perform a
      *  subsequent action, such as returning to the home screen.
      */
-
     public void onFragmentDestroyed() {
         //After filling in user info from edit profile screen, this function is called
 
         bottomNavigationView.setVisibility(View.VISIBLE);
+        createAttendeeCollection();
         homeScreenAttendee();
     }
 
@@ -141,7 +143,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     public void homeScreenAttendee() {
 
-        //sendUserIdToFirestore(this); //Sends user android id to database
+        authenticateAttendee(); // checks if attendee collection exists, if not then creates one
 
         bottomNavigationView.setVisibility(View.VISIBLE);
         HomeScreenFragment homeScreenFragment = new HomeScreenFragment();
@@ -216,6 +218,121 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
     }
 
+
+
+
+
+
+
+
+
+
+
+////////////// FUNCTIONS FOR HANDLING ORGANIZER COLLECTION CREATION //////////////////////////////////
+
+    public interface DocumentIdCallback {
+        void onDocumentIdRetrieved(String documentId);
+        void onError(Exception e);
+    }
+
+    public void createAttendeeCollection() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        retrieveUserDocument(new DocumentIdCallback() {
+            @Override
+            public void onDocumentIdRetrieved(String documentId) {
+
+                DocumentReference docRef = db.collection("Users").document(documentId);
+                List<String> eventList = new ArrayList<>();
+
+                // Add all necessary document fields here
+                Map<String, Object> device = new HashMap<>();
+                device.put("user_document_id", docRef);
+                device.put("event_list", eventList);
+
+                db.collection("Attendees").add(device);
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Handle the error, such as by logging or displaying a message
+            }
+        });
+    }
+
+
+
+    private void authenticateAttendee() {
+        //Function to help set up checkIfOrganizerExists
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        retrieveUserDocument(new DocumentIdCallback() {
+            @Override
+            public void onDocumentIdRetrieved(String documentId) {
+
+                DocumentReference docRef = db.collection("Users").document(documentId);
+                String collectionName = "Attendees";
+                String fieldName = "user_document_id";
+
+                checkIfAttendeesExist(collectionName, fieldName, docRef);
+
+            }
+
+            @Override
+            public void onError(Exception e) {
+                // Handle the error, such as by logging or displaying a message
+            }
+        });
+
+    }
+
+
+    public void checkIfAttendeesExist(String collectionName, String fieldName, DocumentReference documentReference) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection(collectionName)
+                .whereEqualTo(fieldName, documentReference)
+                .limit(1) // Optimizes the query by limiting to the first match
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                            Log.d("UniqueIDCheck", "The unique ID exists in the collection.");
+                        } else {
+                            createAttendeeCollection(); // creates organizer collection
+                            Log.d("UniqueIDCheck", "The unique ID does not exist in the collection.");
+                        }
+                    } else {
+                        Log.e("UniqueIDCheck", "Failed to perform the query.", task.getException());
+                    }
+                });
+
+
+    }
+
+
+    public void retrieveUserDocument(DocumentIdCallback callback) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        db.collection("Users")
+                .whereEqualTo("device_id", device_id)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                        String documentId = document.getId();
+                        callback.onDocumentIdRetrieved(documentId);
+                    } else {
+                        callback.onError(new Exception("Document not found or error in fetching document."));
+                    }
+                });
+    }
+//////////////////////////////////////////////// END //////////////////////////////////////////////////
 
 
 
