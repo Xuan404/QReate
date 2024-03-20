@@ -52,20 +52,30 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 Fragment selectedFragment = null;
                 int itemId = item.getItemId();
 
-                if (itemId == R.id.dashboard_icon) {
+                if (itemId == R.id.events_icon) {
                     selectedFragment = new AdministratorDashboardFragment();
-                } else if (itemId == R.id.account_icon) {
-                    selectedFragment = new EditProfileScreenFragment();
+                } else if (itemId == R.id.profiles_icon) {
+                    selectedFragment = new AdministratorDashboardFragment();
+                } else if (itemId == R.id.images_icon) {
+                    selectedFragment = new AdministratorDashboardFragment();
                 }
 
                 if (selectedFragment != null) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commit();
-                    return true;
+                    getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
+
+                    if (selectedFragment instanceof AdministratorDashboardFragment) {
+                        if (itemId == R.id.events_icon) {
+                            ((AdministratorDashboardFragment) selectedFragment).loadEvents();
+                        } else if (itemId == R.id.profiles_icon) {
+                            ((AdministratorDashboardFragment) selectedFragment).loadProfiles();
+                        } else if (itemId == R.id.images_icon) {
+                            ((AdministratorDashboardFragment) selectedFragment).loadImages();
+                        }
+                    }
                 }
                 return true;
             }
         });
-
     }
 
     /**
