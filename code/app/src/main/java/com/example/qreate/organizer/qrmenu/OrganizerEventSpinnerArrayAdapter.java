@@ -62,7 +62,7 @@ public class OrganizerEventSpinnerArrayAdapter extends ArrayAdapter<OrganizerEve
 
         TextView eventName = view.findViewById(R.id.event_name);
 
-        eventName.setText(event.getEventName());
+        eventName.setText(event.getEvent());
 
         return view;
     }
@@ -82,7 +82,7 @@ public class OrganizerEventSpinnerArrayAdapter extends ArrayAdapter<OrganizerEve
                 .inflate(R.layout.organizer_spinner_items, parent, false);
 
         TextView listItem = customDropdownView.findViewById(R.id.event_name);
-        listItem.setText(Objects.requireNonNull(getItem(position)).getEventName());
+        listItem.setText(Objects.requireNonNull(getItem(position)).getEvent());
 
         return customDropdownView;
     }

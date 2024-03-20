@@ -3,6 +3,7 @@ package com.example.qreate.organizer.qrmenu;
 import static android.app.Activity.RESULT_OK;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,6 +27,8 @@ import androidx.fragment.app.DialogFragment;
 import com.example.qreate.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Calendar;
+
 /**
  * The following class is responsible for the create event popup
  *
@@ -34,6 +38,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class OrganizerCreateEventFragment extends DialogFragment {
     private static final int REQUEST_IMAGE_PICKER = 1;
     private ImageView imageView;
+    private TextView dateText;
 
     interface AddEventDialogListener {
         void addEvent(OrganizerEvent event);
@@ -71,12 +76,20 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         EditText addName = view.findViewById(R.id.editTextEventName);
         EditText addDescription = view.findViewById(R.id.editTextEventDescription);
         Button createButton = view.findViewById(R.id.buttonCreateEvent);
+        Button dateButton = view.findViewById(R.id.dateButton);
         ImageButton addPoster = view.findViewById(R.id.buttonUploadPoster);
         TextView posterName = view.findViewById(R.id.imageName);
+        TextView dateText = view.findViewById(R.id.dateText);
         addPoster.setOnClickListener(v -> {
             openImagePicker();
             posterName.setVisibility(View.VISIBLE);
             addPoster.setVisibility(View.INVISIBLE);
+        });
+        dateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatePicker();
+            }
         });
         //TODO don't need this cancel button we should change it such that the fragment closes once you click off
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -86,8 +99,8 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         createButton.setOnClickListener(v -> {
             String eventName = addName.getText().toString();
             String eventDescription = addDescription.getText().toString();
-            listener.addEvent(new OrganizerEvent(eventName, eventDescription));
-            uploadEventData(new OrganizerEvent(eventName, eventDescription));
+            listener.addEvent(new OrganizerEvent(eventName, eventDescription, dateText.getText().toString()));
+            uploadEventData(new OrganizerEvent(eventName, eventDescription,dateText.getText().toString()));
             dialog.dismiss();
         });
         return dialog;
@@ -127,6 +140,28 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         intent.setType("image/*");
         startActivityForResult(intent, REQUEST_IMAGE_PICKER);
     }
+//TODO ADD THE JAVA DOCS
+    private void openDatePicker(){
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this.getContext(),
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        // Handle the selected date (e.g., update UI)
+                        String selectedDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+                        dateText.setText(selectedDate);
+                    }
+                },
+                year, month, day);
+
+        datePickerDialog.show();
+    }
+
+
 
     /**
      * gets image picker result might need to be updated as there are depreciated components
@@ -144,8 +179,8 @@ public class OrganizerCreateEventFragment extends DialogFragment {
 
     private void uploadEventData(OrganizerEvent event) {
 
-        // TODO date organizer location time the qr code
+        // TODO date, organizer, location, time, the qr code
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Events").document(event.getEventName()).set(event);
+        db.collection("Events").document(event.getEvent()).set(event);
     }
 }

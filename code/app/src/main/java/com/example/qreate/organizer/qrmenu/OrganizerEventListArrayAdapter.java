@@ -49,7 +49,7 @@ public class OrganizerEventListArrayAdapter extends RecyclerView.Adapter<AViewHo
      */
     @Override
     public void onBindViewHolder(@NonNull AViewHolder holder, int position) {
-        holder.eventName.setText(events.get(position).getEventName());
+        holder.eventName.setText(events.get(position).getEvent());
 
     }
 

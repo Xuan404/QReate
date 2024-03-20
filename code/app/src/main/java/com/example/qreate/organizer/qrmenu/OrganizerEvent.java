@@ -1,4 +1,7 @@
 package com.example.qreate.organizer.qrmenu;
+
+import java.util.List;
+
 /**
  * The following class represents a event
  *
@@ -8,6 +11,45 @@ package com.example.qreate.organizer.qrmenu;
 public class OrganizerEvent {
     private String event;
     private String detail;
+    private String organizer;
+    private String date;
+    private String posterUrl;
+    private String signInQrCodeUrl;
+    private String promotionalQrCodeUrl;
+    private List<String> usersSignedUp;
+
+    public String getEvent() {
+        return event;
+    }
+
+    public String getOrganizer() {
+        return organizer;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public String getSignInQrCodeUrl() {
+        return signInQrCodeUrl;
+    }
+
+    public String getPromotionalQrCodeUrl() {
+        return promotionalQrCodeUrl;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public List<String> getUsersSignedUp() {
+        return usersSignedUp;
+    }
+
     /**
      * event constructer
      *
@@ -16,9 +58,11 @@ public class OrganizerEvent {
      *
      */
 
-    public OrganizerEvent(String event, String detail){
+    public OrganizerEvent(String event, String detail, String date){
         this.event = event;
         this.detail = detail;
+        //TODO ORGANIZER POSTER AND QR URLS
+        this.date = date;
     }
 
     /**
@@ -26,16 +70,4 @@ public class OrganizerEvent {
      *
      * @return String
      */
-    public String getEventName(){
-        return this.event;
-    }
-    /**
-     * returns details
-     *
-     * @return String
-     */
-
-    public String getDetail(){
-        return this.detail;
-    }
 }
