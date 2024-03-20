@@ -75,6 +75,8 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
             }
         });
     }
+
+
     //Temporary to test swap this with the firebase data
     private void addEventsInit(){
         String []cities ={"Edmonton", "Vancouver", "Toronto", "Hamilton", "Denver", "Los Angeles"};
