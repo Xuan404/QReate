@@ -55,6 +55,7 @@ public class AdministratorDashboardFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         return view;
     }
+    
     public void loadEvents() {
         CollectionReference eventsRef = db.collection("Events");
         ArrayList<AdministratorEvent> events = new ArrayList<>();
