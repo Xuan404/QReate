@@ -55,7 +55,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     This class is used as the MainActivity class for the Administrator UI
      */
 
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();;
     private BottomNavigationView bottomNavigationView;
     private String retrievedDocumentId;
 
@@ -73,7 +73,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_handler);
 
-        db = FirebaseFirestore.getInstance();
 
         bottomNavigationView = findViewById(R.id.attendee_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholderAttendee);
@@ -108,7 +107,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     /**
      *  onFragmentDestroyed() is called when an interaction in the EditProfileScreenFragment
-     *  is detected thatmrequires the parent activity (AttendeeActivity) to perform a
+     *  is detected that requires the parent activity (AttendeeActivity) to perform a
      *  subsequent action, such as returning to the home screen.
      */
     public void onFragmentDestroyed() {
@@ -164,7 +163,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
 
     private void checkIfUserExists(String collectionName, String fieldName, String uniqueId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         db.collection("Users")
                 .whereEqualTo(fieldName, uniqueId)
                 .limit(1) // Optimizes the query by limiting to the first match
@@ -236,7 +235,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     }
 
     public void createAttendeeCollection() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         retrieveUserDocument(new DocumentIdCallback() {
             @Override
@@ -265,7 +263,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     private void authenticateAttendee() {
         //Function to help set up checkIfOrganizerExists
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         retrieveUserDocument(new DocumentIdCallback() {
             @Override
@@ -290,8 +287,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     public void checkIfAttendeesExist(String collectionName, String fieldName, DocumentReference documentReference) {
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         db.collection(collectionName)
                 .whereEqualTo(fieldName, documentReference)
                 .limit(1) // Optimizes the query by limiting to the first match
@@ -315,7 +310,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
 
     public void retrieveUserDocument(DocumentIdCallback callback) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         db.collection("Users")

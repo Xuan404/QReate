@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class OrganizerActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
 
-    private FirebaseFirestore db;
+    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private BottomNavigationView bottomNavigationView;
     private String retrievedDocumentId;
 
@@ -137,7 +137,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
      * @param uniqueId
      */
     private void checkIfUserExists(String collectionName, String fieldName, String uniqueId) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         db.collection("Users")
                 .whereEqualTo(fieldName, uniqueId)
                 .limit(1) // Optimizes the query by limiting to the first match
@@ -211,7 +211,6 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
     }
 
     public void createOrganizerCollection() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         retrieveUserDocument(new DocumentIdCallback() {
             @Override
@@ -249,7 +248,6 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
     private void authenticateOrganizer() {
         //Function to help set up checkIfOrganizerExists
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         retrieveUserDocument(new DocumentIdCallback() {
             @Override
@@ -274,7 +272,6 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
     public void checkIfOrganizersExist(String collectionName, String fieldName, DocumentReference documentReference) {
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection(collectionName)
                 .whereEqualTo(fieldName, documentReference)
@@ -306,7 +303,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
 
     public void retrieveUserDocument(DocumentIdCallback callback) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         db.collection("Users")
