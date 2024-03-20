@@ -223,7 +223,7 @@ public class EditProfileScreenFragment extends Fragment {
         device.put("homepage", homepage);
         device.put("allow_coordinates", status);
         device.put("profile_picture", encodeBitmap(profilePicture));
-        device.put("initials", getInitials(name));
+        device.put("initials", initials);
 
         // Send the unique ID to Firestore
         db.collection("Users").add(device);
@@ -262,7 +262,7 @@ public class EditProfileScreenFragment extends Fragment {
 
     // generate a bitmap with initials drawn in
     private Bitmap generateProfilePicture(String initials){
-        int width = 180;
+        int width = 160;
         int height = 160;
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
@@ -274,8 +274,9 @@ public class EditProfileScreenFragment extends Fragment {
 
         //Draw initials in the text
         Paint textPaint = new Paint();
-        textPaint.setColor(Color.WHITE);
+        textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(70);
+        textPaint.setFakeBoldText(true);
         textPaint.setTextAlign(Paint.Align.CENTER);
 
         // "/ 2f" will calculate center of bitmap
