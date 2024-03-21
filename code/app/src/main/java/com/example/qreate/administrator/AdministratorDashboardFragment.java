@@ -143,7 +143,7 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                 List<AdministratorImage> imagesList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String imageName = document.getString("name");
-                    String image = document.getString("profile_picture");
+                    String image = document.getString("poster");
                     imagesList.add(new AdministratorImage(imageName, image));
                 }
                 // Update the adapter with the new list
