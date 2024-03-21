@@ -87,4 +87,12 @@ public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
         selectedPosition = -1; // Reset the selected position
         notifyDataSetChanged(); // Notify the adapter to refresh the list view
     }
+
+    public String getSelectedEventId() {
+        if (selectedPosition != -1) {
+            AdministratorEvent selectedEvent = getItem(selectedPosition);
+            return selectedEvent.getId();
+        }
+        return null;
+    }
 }
