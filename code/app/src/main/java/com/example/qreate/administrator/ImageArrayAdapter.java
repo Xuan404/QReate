@@ -84,8 +84,18 @@ public class ImageArrayAdapter extends ArrayAdapter<AdministratorImage> {
         void onImageSelected();
     }
 
+    /*
     public void clearSelection() {
         selectedPosition = -1; // Reset the selected position
         notifyDataSetChanged(); // Notify the adapter to refresh the list view
+    }
+     */
+
+    public String getSelectedImageId() {
+        if (selectedPosition != -1) {
+            AdministratorImage selectedImage = getItem(selectedPosition);
+            return selectedImage.getId();
+        }
+        return null;
     }
 }

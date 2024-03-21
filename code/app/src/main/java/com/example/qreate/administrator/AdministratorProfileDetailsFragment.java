@@ -1,6 +1,7 @@
 package com.example.qreate.administrator;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdministratorProfileDetailsFragment extends Fragment {
@@ -21,6 +23,7 @@ public class AdministratorProfileDetailsFragment extends Fragment {
     private TextView profileEmail;
     private TextView profileHomepage;
     private FirebaseFirestore db;
+    private String profileId;
 
     @Nullable
     @Override
@@ -34,7 +37,40 @@ public class AdministratorProfileDetailsFragment extends Fragment {
         profileEmail = view.findViewById(R.id.profile_details_email);
         profileHomepage = view.findViewById(R.id.profile_details_homepage);
 
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            profileId = arguments.getString("profileId");
+        }
+
+        if (profileId != null) {
+            db.collection("Users").document(profileId)
+                    .get().addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                // Extract event details from the document and update the UI
+                                profileName.setText(document.getString("name"));
+                                profileMobileNum.setText(document.getString("phone_number"));
+                                profileEmail.setText(document.getString("email"));
+                                profileHomepage.setText(document.getString("homepage"));
+                                // query image once they have figured it out
+                            } else {
+                                Log.d("Firestore", "Error getting documents: ", task.getException());
+                            }
+                        } else {
+                            Log.d("Firestore", "Task Failure: ", task.getException());
+
+                        }
+                    });
+        }
         return view;
 
+    }
+    public static AdministratorProfileDetailsFragment newInstance(String profileId) {
+        AdministratorProfileDetailsFragment fragment = new AdministratorProfileDetailsFragment();
+        Bundle args = new Bundle();
+        args.putString("profileId", profileId);
+        fragment.setArguments(args);
+        return fragment;
     }
 }
