@@ -34,6 +34,7 @@ import java.util.List;
 public class AdministratorDashboardFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener{
     private ListView list;
     private FirebaseFirestore db;
+    private EventArrayAdapter eventArrayAdapter;
 
     /**
      * Creates the view and inflates the administrator_dashboard layout, changing the custom ArrayAdapter ({@link EventArrayAdapter}, {@link ProfileArrayAdapter}, {@link ImageArrayAdapter}) for the ListView according to what the user chooses.
@@ -205,6 +206,12 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
     public void onEventSelected() {
         hideBottomNavigationBar(); // Implement this method
         showDetailsNavigationBar(); // Implement this method
+    }
+
+    public void clearEventSelection() {
+        if (eventArrayAdapter != null) {
+            eventArrayAdapter.clearSelection();
+        }
     }
 
     private void hideBottomNavigationBar() {

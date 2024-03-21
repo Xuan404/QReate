@@ -92,6 +92,49 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     public void showDetailsNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_view_details_navigation_bar);
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
+        navBar.setSelectedItemId(R.id.defaultNavPlaceholder);
+        setupDetailsNavigationBar();
+    }
+
+    public void hideDetailsNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.administrator_view_details_navigation_bar);
+        navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar reappear
+    }
+
+    public void showDeleteNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.administrator_delete_navigation_bar);
+        navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
+        navBar.setSelectedItemId(R.id.defaultNavPlaceholder);
+    }
+
+    public void hideDeleteNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.administrator_delete_navigation_bar);
+        navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar reappear
+    }
+
+    public void setupDetailsNavigationBar() {
+        BottomNavigationView detailsNavBar = findViewById(R.id.administrator_view_details_navigation_bar);
+        detailsNavBar.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.cancel_icon) {
+                    hideDetailsNavigationBar();
+                    showMainBottomNavigationBar();
+
+
+                } else if (itemId == R.id.view_details_icon) {
+                    hideDetailsNavigationBar();
+                    showDeleteNavigationBar();
+                    selectedFragment = new AdministratorEventDetailsFragment();
+                }
+                if (selectedFragment != null) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler, selectedFragment).commit();
+                }
+                return true;
+            }
+        });
     }
 
     /**
