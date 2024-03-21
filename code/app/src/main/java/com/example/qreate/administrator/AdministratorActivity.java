@@ -189,10 +189,13 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                     hideDetailsNavigationBar();
                     showDeleteNavigationBar();
                     if (navBarItemId==R.id.events_icon) {
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.administrator_handler_frame, new AdministratorEventDetailsFragment());
-                        transaction.addToBackStack(null); // This line adds the transaction to the back stack
-                        transaction.commit();
+                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.administrator_handler_frame);
+                        if (currentFragment instanceof AdministratorDashboardFragment) {
+                            String selectedEventId = ((AdministratorDashboardFragment) currentFragment).getSelectedEventId();
+                            if (selectedEventId != null) {
+                                navigateToEventDetails(selectedEventId);
+                            }
+                        }
                     }
 
                     else if (navBarItemId==R.id.profiles_icon) {
@@ -212,6 +215,15 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
             }
         });
     }
+
+    private void navigateToEventDetails(String eventId) {
+        AdministratorEventDetailsFragment detailsFragment = AdministratorEventDetailsFragment.newInstance(eventId);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.administrator_handler_frame, detailsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
 
     /**
      * Interface method implemented for when the edit menu fragment is destroyed

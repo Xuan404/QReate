@@ -83,10 +83,13 @@ public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
         void onEventSelected();
     }
 
+    /*
     public void clearSelection() {
         selectedPosition = -1; // Reset the selected position
         notifyDataSetChanged(); // Notify the adapter to refresh the list view
     }
+
+     */
 
     public String getSelectedEventId() {
         if (selectedPosition != -1) {
