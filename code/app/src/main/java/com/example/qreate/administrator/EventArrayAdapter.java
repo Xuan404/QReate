@@ -86,4 +86,9 @@ public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
         super(context, 0, events);
         mListener = listener;
     }
+
+    public void clearSelection() {
+        selectedPosition = -1; // Reset the selected position
+        notifyDataSetChanged(); // Notify the adapter to refresh the list view
+    }
 }
