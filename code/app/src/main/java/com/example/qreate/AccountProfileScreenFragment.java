@@ -250,26 +250,6 @@ public class AccountProfileScreenFragment extends Fragment {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void onDestroyView() {
         super.onDestroyView();
         if (getActivity() != null) {
