@@ -114,6 +114,9 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
 
     public void setupDetailsNavigationBar() {
         BottomNavigationView detailsNavBar = findViewById(R.id.administrator_view_details_navigation_bar);
+        BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
+        int navBarItemId = navBar.getSelectedItemId();
+
         detailsNavBar.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;
@@ -123,11 +126,15 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                     hideDetailsNavigationBar();
                     showMainBottomNavigationBar();
 
-
                 } else if (itemId == R.id.view_details_icon) {
                     hideDetailsNavigationBar();
                     showDeleteNavigationBar();
-                    selectedFragment = new AdministratorEventDetailsFragment();
+                    if (navBarItemId==R.id.events_icon)
+                        selectedFragment = new AdministratorEventDetailsFragment();
+                    else if (navBarItemId==R.id.profiles_icon)
+                        selectedFragment = new AdministratorProfileDetailsFragment();
+                    else if (navBarItemId==R.id.images_icon)
+                        selectedFragment = new AdministratorImageDetailsFragment();
                 }
                 if (selectedFragment != null) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler, selectedFragment).commit();

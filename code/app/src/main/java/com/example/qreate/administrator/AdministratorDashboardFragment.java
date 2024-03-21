@@ -31,10 +31,12 @@ import java.util.List;
 /**
  * The following class allows the administrator to see the Dashboard and view all {@link AdministratorEvent}, {@link AdministratorProfile} and {@link AdministratorImage}. (Deletion functionality will be implemented for Part 4)
  */
-public class AdministratorDashboardFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener{
+public class AdministratorDashboardFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener,ProfileArrayAdapter.OnProfileSelectedListener,ImageArrayAdapter.OnImageSelectedListener{
     private ListView list;
     private FirebaseFirestore db;
     private EventArrayAdapter eventArrayAdapter;
+    private ProfileArrayAdapter profileArrayAdapter;
+    private ImageArrayAdapter imageArrayAdapter;
 
     /**
      * Creates the view and inflates the administrator_dashboard layout, changing the custom ArrayAdapter ({@link EventArrayAdapter}, {@link ProfileArrayAdapter}, {@link ImageArrayAdapter}) for the ListView according to what the user chooses.
@@ -95,7 +97,7 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
     public void loadProfiles() {
         CollectionReference profilesRef = db.collection("Users");
         ArrayList<AdministratorProfile> profiles = new ArrayList<>();
-        ProfileArrayAdapter arrayAdapter = new ProfileArrayAdapter(getContext(), profiles);
+        ProfileArrayAdapter arrayAdapter = new ProfileArrayAdapter(getContext(), profiles,this);
         list.setAdapter(arrayAdapter);
 
         profilesRef.get().addOnCompleteListener(task -> {
@@ -120,7 +122,7 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         CollectionReference profilesImagesRef = db.collection("Users");
         CollectionReference postersImagesRef = db.collection("Events");
         ArrayList<AdministratorImage> images = new ArrayList<>();
-        ImageArrayAdapter arrayAdapter = new ImageArrayAdapter(getContext(), images);
+        ImageArrayAdapter arrayAdapter = new ImageArrayAdapter(getContext(), images,this);
         list.setAdapter(arrayAdapter);
 
         profilesImagesRef.get().addOnCompleteListener(task -> {
@@ -208,9 +210,28 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         showDetailsNavigationBar(); // Implement this method
     }
 
+
+    @Override
+    public void onProfileSelected() {
+        hideBottomNavigationBar(); // Implement this method
+        showDetailsNavigationBar(); // Implement this method
+    }
+
+    @Override
+    public void onImageSelected() {
+        hideBottomNavigationBar(); // Implement this method
+        showDetailsNavigationBar(); // Implement this method
+    }
+
     public void clearEventSelection() {
         if (eventArrayAdapter != null) {
             eventArrayAdapter.clearSelection();
+        }
+        else if (profileArrayAdapter != null) {
+            profileArrayAdapter.clearSelection();
+        }
+        else if (imageArrayAdapter != null) {
+            imageArrayAdapter.clearSelection();
         }
     }
 
