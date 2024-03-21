@@ -146,8 +146,14 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 else if (itemId == R.id.delete_icon) {
                     hideDeleteNavigationBar();
                     showMainBottomNavigationBar();
+                    Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.administrator_handler_frame);
+                    if (currentFragment instanceof AdministratorDashboardFragment) {
+                        String selectedEventId = ((AdministratorDashboardFragment) currentFragment).getSelectedEventId();
+                        if (selectedEventId != null && navBarItemId == R.id.events_icon) {
+                            deleteEvent(selectedEventId);
+                        }
+                    }
                     getSupportFragmentManager().popBackStackImmediate();
-
                     if ((navBarItemId == R.id.events_icon) || (navBarItemId == R.id.profiles_icon) || (navBarItemId == R.id.images_icon)) {
                         selectedFragment = new AdministratorDashboardFragment();
                     }
@@ -170,6 +176,13 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
             }
         });
 
+    }
+
+    private void deleteEvent(String eventId) {
+        db.collection("Events").document(eventId)
+                .delete()
+                .addOnSuccessListener(aVoid -> Log.d("Delete Event", "Event successfully deleted!"))
+                .addOnFailureListener(e -> Log.w("Delete Event", "Error deleting event", e));
     }
 
     public void setupDetailsNavigationBar() {
@@ -199,16 +212,22 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                     }
 
                     else if (navBarItemId==R.id.profiles_icon) {
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.administrator_handler_frame, new AdministratorProfileDetailsFragment());
-                        transaction.addToBackStack(null); // This line adds the transaction to the back stack
-                        transaction.commit();
+                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.administrator_handler_frame);
+                        if (currentFragment instanceof AdministratorDashboardFragment) {
+                            String selectedProfileId = ((AdministratorDashboardFragment) currentFragment).getSelectedProfileId();
+                            if (selectedProfileId != null) {
+                                navigateToProfileDetails(selectedProfileId);
+                            }
+                        }
                     }
                     else if (navBarItemId==R.id.images_icon) {
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.administrator_handler_frame, new AdministratorImageDetailsFragment());
-                        transaction.addToBackStack(null); // This line adds the transaction to the back stack
-                        transaction.commit();
+                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.administrator_handler_frame);
+                        if (currentFragment instanceof AdministratorDashboardFragment) {
+                            String selectedImageId = ((AdministratorDashboardFragment) currentFragment).getSelectedImageId();
+                            if (selectedImageId != null) {
+                                navigateToImageDetails(selectedImageId);
+                            }
+                        }
                     }
                 }
                 return true;
@@ -218,6 +237,22 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
 
     private void navigateToEventDetails(String eventId) {
         AdministratorEventDetailsFragment detailsFragment = AdministratorEventDetailsFragment.newInstance(eventId);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.administrator_handler_frame, detailsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void navigateToImageDetails(String imageId) {
+        AdministratorImageDetailsFragment detailsFragment = AdministratorImageDetailsFragment.newInstance(imageId);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.administrator_handler_frame, detailsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void navigateToProfileDetails(String profileId) {
+        AdministratorProfileDetailsFragment detailsFragment = AdministratorProfileDetailsFragment.newInstance(profileId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.administrator_handler_frame, detailsFragment);
         transaction.addToBackStack(null);

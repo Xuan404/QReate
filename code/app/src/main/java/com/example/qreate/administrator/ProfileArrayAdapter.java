@@ -90,4 +90,12 @@ public class ProfileArrayAdapter extends ArrayAdapter<AdministratorProfile> {
         selectedPosition = -1; // Reset the selected position
         notifyDataSetChanged(); // Notify the adapter to refresh the list view
     }
+
+    public String getSelectedProfileId() {
+        if (selectedPosition != -1) {
+            AdministratorProfile selectedProfile = getItem(selectedPosition);
+            return selectedProfile.getId();
+        }
+        return null;
+    }
 }
