@@ -73,8 +73,8 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
     public void loadEvents() {
         CollectionReference eventsRef = db.collection("Events");
         ArrayList<AdministratorEvent> events = new ArrayList<>();
-        EventArrayAdapter arrayAdapter = new EventArrayAdapter(getContext(), events, this);
-        list.setAdapter(arrayAdapter);
+        eventArrayAdapter = new EventArrayAdapter(getContext(), events, this); // Use class field here
+        list.setAdapter(eventArrayAdapter);
 
         eventsRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -82,13 +82,13 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String eventName = document.getString("name");
                     String eventOrganizer = document.getString("organizer");
-                    String eventId = document.getString("id");
+                    String eventId = document.getId();
                     eventsList.add(new AdministratorEvent(eventName, eventOrganizer, eventId));
                 }
                 // Update the adapter with the new list
-                arrayAdapter.clear();
-                arrayAdapter.addAll(eventsList);
-                arrayAdapter.notifyDataSetChanged();
+                eventArrayAdapter.clear();
+                eventArrayAdapter.addAll(eventsList);
+                eventArrayAdapter.notifyDataSetChanged();
             } else {
                 Log.d("Firestore", "Error getting documents: ", task.getException());
             }
@@ -224,6 +224,7 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         showDetailsNavigationBar(); // Implement this method
     }
 
+    /*
     public void clearEventSelection() {
         if (eventArrayAdapter != null) {
             eventArrayAdapter.clearSelection();
@@ -235,6 +236,8 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
             imageArrayAdapter.clearSelection();
         }
     }
+
+     */
 
     private void hideBottomNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
