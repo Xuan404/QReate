@@ -11,6 +11,7 @@ import android.widget.PopupMenu;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qreate.EditProfileScreenFragment;
 import com.example.qreate.R;
@@ -53,11 +54,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 Fragment selectedFragment = null;
                 int itemId = item.getItemId();
 
-                if (itemId == R.id.events_icon) {
-                    selectedFragment = new AdministratorDashboardFragment();
-                } else if (itemId == R.id.profiles_icon) {
-                    selectedFragment = new AdministratorDashboardFragment();
-                } else if (itemId == R.id.images_icon) {
+                if ((itemId == R.id.events_icon) || (itemId == R.id.profiles_icon) || (itemId == R.id.images_icon)) {
                     selectedFragment = new AdministratorDashboardFragment();
                 }
 
@@ -78,6 +75,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
             }
         });
     }
+
 
     public void hideMainBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
@@ -105,11 +103,73 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         BottomNavigationView navBar = findViewById(R.id.administrator_delete_navigation_bar);
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
         navBar.setSelectedItemId(R.id.defaultNavPlaceholder);
+        setupDeleteNavigationBar();
     }
 
     public void hideDeleteNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_delete_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar reappear
+    }
+
+    public void setupDeleteNavigationBar(){
+        BottomNavigationView deleteNavBar = findViewById(R.id.administrator_delete_navigation_bar);
+        BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
+        int navBarItemId = navBar.getSelectedItemId();
+
+        deleteNavBar.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                AdministratorDashboardFragment selectedFragment = null;
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.cancel_icon_two) {
+                    hideDeleteNavigationBar();
+                    showMainBottomNavigationBar();
+                    getSupportFragmentManager().popBackStackImmediate();
+
+                    if ((navBarItemId == R.id.events_icon) || (navBarItemId == R.id.profiles_icon) || (navBarItemId == R.id.images_icon)) {
+                        selectedFragment = new AdministratorDashboardFragment();
+                    }
+                    if (selectedFragment != null) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
+
+                        if (selectedFragment instanceof AdministratorDashboardFragment) {
+                            if (navBarItemId == R.id.events_icon) {
+                                selectedFragment.loadEvents();
+                            } else if (navBarItemId == R.id.profiles_icon) {
+                                selectedFragment.loadProfiles();
+                            } else if (navBarItemId == R.id.images_icon) {
+                                selectedFragment.loadImages();
+                            }
+                        }
+                    }
+                }
+                else if (itemId == R.id.delete_icon) {
+                    hideDeleteNavigationBar();
+                    showMainBottomNavigationBar();
+                    getSupportFragmentManager().popBackStackImmediate();
+
+                    if ((navBarItemId == R.id.events_icon) || (navBarItemId == R.id.profiles_icon) || (navBarItemId == R.id.images_icon)) {
+                        selectedFragment = new AdministratorDashboardFragment();
+                    }
+                    if (selectedFragment != null) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
+
+                        if (selectedFragment instanceof AdministratorDashboardFragment) {
+                            if (navBarItemId == R.id.events_icon) {
+                                selectedFragment.loadEvents();
+                            } else if (navBarItemId == R.id.profiles_icon) {
+                                selectedFragment.loadProfiles();
+                            } else if (navBarItemId == R.id.images_icon) {
+                                selectedFragment.loadImages();
+                            }
+                        }
+                    }
+
+                }
+                return true;
+            }
+        });
+
     }
 
     public void setupDetailsNavigationBar() {
@@ -119,7 +179,6 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
 
         detailsNavBar.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFragment = null;
                 int itemId = item.getItemId();
 
                 if (itemId == R.id.cancel_icon) {
@@ -129,15 +188,25 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 } else if (itemId == R.id.view_details_icon) {
                     hideDetailsNavigationBar();
                     showDeleteNavigationBar();
-                    if (navBarItemId==R.id.events_icon)
-                        selectedFragment = new AdministratorEventDetailsFragment();
-                    else if (navBarItemId==R.id.profiles_icon)
-                        selectedFragment = new AdministratorProfileDetailsFragment();
-                    else if (navBarItemId==R.id.images_icon)
-                        selectedFragment = new AdministratorImageDetailsFragment();
-                }
-                if (selectedFragment != null) {
-                    getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler, selectedFragment).commit();
+                    if (navBarItemId==R.id.events_icon) {
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.administrator_handler_frame, new AdministratorEventDetailsFragment());
+                        transaction.addToBackStack(null); // This line adds the transaction to the back stack
+                        transaction.commit();
+                    }
+
+                    else if (navBarItemId==R.id.profiles_icon) {
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.administrator_handler_frame, new AdministratorProfileDetailsFragment());
+                        transaction.addToBackStack(null); // This line adds the transaction to the back stack
+                        transaction.commit();
+                    }
+                    else if (navBarItemId==R.id.images_icon) {
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.administrator_handler_frame, new AdministratorImageDetailsFragment());
+                        transaction.addToBackStack(null); // This line adds the transaction to the back stack
+                        transaction.commit();
+                    }
                 }
                 return true;
             }
