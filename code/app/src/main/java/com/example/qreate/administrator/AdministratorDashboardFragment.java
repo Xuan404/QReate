@@ -82,7 +82,8 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String eventName = document.getString("name");
                     String eventOrganizer = document.getString("organizer");
-                    eventsList.add(new AdministratorEvent(eventName, eventOrganizer));
+                    String eventId = document.getString("id");
+                    eventsList.add(new AdministratorEvent(eventName, eventOrganizer, eventId));
                 }
                 // Update the adapter with the new list
                 arrayAdapter.clear();
@@ -244,5 +245,9 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         // Show the administrator_view_details_handler Bottom Navigation Bar
         // This assumes you have a method in AdministratorActivity to show this specific bar
         ((AdministratorActivity)getActivity()).showDetailsNavigationBar();
+    }
+
+    public String getSelectedEventId() {
+        return eventArrayAdapter.getSelectedEventId();
     }
 }
