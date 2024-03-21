@@ -279,7 +279,7 @@ public class AccountProfileScreenFragment extends Fragment {
             } else if (Objects.equals(current_activity, "attendee")) {
                 ((AttendeeActivity)getActivity()).showBottomNavigationBar();
             }else if (Objects.equals(current_activity, "administrator")) {
-                ((AdministratorActivity)getActivity()).showBottomNavigationBar();
+                ((AdministratorActivity)getActivity()).showMainBottomNavigationBar();
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.example.qreate.administrator;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -10,28 +9,21 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
-import com.example.qreate.organizer.OrganizerActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +31,7 @@ import java.util.List;
 /**
  * The following class allows the administrator to see the Dashboard and view all {@link AdministratorEvent}, {@link AdministratorProfile} and {@link AdministratorImage}. (Deletion functionality will be implemented for Part 4)
  */
-public class AdministratorDashboardFragment extends Fragment {
+public class AdministratorDashboardFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener{
     private ListView list;
     private FirebaseFirestore db;
 
@@ -78,7 +70,7 @@ public class AdministratorDashboardFragment extends Fragment {
     public void loadEvents() {
         CollectionReference eventsRef = db.collection("Events");
         ArrayList<AdministratorEvent> events = new ArrayList<>();
-        EventArrayAdapter arrayAdapter = new EventArrayAdapter(getContext(), events);
+        EventArrayAdapter arrayAdapter = new EventArrayAdapter(getContext(), events, this);
         list.setAdapter(arrayAdapter);
 
         eventsRef.get().addOnCompleteListener(task -> {
@@ -166,7 +158,7 @@ public class AdministratorDashboardFragment extends Fragment {
     private void accountProfile() {
         //Handles fragment transaction related to the account profile
 
-        ((AdministratorActivity)getActivity()).hideBottomNavigationBar();
+        ((AdministratorActivity)getActivity()).hideMainBottomNavigationBar();
 
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -206,5 +198,23 @@ public class AdministratorDashboardFragment extends Fragment {
         });
 
         popupMenu.show();
+    }
+
+
+    @Override
+    public void onEventSelected() {
+        hideBottomNavigationBar(); // Implement this method
+        showDetailsNavigationBar(); // Implement this method
+    }
+
+    private void hideBottomNavigationBar() {
+        // Find the BottomNavigationView and set its visibility to GONE
+        ((AdministratorActivity)getActivity()).hideMainBottomNavigationBar();
+    }
+
+    private void showDetailsNavigationBar() {
+        // Show the administrator_view_details_handler Bottom Navigation Bar
+        // This assumes you have a method in AdministratorActivity to show this specific bar
+        ((AdministratorActivity)getActivity()).showDetailsNavigationBar();
     }
 }
