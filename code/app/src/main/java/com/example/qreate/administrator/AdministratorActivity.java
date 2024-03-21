@@ -6,6 +6,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -78,15 +79,21 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         });
     }
 
-    public void hideBottomNavigationBar() {
+    public void hideMainBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar disappear
     }
 
-    public void showBottomNavigationBar() {
+    public void showMainBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
     }
+
+    public void showDetailsNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.administrator_view_details_navigation_bar);
+        navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
+    }
+
     /**
      * Interface method implemented for when the edit menu fragment is destroyed
      */

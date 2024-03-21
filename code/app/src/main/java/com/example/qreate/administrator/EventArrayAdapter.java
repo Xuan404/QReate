@@ -23,6 +23,7 @@ import java.util.ArrayList;
  */
 public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
     private int selectedPosition = -1; // Track the selected position
+    private OnEventSelectedListener mListener;
 
     /**
      * Constructs a new {@code EventArrayAdapter}.
@@ -71,8 +72,18 @@ public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
             public void onClick(View v) {
                 selectedPosition = position; // Update the selected position
                 notifyDataSetChanged(); // Notify the adapter to update the radio buttons
+                mListener.onEventSelected();
             }
         });
         return view;
+    }
+
+    public interface OnEventSelectedListener {
+        void onEventSelected();
+    }
+
+    public EventArrayAdapter(Context context, ArrayList<AdministratorEvent> events, OnEventSelectedListener listener) {
+        super(context, 0, events);
+        mListener = listener;
     }
 }
