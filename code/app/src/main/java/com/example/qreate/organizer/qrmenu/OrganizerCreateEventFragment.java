@@ -195,7 +195,7 @@ public class OrganizerCreateEventFragment extends DialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_PICKER && resultCode == RESULT_OK) {
             // Handle the selected image here
-            Uri selectedImageUri = data.getData();
+            selectedImageUri = data.getData();
             // Load the image into your ImageView or process it further
             //TODO THIS CRASHES CODE IDK WHY
             //addPoster.setImageURI(selectedImageUri);
@@ -236,6 +236,9 @@ public class OrganizerCreateEventFragment extends DialogFragment {
                             Toast.makeText(requireContext(), "Image upload failed!", Toast.LENGTH_SHORT).show();
                         }
                     });
+        }
+        else {
+            Toast.makeText(requireContext(), "Image upload failed! no image", Toast.LENGTH_SHORT).show();
         }
     }
 }
