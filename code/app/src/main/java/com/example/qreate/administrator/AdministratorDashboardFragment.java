@@ -31,9 +31,12 @@ import java.util.List;
 /**
  * The following class allows the administrator to see the Dashboard and view all {@link AdministratorEvent}, {@link AdministratorProfile} and {@link AdministratorImage}. (Deletion functionality will be implemented for Part 4)
  */
-public class AdministratorDashboardFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener{
+public class AdministratorDashboardFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener,ProfileArrayAdapter.OnProfileSelectedListener,ImageArrayAdapter.OnImageSelectedListener{
     private ListView list;
     private FirebaseFirestore db;
+    private EventArrayAdapter eventArrayAdapter;
+    private ProfileArrayAdapter profileArrayAdapter;
+    private ImageArrayAdapter imageArrayAdapter;
 
     /**
      * Creates the view and inflates the administrator_dashboard layout, changing the custom ArrayAdapter ({@link EventArrayAdapter}, {@link ProfileArrayAdapter}, {@link ImageArrayAdapter}) for the ListView according to what the user chooses.
@@ -70,8 +73,8 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
     public void loadEvents() {
         CollectionReference eventsRef = db.collection("Events");
         ArrayList<AdministratorEvent> events = new ArrayList<>();
-        EventArrayAdapter arrayAdapter = new EventArrayAdapter(getContext(), events, this);
-        list.setAdapter(arrayAdapter);
+        eventArrayAdapter = new EventArrayAdapter(getContext(), events, this); // Use class field here
+        list.setAdapter(eventArrayAdapter);
 
         eventsRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -79,12 +82,13 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String eventName = document.getString("name");
                     String eventOrganizer = document.getString("organizer");
-                    eventsList.add(new AdministratorEvent(eventName, eventOrganizer));
+                    String eventId = document.getId();
+                    eventsList.add(new AdministratorEvent(eventName, eventOrganizer, eventId));
                 }
                 // Update the adapter with the new list
-                arrayAdapter.clear();
-                arrayAdapter.addAll(eventsList);
-                arrayAdapter.notifyDataSetChanged();
+                eventArrayAdapter.clear();
+                eventArrayAdapter.addAll(eventsList);
+                eventArrayAdapter.notifyDataSetChanged();
             } else {
                 Log.d("Firestore", "Error getting documents: ", task.getException());
             }
@@ -94,8 +98,8 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
     public void loadProfiles() {
         CollectionReference profilesRef = db.collection("Users");
         ArrayList<AdministratorProfile> profiles = new ArrayList<>();
-        ProfileArrayAdapter arrayAdapter = new ProfileArrayAdapter(getContext(), profiles);
-        list.setAdapter(arrayAdapter);
+        profileArrayAdapter = new ProfileArrayAdapter(getContext(), profiles,this);
+        list.setAdapter(profileArrayAdapter);
 
         profilesRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -103,24 +107,28 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String profileName = document.getString("name");
                     String profileImage = document.getString("profile_picture");
-                    profilesList.add(new AdministratorProfile(profileName, profileImage));
+                    String profileId = document.getId();
+                    profilesList.add(new AdministratorProfile(profileName, profileImage, profileId));
                 }
                 // Update the adapter with the new list
-                arrayAdapter.clear();
-                arrayAdapter.addAll(profilesList);
-                arrayAdapter.notifyDataSetChanged();
+                profileArrayAdapter.clear();
+                profileArrayAdapter.addAll(profilesList);
+                profileArrayAdapter.notifyDataSetChanged();
+
+
             } else {
                 Log.d("Firestore", "Error getting documents: ", task.getException());
             }
         });
     }
 
+
     public void loadImages() {
         CollectionReference profilesImagesRef = db.collection("Users");
         CollectionReference postersImagesRef = db.collection("Events");
         ArrayList<AdministratorImage> images = new ArrayList<>();
-        ImageArrayAdapter arrayAdapter = new ImageArrayAdapter(getContext(), images);
-        list.setAdapter(arrayAdapter);
+        imageArrayAdapter = new ImageArrayAdapter(getContext(), images,this);
+        list.setAdapter(imageArrayAdapter);
 
         profilesImagesRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -128,11 +136,12 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String imageName = document.getString("name");
                     String image = document.getString("profile_picture");
-                    imagesList.add(new AdministratorImage(imageName, image));
+                    String imageId = document.getId();
+                    imagesList.add(new AdministratorImage(imageName, image, imageId));
                 }
                 // Update the adapter with the new list
-                arrayAdapter.addAll(imagesList);
-                arrayAdapter.notifyDataSetChanged();
+                imageArrayAdapter.addAll(imagesList);
+                imageArrayAdapter.notifyDataSetChanged();
             } else {
                 Log.d("Firestore", "Error getting documents: ", task.getException());
             }
@@ -144,11 +153,12 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String imageName = document.getString("name");
                     String image = document.getString("poster");
-                    imagesList.add(new AdministratorImage(imageName, image));
+                    String imageId = document.getId();
+                    imagesList.add(new AdministratorImage(imageName, image, imageId));
                 }
                 // Update the adapter with the new list
-                arrayAdapter.addAll(imagesList);
-                arrayAdapter.notifyDataSetChanged();
+                imageArrayAdapter.addAll(imagesList);
+                imageArrayAdapter.notifyDataSetChanged();
             } else {
                 Log.d("Firestore", "Error getting documents: ", task.getException());
             }
@@ -207,6 +217,34 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         showDetailsNavigationBar(); // Implement this method
     }
 
+
+    @Override
+    public void onProfileSelected() {
+        hideBottomNavigationBar(); // Implement this method
+        showDetailsNavigationBar(); // Implement this method
+    }
+
+    @Override
+    public void onImageSelected() {
+        hideBottomNavigationBar(); // Implement this method
+        showDetailsNavigationBar(); // Implement this method
+    }
+
+    /*
+    public void clearEventSelection() {
+        if (eventArrayAdapter != null) {
+            eventArrayAdapter.clearSelection();
+        }
+        else if (profileArrayAdapter != null) {
+            profileArrayAdapter.clearSelection();
+        }
+        else if (imageArrayAdapter != null) {
+            imageArrayAdapter.clearSelection();
+        }
+    }
+
+     */
+
     private void hideBottomNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AdministratorActivity)getActivity()).hideMainBottomNavigationBar();
@@ -217,4 +255,17 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         // This assumes you have a method in AdministratorActivity to show this specific bar
         ((AdministratorActivity)getActivity()).showDetailsNavigationBar();
     }
+
+    public String getSelectedEventId() {
+        return eventArrayAdapter.getSelectedEventId();
+    }
+
+    public String getSelectedImageId() {
+        return imageArrayAdapter.getSelectedImageId();
+    }
+
+    public String getSelectedProfileId() {
+        return profileArrayAdapter.getSelectedProfileId();
+    }
+
 }

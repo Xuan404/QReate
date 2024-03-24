@@ -11,6 +11,7 @@ import android.widget.PopupMenu;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qreate.EditProfileScreenFragment;
 import com.example.qreate.R;
@@ -53,11 +54,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 Fragment selectedFragment = null;
                 int itemId = item.getItemId();
 
-                if (itemId == R.id.events_icon) {
-                    selectedFragment = new AdministratorDashboardFragment();
-                } else if (itemId == R.id.profiles_icon) {
-                    selectedFragment = new AdministratorDashboardFragment();
-                } else if (itemId == R.id.images_icon) {
+                if ((itemId == R.id.events_icon) || (itemId == R.id.profiles_icon) || (itemId == R.id.images_icon)) {
                     selectedFragment = new AdministratorDashboardFragment();
                 }
 
@@ -79,6 +76,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         });
     }
 
+
     public void hideMainBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar disappear
@@ -92,7 +90,175 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     public void showDetailsNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_view_details_navigation_bar);
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
+        navBar.setSelectedItemId(R.id.defaultNavPlaceholder);
+        setupDetailsNavigationBar();
     }
+
+    public void hideDetailsNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.administrator_view_details_navigation_bar);
+        navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar reappear
+    }
+
+    public void showDeleteNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.administrator_delete_navigation_bar);
+        navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
+        navBar.setSelectedItemId(R.id.defaultNavPlaceholder);
+        setupDeleteNavigationBar();
+    }
+
+    public void hideDeleteNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.administrator_delete_navigation_bar);
+        navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar reappear
+    }
+
+    public void setupDeleteNavigationBar(){
+        BottomNavigationView deleteNavBar = findViewById(R.id.administrator_delete_navigation_bar);
+        BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
+        int navBarItemId = navBar.getSelectedItemId();
+
+        deleteNavBar.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                AdministratorDashboardFragment selectedFragment = null;
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.cancel_icon_two) {
+                    hideDeleteNavigationBar();
+                    showMainBottomNavigationBar();
+                    getSupportFragmentManager().popBackStackImmediate();
+
+                    if ((navBarItemId == R.id.events_icon) || (navBarItemId == R.id.profiles_icon) || (navBarItemId == R.id.images_icon)) {
+                        selectedFragment = new AdministratorDashboardFragment();
+                    }
+                    if (selectedFragment != null) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
+
+                        if (selectedFragment instanceof AdministratorDashboardFragment) {
+                            if (navBarItemId == R.id.events_icon) {
+                                selectedFragment.loadEvents();
+                            } else if (navBarItemId == R.id.profiles_icon) {
+                                selectedFragment.loadProfiles();
+                            } else if (navBarItemId == R.id.images_icon) {
+                                selectedFragment.loadImages();
+                            }
+                        }
+                    }
+                }
+                else if (itemId == R.id.delete_icon) {
+                    hideDeleteNavigationBar();
+                    showMainBottomNavigationBar();
+                    Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.administrator_handler_frame);
+                    if (currentFragment instanceof AdministratorDashboardFragment) {
+                        String selectedEventId = ((AdministratorDashboardFragment) currentFragment).getSelectedEventId();
+                        if (selectedEventId != null && navBarItemId == R.id.events_icon) {
+                            deleteEvent(selectedEventId);
+                        }
+                    }
+                    getSupportFragmentManager().popBackStackImmediate();
+                    if ((navBarItemId == R.id.events_icon) || (navBarItemId == R.id.profiles_icon) || (navBarItemId == R.id.images_icon)) {
+                        selectedFragment = new AdministratorDashboardFragment();
+                    }
+                    if (selectedFragment != null) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
+
+                        if (selectedFragment instanceof AdministratorDashboardFragment) {
+                            if (navBarItemId == R.id.events_icon) {
+                                selectedFragment.loadEvents();
+                            } else if (navBarItemId == R.id.profiles_icon) {
+                                selectedFragment.loadProfiles();
+                            } else if (navBarItemId == R.id.images_icon) {
+                                selectedFragment.loadImages();
+                            }
+                        }
+                    }
+
+                }
+                return true;
+            }
+        });
+
+    }
+
+    private void deleteEvent(String eventId) {
+        db.collection("Events").document(eventId)
+                .delete()
+                .addOnSuccessListener(aVoid -> Log.d("Delete Event", "Event successfully deleted!"))
+                .addOnFailureListener(e -> Log.w("Delete Event", "Error deleting event", e));
+    }
+
+    public void setupDetailsNavigationBar() {
+        BottomNavigationView detailsNavBar = findViewById(R.id.administrator_view_details_navigation_bar);
+        BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
+        int navBarItemId = navBar.getSelectedItemId();
+
+        detailsNavBar.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.cancel_icon) {
+                    hideDetailsNavigationBar();
+                    showMainBottomNavigationBar();
+
+                } else if (itemId == R.id.view_details_icon) {
+                    hideDetailsNavigationBar();
+                    showDeleteNavigationBar();
+                    if (navBarItemId==R.id.events_icon) {
+                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.administrator_handler_frame);
+                        if (currentFragment instanceof AdministratorDashboardFragment) {
+                            String selectedEventId = ((AdministratorDashboardFragment) currentFragment).getSelectedEventId();
+                            if (selectedEventId != null) {
+                                navigateToEventDetails(selectedEventId);
+                            }
+                        }
+                    }
+
+                    else if (navBarItemId==R.id.profiles_icon) {
+                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.administrator_handler_frame);
+                        if (currentFragment instanceof AdministratorDashboardFragment) {
+                            String selectedProfileId = ((AdministratorDashboardFragment) currentFragment).getSelectedProfileId();
+                            if (selectedProfileId != null) {
+                                navigateToProfileDetails(selectedProfileId);
+                            }
+                        }
+                    }
+                    else if (navBarItemId==R.id.images_icon) {
+                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.administrator_handler_frame);
+                        if (currentFragment instanceof AdministratorDashboardFragment) {
+                            String selectedImageId = ((AdministratorDashboardFragment) currentFragment).getSelectedImageId();
+                            if (selectedImageId != null) {
+                                navigateToImageDetails(selectedImageId);
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+    }
+
+    private void navigateToEventDetails(String eventId) {
+        AdministratorEventDetailsFragment detailsFragment = AdministratorEventDetailsFragment.newInstance(eventId);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.administrator_handler_frame, detailsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void navigateToImageDetails(String imageId) {
+        AdministratorImageDetailsFragment detailsFragment = AdministratorImageDetailsFragment.newInstance(imageId);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.administrator_handler_frame, detailsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void navigateToProfileDetails(String profileId) {
+        AdministratorProfileDetailsFragment detailsFragment = AdministratorProfileDetailsFragment.newInstance(profileId);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.administrator_handler_frame, detailsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
 
     /**
      * Interface method implemented for when the edit menu fragment is destroyed

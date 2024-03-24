@@ -30,8 +30,9 @@ public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
      * @param context The current context. Used to inflate the layout file.
      * @param events An ArrayList of {@link AdministratorEvent} objects to display in the list.
      */
-    public EventArrayAdapter(Context context, ArrayList<AdministratorEvent> events) {
+    public EventArrayAdapter(Context context, ArrayList<AdministratorEvent> events, OnEventSelectedListener listener) {
         super(context, 0, events);
+        mListener = listener;
     }
 
     /**
@@ -82,8 +83,19 @@ public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
         void onEventSelected();
     }
 
-    public EventArrayAdapter(Context context, ArrayList<AdministratorEvent> events, OnEventSelectedListener listener) {
-        super(context, 0, events);
-        mListener = listener;
+    /*
+    public void clearSelection() {
+        selectedPosition = -1; // Reset the selected position
+        notifyDataSetChanged(); // Notify the adapter to refresh the list view
+    }
+
+     */
+
+    public String getSelectedEventId() {
+        if (selectedPosition != -1) {
+            AdministratorEvent selectedEvent = getItem(selectedPosition);
+            return selectedEvent.getId();
+        }
+        return null;
     }
 }
