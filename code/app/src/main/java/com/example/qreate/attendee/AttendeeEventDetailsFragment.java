@@ -13,6 +13,7 @@ import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -48,7 +49,66 @@ public class AttendeeEventDetailsFragment extends Fragment {
         });
 
 
+        AppCompatButton currentEventsButton = view.findViewById(R.id.button_current_events);
+        currentEventsButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                openCurrentEventsLayout();
+            }
+        });
+
+        AppCompatButton upcomingEventsButton = view.findViewById(R.id.button_upcoming_events);
+        upcomingEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openUpcomingEventsLayout();
+            }
+
+        });
+
+        AppCompatButton otherEventsButton = view.findViewById(R.id.button_other_events);
+        otherEventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openOtherEventsLayout();
+            }
+
+        });
+
+
         return view;
+    }
+
+    private void openCurrentEventsLayout(){
+        //replace fragment with current_events
+        Fragment currentEventsFragment = new CurrentEventsFragment();
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.attendee_handler_frame, currentEventsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+    }
+
+    private void openUpcomingEventsLayout(){
+        //replace fragment with current_events
+        Fragment upcomingEventsFragment = new UpcomingEventsFragment();
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.attendee_handler_frame, upcomingEventsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+    }
+    private void openOtherEventsLayout(){
+        //replace fragment with current_events
+        Fragment otherEventsFragment = new OtherEventsFragment();
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.attendee_handler_frame, otherEventsFragment );
+        transaction.addToBackStack(null);
+        transaction.commit();
+
     }
 
     private void showPopupMenu(View view) {
