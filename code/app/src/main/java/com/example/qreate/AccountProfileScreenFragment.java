@@ -1,5 +1,6 @@
 package com.example.qreate;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.qreate.administrator.AdministratorActivity;
 import com.example.qreate.attendee.AttendeeActivity;
+import com.example.qreate.attendee.GenerateProfilePic;
 import com.example.qreate.organizer.OrganizerActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -27,6 +30,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -75,6 +79,37 @@ public class AccountProfileScreenFragment extends Fragment {
         return view;
     }
 
+    //bitmap to Base64
+    private String encodeBitmap(Bitmap profilePictureBitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        profilePictureBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] byteArray = baos.toByteArray();
+        String stringBase64 = android.util.Base64.encodeToString(byteArray, android.util.Base64.NO_WRAP);
+        return stringBase64;
+
+    }
+
+    /**
+     * Generate initials from user name
+     * @param name The user's name
+     * @return initials of user
+     */
+
+    private String getInitials(String name){
+        String [] words = name.split("\\s+");
+        StringBuilder initials = new StringBuilder();
+        for(int i = 0; i< words.length; i++){
+            String word = words[i];
+            if(!TextUtils.isEmpty(word) && Character.isLetter(word.charAt(0))){
+                initials.append(word.charAt(0));
+                if(i<words.length -1){
+                    initials.append(".");
+                }
+            }
+        }
+        return initials.toString().toUpperCase();
+    }
+
 
 
     // authenticates updated user info
@@ -95,6 +130,8 @@ public class AccountProfileScreenFragment extends Fragment {
         String phone = editTextPhone.getText().toString();
         String email = editTextEmail.getText().toString();
         String homepage = editTextHomepage.getText().toString();
+
+        Bitmap profilePicBitmap = GenerateProfilePic.generateProfilePicture(getInitials(name));
 
 
         // Name condition check.
@@ -131,7 +168,7 @@ public class AccountProfileScreenFragment extends Fragment {
             Toast.makeText(getActivity(), "Invalid email address", Toast.LENGTH_SHORT).show();
 
         } else {
-            updateUserInfoToFirestore(name, phone, email, homepage, status);
+            updateUserInfoToFirestore(name, phone, email, homepage, status, profilePicBitmap);
         }
 
     }
@@ -152,10 +189,13 @@ public class AccountProfileScreenFragment extends Fragment {
 
 
     // Sends updated user info to firebase
-    private void updateUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status) {
+    private void updateUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status, Bitmap profilePicBitmap) {
 
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        //encode the profile pic and send to firebase
+        String encodedProfilePic = encodeBitmap(profilePicBitmap);
 
         db.collection("Users")
                 .whereEqualTo("device_id", device_id)
@@ -181,6 +221,7 @@ public class AccountProfileScreenFragment extends Fragment {
                                 docRef.update("email", email);
                                 docRef.update("homepage", homepage);
                                 docRef.update("allow_coordinates", status);
+                                docRef.update("profile_pic", encodedProfilePic);
 
                             } else {
                                 Log.d("Firestore", "No such document");
@@ -221,6 +262,13 @@ public class AccountProfileScreenFragment extends Fragment {
                                 String homepage = document.getString("homepage");
                                 Boolean status = document.getBoolean("allow_coordinates");
 
+                                ImageView profileImageView = view.findViewById(R.id.empty_profile_pic);
+                                assert name != null;
+                                String initials = getInitials(name);
+                                Bitmap profilePicBitmap = GenerateProfilePic.generateProfilePicture(initials);
+                                profileImageView.setImageBitmap(profilePicBitmap);
+
+
                                 EditText editTextName = view.findViewById(R.id.edit_name);
                                 EditText editTextPhone = view.findViewById(R.id.edit_number);
                                 EditText editTextEmail = view.findViewById(R.id.edit_email);
@@ -242,12 +290,6 @@ public class AccountProfileScreenFragment extends Fragment {
                     }
                 });
     }
-
-
-
-
-
-
 
 
     public void onDestroyView() {
