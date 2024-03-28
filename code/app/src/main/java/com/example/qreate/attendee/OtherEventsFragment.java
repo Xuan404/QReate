@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 
 
@@ -27,11 +28,21 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.administrator.AdministratorEvent;
+import com.example.qreate.administrator.EventArrayAdapter;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class OtherEventsFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
+
+public class OtherEventsFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener {
+    private EventArrayAdapter eventArrayAdapter;
+    private ListView eventList;
+    private FirebaseFirestore db;
 
     /**
      * Creates and Inflates the other events view
@@ -50,6 +61,9 @@ public class OtherEventsFragment extends Fragment {
     @Override
     public View onCreateView (@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.other_events_listview,container,false);
+
+        eventList = view.findViewById(R.id.other_event_list);
+        db = FirebaseFirestore.getInstance();
 
 
         AppCompatButton backButton = view.findViewById(R.id.button_back_other_event_details);
@@ -71,6 +85,43 @@ public class OtherEventsFragment extends Fragment {
         return view;
 
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadAllEvents();
+    }
+
+    public void loadAllEvents(){
+        CollectionReference eventsRef = db.collection("Events");
+        ArrayList<AdministratorEvent> events = new ArrayList<>();
+        eventArrayAdapter = new EventArrayAdapter(getContext(), events, this); // Use class field here
+        eventList.setAdapter(eventArrayAdapter);
+
+        eventsRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<AdministratorEvent> eventsList = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String eventName = document.getString("name");
+                    String eventOrganizer = document.getString("organizer");
+                    String eventId = document.getId();
+                    eventsList.add(new AdministratorEvent(eventName, eventOrganizer, eventId));
+                }
+                // Update the adapter with the new list
+                eventArrayAdapter.clear();
+                eventArrayAdapter.addAll(eventsList);
+                eventArrayAdapter.notifyDataSetChanged();
+            } else {
+                Log.d("Firestore", "Error getting documents: ", task.getException());
+            }
+        });
+
+
+    }
+
+    // to be implemented
+    public void onEventSelected(){}
+    
 
     /**
      * Fetch info about user information specifically their profile pic stored on firebase

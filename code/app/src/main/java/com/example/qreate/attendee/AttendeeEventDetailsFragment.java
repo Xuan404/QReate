@@ -25,6 +25,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.administrator.AdministratorDashboardFragment;
 import com.example.qreate.organizer.OrganizerActivity;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -135,10 +136,10 @@ public class AttendeeEventDetailsFragment extends Fragment {
      */
     private void openOtherEventsLayout(){
         //replace fragment with current_events
-        Fragment otherEventsFragment = new OtherEventsFragment();
+        OtherEventsFragment otherEventsFragment = new OtherEventsFragment();
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.attendee_handler_frame, otherEventsFragment );
+        transaction.replace(R.id.attendee_handler_frame, otherEventsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
 
