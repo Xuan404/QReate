@@ -140,6 +140,9 @@ public class EditProfileScreenFragment extends Fragment {
         String homepage = editTextHomepage.getText().toString();
 
 
+        String initials = getInitials(name);
+        Bitmap generatedPicBitmap = GenerateProfilePic.generateProfilePicture(initials);
+        String encodedBitmap = encodeBitmap(generatedPicBitmap);
 
         // Name condition check.
         if (TextUtils.isEmpty(name)) {
@@ -165,7 +168,6 @@ public class EditProfileScreenFragment extends Fragment {
         }
 
 
-
         // Button status
         boolean status = switchButton.isChecked();
 
@@ -178,7 +180,7 @@ public class EditProfileScreenFragment extends Fragment {
 
         } else {
 
-            sendUserInfoToFirestore(name, phone, email, homepage, status);
+            sendUserInfoToFirestore(name, phone, email, homepage, status, encodedBitmap);
             removeFragment(); //removes the fragment
         }
 
@@ -194,9 +196,9 @@ public class EditProfileScreenFragment extends Fragment {
      * @param email
      * @param homepage
      * @param status
-
+     * @param generatedEncodedPic
      */
-    private void sendUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status ) {
+    private void sendUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status, String generatedEncodedPic ) {
 
         // Get a Firestore instance
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -211,11 +213,43 @@ public class EditProfileScreenFragment extends Fragment {
         device.put("email", email);
         device.put("homepage", homepage);
         device.put("allow_coordinates", status);
+        device.put("generated_pic", generatedEncodedPic);
 
 
         // Send the unique ID to Firestore
         db.collection("Users").add(device);
 
+    }
+
+    //bitmap to Base64
+    private String encodeBitmap(Bitmap profilePictureBitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        profilePictureBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        byte[] byteArray = baos.toByteArray();
+        String stringBase64 = android.util.Base64.encodeToString(byteArray, android.util.Base64.NO_WRAP);
+        return stringBase64;
+
+    }
+
+    /**
+     * Generate initials from user name
+     * @param name The user's name
+     * @return initials of user
+     */
+
+    private String getInitials(String name){
+        String [] words = name.split("\\s+");
+        StringBuilder initials = new StringBuilder();
+        for(int i = 0; i< words.length; i++){
+            String word = words[i];
+            if(!TextUtils.isEmpty(word) && Character.isLetter(word.charAt(0))){
+                initials.append(word.charAt(0));
+                if(i<words.length -1){
+                    initials.append(".");
+                }
+            }
+        }
+        return initials.toString().toUpperCase();
     }
 
 
