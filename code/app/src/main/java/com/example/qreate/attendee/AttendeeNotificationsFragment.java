@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,8 +42,6 @@ import java.util.ArrayList;
  * fetching notification data from Firestore and displaying it in a ListView. Each notification
  * consists of a message and details, encapsulated in a Notif object. The fragment uses a custom
  * ArrayAdapter (NotifArrayAdapter) to display the notifications in the ListView.
- *
- * Outstanding: Receiving from organizer from firebase
  *
  * @author Shraddha Mehta
  */
@@ -100,6 +99,7 @@ public class AttendeeNotificationsFragment extends Fragment {
         });
 
         fetchProfilePicInfoFromDataBase();
+        //fetchNotificationsFromFireStore();
 
         return view;
     }
@@ -109,31 +109,24 @@ public class AttendeeNotificationsFragment extends Fragment {
      * them to the notificationsArrayList. It then notifies the notifArrayAdapter of the data
      * change to refresh the ListView. If there is an error fetching data, it logs the error.
      */
-
-
-    private void fetchNotificationsFromFireStore() {
-        db.collection("notifications")
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot querySnapshot) {
-                        for (QueryDocumentSnapshot documentSnapshot : querySnapshot) {
-                            String notificationMessage = documentSnapshot.getString("message");
-                            String notificationsDetails = documentSnapshot.getString("details");
-
-                            Notif notification = new Notif(notificationMessage, notificationsDetails);
-                            notificationsArrayList.add(notification);
-                        }
-                        notifArrayAdapter.notifyDataSetChanged();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("Firestore", "error fetching notifications", e);
-                    }
-                });
-    }
+//    private void fetchNotificationsFromFireStore() {
+//        db.collection("notifications")
+//                .get()
+//                .addOnSuccessListener(querySnapshot -> {
+//                    for(QueryDocumentSnapshot documentSnapshot : querySnapshot){
+//                        String notificationMessage = documentSnapshot.getString("message");
+//                        String organizerDetails = documentSnapshot.getString("details");
+//
+//                        Notif notification = new Notif(notificationMessage, organizerDetails);
+//                        notificationsArrayList.add(notification);
+//                    }
+//                    notifArrayAdapter.notifyDataSetChanged();
+//                })
+//                .addOnFailureListener(e -> {
+//                    Log.e("Firestore", "Error fetching notifications", e);
+//                    Toast.makeText(getContext(), "failed to fetch notifications. Try again later.", Toast.LENGTH_SHORT).show();
+//                });
+//    }
 
     /**
      * Fetch info about user information specifically their profile pic stored on firebase
@@ -230,7 +223,6 @@ public class AttendeeNotificationsFragment extends Fragment {
         transaction.addToBackStack(null); // Add this transaction to the back stack
         transaction.commit();
     }
-
 
 
 
