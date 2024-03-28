@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 // https://www.youtube.com/watch?v=qCoidM98zNk
@@ -57,7 +58,11 @@ public class OrganizerQREventListPopupWindow {
 
     private Date selectedDate;
     private Uri selectedImageUri;
+    private String imagePath;
     private String imageName;
+    private String name;
+    private String description;
+    private int signupLimit;
     private static final int PICK_IMAGE_REQUEST = 1;
     public static final int IMAGE_PICK_CODE = 1000;
 
@@ -97,9 +102,21 @@ public class OrganizerQREventListPopupWindow {
             @Override
             public void onClick(View view) {
 
-                createEvent(popupView);
-                uploadImageToFirebaseStorage(selectedImageUri);
-                popupWindow.dismiss();
+                setInfoUp(popupView);
+                //Log.w("nameCheck", String.valueOf(name));
+
+                if (imageName != null && !Objects.equals(name, "") && !Objects.equals(description, "")) {
+                    // Uploads the image and then creates the event automatically
+                    uploadImageToFirebaseStorage(selectedImageUri);
+                    //createEvent(popupView); // had to insert this in uploadImageToFirebaseStorage as its an asynchronous event
+                    popupWindow.dismiss();
+                } else {
+                    // imageName is null, show a Toast message
+                    Toast.makeText(context, "Fill in All fields", Toast.LENGTH_SHORT).show();
+                }
+
+
+
 
             }
         });
@@ -156,60 +173,44 @@ public class OrganizerQREventListPopupWindow {
         storageRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // Handle success
+                // Saves the image path linking to the firebase storage
+                imagePath = storageRef.getPath();
+                // Creates the event after getting the storage path
+                createEvent(popupView);
             }
         });
     }
 
+    
+    private void setInfoUp(View view) {
+
+        EditText editTextName = view.findViewById(R.id.editTextEventName);
+        EditText editTextDescription = view.findViewById(R.id.editTextEventDescription);
+        EditText editTextLimitSignup = view.findViewById(R.id.signupNumber);
+
+
+        name = editTextName.getText().toString();
+        description = editTextDescription.getText().toString();
+        signupLimit = Integer.parseInt(editTextLimitSignup.getText().toString());
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 
 
     private void createEvent(View view){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Log.w("EventFirestore", "Firestore has been initialized.");
+
+        setInfoUp(view);
 
         // Database insertion goes here
-        EditText editTextName = view.findViewById(R.id.editTextEventName);
-        EditText editTextDescription = view.findViewById(R.id.editTextEventDescription);
-        EditText editTextLimitSignup = view.findViewById(R.id.signupNumber);
-        Log.w("EventFirestore", "works1");
-
-        String name = editTextName.getText().toString();
-        String description = editTextDescription.getText().toString();
-        Log.w("EventFirestore", "works2");
-        String signupLimit = editTextLimitSignup.getText().toString();
-
-
         Map<String, Object> device = new HashMap<>();
         device.put("name", name);
         device.put("description", description);
         device.put("date", selectedDate);
-        //device.put("poster", homepage);
+        device.put("poster", imagePath);
         device.put("signup_limit", signupLimit);
 
 
@@ -251,6 +252,8 @@ public class OrganizerQREventListPopupWindow {
         int month = cal.get(Calendar.MONTH);
         month = month + 1;
         int day = cal.get(Calendar.DAY_OF_MONTH);
+        selectedDate = cal.getTime(); // Store the selected date fir firestore use
+
         return makeDateString(day, month, year);
     }
 
