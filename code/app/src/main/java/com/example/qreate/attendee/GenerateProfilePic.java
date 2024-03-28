@@ -24,7 +24,7 @@ public class GenerateProfilePic {
         //Draw initials in the text
         Paint textPaint = new Paint();
         textPaint.setColor(Color.BLACK);
-        textPaint.setTextSize(80);
+        textPaint.setTextSize(72);
         textPaint.setFakeBoldText(true);
         textPaint.setTextAlign(Paint.Align.CENTER);
 
