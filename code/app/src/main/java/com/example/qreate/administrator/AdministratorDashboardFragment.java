@@ -137,7 +137,7 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                     String imageName = document.getString("name");
                     String image = document.getString("profile_picture");
                     String imageId = document.getId();
-                    imagesList.add(new AdministratorImage(imageName, image, imageId));
+                    imagesList.add(new AdministratorImage(imageName, image, imageId, "Profiles"));
                 }
                 // Update the adapter with the new list
                 imageArrayAdapter.addAll(imagesList);
@@ -154,7 +154,7 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                     String imageName = document.getString("name");
                     String image = document.getString("poster");
                     String imageId = document.getId();
-                    imagesList.add(new AdministratorImage(imageName, image, imageId));
+                    imagesList.add(new AdministratorImage(imageName, image, imageId, "Events"));
                 }
                 // Update the adapter with the new list
                 imageArrayAdapter.addAll(imagesList);
@@ -262,6 +262,10 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
 
     public String getSelectedImageId() {
         return imageArrayAdapter.getSelectedImageId();
+    }
+
+    public String getSelectedImageType() {
+        return imageArrayAdapter.getSelectedImageType();
     }
 
     public String getSelectedProfileId() {
