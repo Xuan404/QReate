@@ -30,6 +30,7 @@ import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
 import com.example.qreate.administrator.AdministratorEvent;
 import com.example.qreate.administrator.EventArrayAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,6 +44,7 @@ public class OtherEventsFragment extends Fragment implements EventArrayAdapter.O
     private EventArrayAdapter eventArrayAdapter;
     private ListView eventList;
     private FirebaseFirestore db;
+    private BottomNavigationView bottomNavigationView;
 
     /**
      * Creates and Inflates the other events view
@@ -64,6 +66,7 @@ public class OtherEventsFragment extends Fragment implements EventArrayAdapter.O
 
         eventList = view.findViewById(R.id.other_event_list);
         db = FirebaseFirestore.getInstance();
+
 
 
         AppCompatButton backButton = view.findViewById(R.id.button_back_other_event_details);
@@ -118,9 +121,6 @@ public class OtherEventsFragment extends Fragment implements EventArrayAdapter.O
 
 
     }
-
-    // to be implemented
-    public void onEventSelected(){}
     
 
     /**
@@ -226,6 +226,28 @@ public class OtherEventsFragment extends Fragment implements EventArrayAdapter.O
         transaction.addToBackStack(null); // Add this transaction to the back stack
         transaction.commit();
     }
+
+    @Override
+    public void onEventSelected() {
+        hideBottomNavigationBar(); // Implement this method
+        showDetailsNavigationBar(); // Implement this method
+    }
+
+
+    private void hideBottomNavigationBar() {
+        // Find the BottomNavigationView and set its visibility to GONE
+        ((AttendeeActivity)getActivity()).hideBottomNavigationBar();
+    }
+
+    private void showDetailsNavigationBar() {
+        // Find the BottomNavigationView and set its visibility to GONE
+        ((AttendeeActivity)getActivity()).showDetailsNavigationBar();
+    }
+
+    public String getSelectedEventId() {
+        return eventArrayAdapter.getSelectedEventId();
+    }
+
 
 
 }

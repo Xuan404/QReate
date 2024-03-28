@@ -25,8 +25,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.administrator.AdministratorActivity;
 import com.example.qreate.administrator.AdministratorDashboardFragment;
+import com.example.qreate.administrator.EventArrayAdapter;
 import com.example.qreate.organizer.OrganizerActivity;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -241,6 +244,5 @@ public class AttendeeEventDetailsFragment extends Fragment {
         transaction.addToBackStack(null); // Add this transaction to the back stack
         transaction.commit();
     }
-
 
 }
