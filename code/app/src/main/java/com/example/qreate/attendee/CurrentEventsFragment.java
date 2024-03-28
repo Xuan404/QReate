@@ -31,6 +31,19 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class CurrentEventsFragment extends Fragment {
+    /**
+     * Creates and Inflates the current events view
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return current events view
+     */
     @Nullable
     @Override
     public View onCreateView (@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +68,9 @@ public class CurrentEventsFragment extends Fragment {
 
     }
 
+    /**
+     * Fetch info about user information specifically their profile pic stored on firebase
+     */
     private void fetchProfilePicInfoFromDataBase(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -87,14 +103,27 @@ public class CurrentEventsFragment extends Fragment {
 
     }
 
+    /**
+     * Returns a bitmap image from a generated profile pic stored in Base64 on Firebase
+     * @param generatedProfilePicBase64
+     * @return bitmap of generated profile pic
+     */
     private Bitmap decodeBase64(String generatedProfilePicBase64) {
         byte[] bytes = android.util.Base64.decode(generatedProfilePicBase64, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes,0, bytes.length);
     }
 
+    /**
+     * Goes back to main event details page.
+     */
     private void goBackToAttendeeEventDetails(){
         getParentFragmentManager().popBackStack();
     }
+
+    /**
+     * To make the drop down dashboard button functional
+     * @param view
+     */
     private void showPopupMenu(View view) {
         // Initialize the PopupMenu
         PopupMenu popupMenu = new PopupMenu(getActivity(), view); // For Fragment, use getActivity() instead of this
@@ -127,6 +156,10 @@ public class CurrentEventsFragment extends Fragment {
 
         popupMenu.show();
     }
+
+    /**
+     * Switching views when user needs to update their profile
+     */
 
     private void accountProfile() {
         //Handles fragment transaction related to the account profile

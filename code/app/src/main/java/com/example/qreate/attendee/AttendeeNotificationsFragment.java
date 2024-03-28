@@ -135,6 +135,9 @@ public class AttendeeNotificationsFragment extends Fragment {
                 });
     }
 
+    /**
+     * Fetch info about user information specifically their profile pic stored on firebase
+     */
     private void fetchProfilePicInfoFromDataBase(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -166,11 +169,20 @@ public class AttendeeNotificationsFragment extends Fragment {
 
     }
 
+    /**
+     * Returns a bitmap image from a generated profile pic stored in Base64 on Firebase
+     * @param generatedProfilePicBase64
+     * @return bitmap of generated profile pic
+     */
     private Bitmap decodeBase64(String generatedProfilePicBase64) {
         byte[] bytes = android.util.Base64.decode(generatedProfilePicBase64, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes,0, bytes.length);
     }
 
+    /**
+     * To make the drop down dashboard button functional
+     * @param view
+     */
     private void showPopupMenu(View view) {
         // Initialize the PopupMenu
         PopupMenu popupMenu = new PopupMenu(getActivity(), view); // For Fragment, use getActivity() instead of this
@@ -204,6 +216,9 @@ public class AttendeeNotificationsFragment extends Fragment {
         popupMenu.show();
     }
 
+    /**
+     * Switching views when user needs to update their profile
+     */
     private void accountProfile() {
         //Handles fragment transaction related to the account profile
 
