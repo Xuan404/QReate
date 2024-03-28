@@ -74,12 +74,12 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
             }
         });
 
-        fetchProfilePicInfoFromDataBase();
+        fetchProfilePicInfoFromDataBase(view);
 
         return view;
     }
 
-    private void fetchProfilePicInfoFromDataBase(){
+    private void fetchProfilePicInfoFromDataBase(View rootView){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
@@ -98,7 +98,7 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                                 Bitmap profileBitmap = decodeBase64(generatedProfilePicBase64);
 
                                 //set to image button
-                                ImageButton defaultProfileButton = getView().findViewById(R.id.admin_dashboard_profile_button);
+                                ImageButton defaultProfileButton = rootView.findViewById(R.id.admin_dashboard_profile_button);
                                 defaultProfileButton.setImageBitmap(profileBitmap);
 
                             }
