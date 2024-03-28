@@ -1,9 +1,13 @@
 package com.example.qreate.attendee;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,6 +29,7 @@ import com.example.qreate.R;
 import com.example.qreate.organizer.OrganizerActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -86,12 +91,6 @@ public class AttendeeNotificationsFragment extends Fragment {
         notificationsListView = view.findViewById(R.id.notif_list_view);
         notificationsListView.setAdapter(notifArrayAdapter);
 
-
-        //Fetch Data from firestore
-        db = FirebaseFirestore.getInstance();
-        fetchNotificationsFromFireStore();
-
-
         //set up item click listener
         notificationsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
               @Override
@@ -99,6 +98,8 @@ public class AttendeeNotificationsFragment extends Fragment {
 
             }
         });
+
+        fetchProfilePicInfoFromDataBase();
 
         return view;
     }
@@ -132,6 +133,42 @@ public class AttendeeNotificationsFragment extends Fragment {
                         Log.e("Firestore", "error fetching notifications", e);
                     }
                 });
+    }
+
+    private void fetchProfilePicInfoFromDataBase(){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        db.collection("Users")
+                .whereEqualTo("device_id", device_id)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        QuerySnapshot querySnapshot = task.getResult();
+                        if(querySnapshot != null && !querySnapshot.isEmpty()){
+                            DocumentSnapshot documentSnap = querySnapshot.getDocuments().get(0);
+                            String generatedProfilePicBase64 = documentSnap.getString("generated_pic");
+                            if(generatedProfilePicBase64 != null){
+                                //decode and then set
+                                Bitmap profileBitmap = decodeBase64(generatedProfilePicBase64);
+
+                                //set to image button
+                                ImageButton defaultProfileButton = getView().findViewById(R.id.profile);
+                                defaultProfileButton.setImageBitmap(profileBitmap);
+
+                            }
+                        }
+                    }else {
+                        Log.e("FetchInfoFromUser", "Error fetching info from firestore", task.getException());
+                    }
+                });
+
+    }
+
+    private Bitmap decodeBase64(String generatedProfilePicBase64) {
+        byte[] bytes = android.util.Base64.decode(generatedProfilePicBase64, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(bytes,0, bytes.length);
     }
 
     private void showPopupMenu(View view) {
@@ -178,5 +215,8 @@ public class AttendeeNotificationsFragment extends Fragment {
         transaction.addToBackStack(null); // Add this transaction to the back stack
         transaction.commit();
     }
+
+
+
 
 }

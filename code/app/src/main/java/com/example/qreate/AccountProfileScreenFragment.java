@@ -131,7 +131,7 @@ public class AccountProfileScreenFragment extends Fragment {
         String email = editTextEmail.getText().toString();
         String homepage = editTextHomepage.getText().toString();
 
-        Bitmap profilePicBitmap = GenerateProfilePic.generateProfilePicture(getInitials(name));
+        Bitmap generatedProfilePic = GenerateProfilePic.generateProfilePicture(getInitials(name));
 
 
         // Name condition check.
@@ -168,7 +168,7 @@ public class AccountProfileScreenFragment extends Fragment {
             Toast.makeText(getActivity(), "Invalid email address", Toast.LENGTH_SHORT).show();
 
         } else {
-            updateUserInfoToFirestore(name, phone, email, homepage, status, profilePicBitmap);
+            updateUserInfoToFirestore(name, phone, email, homepage, status, generatedProfilePic);
         }
 
     }
@@ -189,13 +189,13 @@ public class AccountProfileScreenFragment extends Fragment {
 
 
     // Sends updated user info to firebase
-    private void updateUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status, Bitmap profilePicBitmap) {
+    private void updateUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status, Bitmap generatedProfilePicBitmap) {
 
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         //encode the profile pic and send to firebase
-        String encodedProfilePic = encodeBitmap(profilePicBitmap);
+        String encodedProfilePic = encodeBitmap(generatedProfilePicBitmap);
 
         db.collection("Users")
                 .whereEqualTo("device_id", device_id)
@@ -221,7 +221,7 @@ public class AccountProfileScreenFragment extends Fragment {
                                 docRef.update("email", email);
                                 docRef.update("homepage", homepage);
                                 docRef.update("allow_coordinates", status);
-                                docRef.update("profile_pic", encodedProfilePic);
+                                docRef.update("generated_pic", encodedProfilePic);
 
                             } else {
                                 Log.d("Firestore", "No such document");
@@ -265,8 +265,8 @@ public class AccountProfileScreenFragment extends Fragment {
                                 ImageView profileImageView = view.findViewById(R.id.empty_profile_pic);
                                 assert name != null;
                                 String initials = getInitials(name);
-                                Bitmap profilePicBitmap = GenerateProfilePic.generateProfilePicture(initials);
-                                profileImageView.setImageBitmap(profilePicBitmap);
+                                Bitmap generatedProfilePicBitmap = GenerateProfilePic.generateProfilePicture(initials);
+                                profileImageView.setImageBitmap(generatedProfilePicBitmap);
 
 
                                 EditText editTextName = view.findViewById(R.id.edit_name);
