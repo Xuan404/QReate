@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,10 +30,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.qreate.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -62,7 +68,7 @@ public class OrganizerQREventListPopupWindow {
     private String imageName;
     private String name;
     private String description;
-    private int signupLimit;
+    private String signupLimit;
     private static final int PICK_IMAGE_REQUEST = 1;
     public static final int IMAGE_PICK_CODE = 1000;
 
@@ -89,9 +95,6 @@ public class OrganizerQREventListPopupWindow {
 
         uploadPosterButton = popupView.findViewById(R.id.uploadButton);
         uploadPosterButton.setOnClickListener(view -> {
-//            Activity activity = (Activity) context;
-//            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//            activity.startActivityForResult(intent, PICK_IMAGE_REQUEST);
             openImageSelector();
 
         });
@@ -166,8 +169,6 @@ public class OrganizerQREventListPopupWindow {
     }
 
 
-
-    // Test
     private void uploadImageToFirebaseStorage(Uri fileUri) {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference("posters/" + UUID.randomUUID().toString());
         storageRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -191,7 +192,8 @@ public class OrganizerQREventListPopupWindow {
 
         name = editTextName.getText().toString();
         description = editTextDescription.getText().toString();
-        signupLimit = Integer.parseInt(editTextLimitSignup.getText().toString());
+        signupLimit = editTextLimitSignup.getText().toString();
+
 
 
 
@@ -219,6 +221,7 @@ public class OrganizerQREventListPopupWindow {
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        addEventToOrganizer(documentReference);
                         Log.w("EventFirestore", "Yayy");
                     }
                 })
@@ -231,6 +234,60 @@ public class OrganizerQREventListPopupWindow {
                 });
 
     }
+
+
+
+
+    private void addEventToOrganizer(DocumentReference eventRef){
+
+
+        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Retrieves User document and updates it
+        db.collection("Organizers")
+                .whereEqualTo("device_id", device_id)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (!querySnapshot.isEmpty()) {
+
+                                // Since the unique ID is unique, we only expect one result
+                                DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                                String documentId = document.getId();
+                                Log.d("Firestore", documentId);
+
+                                // Update the document directly
+                                DocumentReference docRef = db.collection("Organizers").document(documentId);
+                                docRef.update("events_list", FieldValue.arrayUnion(eventRef));
+
+
+
+                            } else {
+                                Log.d("Firestore", "No such document");
+                            }
+                        } else {
+                            Log.d("Firestore", "get failed with ", task.getException());
+                        }
+                    }
+                });
+
+
+    }
+
+
+
+
+
+
+
+
+
 
 
 

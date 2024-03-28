@@ -25,8 +25,6 @@ import java.util.ArrayList;
  * Show the User a list of Events that he has created
  */
 public class OrganizerQREventListActivity extends AppCompatActivity  {
-
-    private static final int PICK_IMAGE_REQUEST = 1;
     private OrganizerQREventListPopupWindow popupWindow;
 
     @Override
