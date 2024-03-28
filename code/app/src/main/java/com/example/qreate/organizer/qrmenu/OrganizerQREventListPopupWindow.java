@@ -3,6 +3,7 @@ package com.example.qreate.organizer.qrmenu;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,13 +15,24 @@ import android.widget.PopupWindow;
 
 
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.qreate.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+// https://www.youtube.com/watch?v=qCoidM98zNk
 
 public class OrganizerQREventListPopupWindow {
 
@@ -29,6 +41,9 @@ public class OrganizerQREventListPopupWindow {
     private View popupView;
     private DatePickerDialog datePickerDialog;
     private Button dateButton;
+    private Button uploadPosterButton;
+
+    private Date selectedDate;
 
     public OrganizerQREventListPopupWindow(Context context) {
 
@@ -46,11 +61,116 @@ public class OrganizerQREventListPopupWindow {
             @Override
             public void onClick(View view) {
 
-                createEvent(view);
+                createEvent(popupView);
                 popupWindow.dismiss();
 
             }
         });
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void createEvent(View view){
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Log.w("EventFirestore", "Firestore has been initialized.");
+
+        // Database insertion goes here
+        EditText editTextName = view.findViewById(R.id.editTextEventName);
+        EditText editTextDescription = view.findViewById(R.id.editTextEventDescription);
+        EditText editTextLimitSignup = view.findViewById(R.id.signupNumber);
+        Log.w("EventFirestore", "works1");
+
+        String name = editTextName.getText().toString();
+        String description = editTextDescription.getText().toString();
+        Log.w("EventFirestore", "works2");
+        String signupLimit = editTextLimitSignup.getText().toString();
+
+
+        Map<String, Object> device = new HashMap<>();
+        //device.put("organizer", name);
+        device.put("name", name);
+        device.put("description", description);
+        device.put("date", selectedDate);
+        //device.put("poster", homepage);
+        device.put("signup_limit", signupLimit);
+
+
+        // Creates a new Events document in Firestore
+        db.collection("Events").add(device)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.w("EventFirestore", "Yayy");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("EventFirestore", "Nayy");
+
+                    }
+                });
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void initializePopupWindow() {
+
+        // Create PopupWindow
+        popupWindow = new PopupWindow(popupView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, true);
+
+        // Sets up the date picker button
+        dateButton = popupView.findViewById(R.id.dateselector);
+        dateButton.setText(getTodaysDate());
+        dateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //showDatePickerDialog();
+                initDatePicker();
+            }
+        });
+
+        // Dismiss the popup window when touched outside
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
 
     }
 
@@ -64,20 +184,26 @@ public class OrganizerQREventListPopupWindow {
         return makeDateString(day, month, year);
     }
 
-    private void initDatePicker()
-    {
+
+
+    private void initDatePicker() {
+
+        Calendar cal = Calendar.getInstance();
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker datePicker, int year, int month, int day)
-            {
-                // do my stuff here using the set info
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+
                 month = month + 1;
                 String date = makeDateString(day, month, year);
                 dateButton.setText(date);
+
+                // sets the selected date for firebase use
+                cal.set(year, month, day);
+                selectedDate = cal.getTime(); // Store the selected date
             }
         };
 
-        Calendar cal = Calendar.getInstance();
+
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
@@ -90,11 +216,6 @@ public class OrganizerQREventListPopupWindow {
         datePickerDialog.show();
 
     }
-
-
-
-    
-
 
     private String makeDateString(int day, int month, int year)
     {
@@ -130,43 +251,6 @@ public class OrganizerQREventListPopupWindow {
 
         //default should never happen
         return "JAN";
-    }
-
-
-
-
-
-
-
-    private void createEvent(View view){
-        // Database insertion goes here
-        EditText editTextName = view.findViewById(R.id.editTextEventName);
-        EditText editTextDescription = view.findViewById(R.id.editTextEventDescription);
-
-
-    }
-
-
-    private void initializePopupWindow() {
-
-        // Create PopupWindow
-        popupWindow = new PopupWindow(popupView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, true);
-
-        // Sets up the date picker button
-        dateButton = popupView.findViewById(R.id.dateselector);
-        dateButton.setText(getTodaysDate());
-        dateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //showDatePickerDialog();
-                initDatePicker();
-            }
-        });
-
-        // Dismiss the popup window when touched outside
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setFocusable(true);
-
     }
 
     public void showPopupWindow() {
