@@ -1,9 +1,13 @@
 package com.example.qreate.organizer.qrmenu;
 
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,13 +22,7 @@ import java.util.ArrayList;
 public class OrganizerQREventListActivity extends AppCompatActivity  {
 
 
-    /**
-     *
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     *
-     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +30,15 @@ public class OrganizerQREventListActivity extends AppCompatActivity  {
 
         //Create Event Button
         Button createEventButton = findViewById(R.id.event_list_screen_confirmbutton);
+        createEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Creating instance of the CustomPopupWindow
+                OrganizerQREventListPopupWindow popupWindow = new OrganizerQREventListPopupWindow(OrganizerQREventListActivity.this);
+                // Showing the popup window
+                popupWindow.showPopupWindow();
+            }
+        });
 
 
 
@@ -44,6 +51,8 @@ public class OrganizerQREventListActivity extends AppCompatActivity  {
             }
         });
     }
+
+
 
 
 }
