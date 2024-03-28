@@ -240,16 +240,50 @@ public class EditProfileScreenFragment extends Fragment {
     private String getInitials(String name){
         String [] words = name.split("\\s+");
         StringBuilder initials = new StringBuilder();
-        for(int i = 0; i< words.length; i++){
-            String word = words[i];
-            if(!TextUtils.isEmpty(word) && Character.isLetter(word.charAt(0))){
-                initials.append(word.charAt(0));
-                if(i<words.length -1){
-                    initials.append(".");
+
+        //ensure only first and/or last name is entered
+        int nameCount = words.length;
+        if(nameCount >= 1){
+            String firstName = words[0];
+            // if no last name dont add a "."
+            String lastName = (nameCount > 1) ? words[nameCount -1 ]: "";
+
+            //add first name only first letter
+            if(!TextUtils.isEmpty(firstName)){
+                for (char c : firstName.toCharArray()){
+                    if(Character.isLetter(c)){
+                        initials.append(Character.toUpperCase(c));
+                        break;
+                    }
+                }
+            }
+
+            //add dot if there is a first and last name
+            if(!TextUtils.isEmpty(firstName) && !TextUtils.isEmpty(lastName) && isLetters(firstName) && isLetters(lastName)){
+                initials.append(".");
+            }
+
+            //add last name only first letter
+            if(!TextUtils.isEmpty(lastName)){
+                for(char c : lastName.toCharArray()){
+                    if(Character.isLetter(c)){
+                        initials.append(Character.toUpperCase(c));
+                        break;
+                    }
                 }
             }
         }
-        return initials.toString().toUpperCase();
+        return initials.toString();
+
+    }
+
+    private boolean isLetters(String name){
+        for(char c: name.toCharArray()){
+            if(Character.isLetter(c)){
+                return true;
+            }
+        }
+        return false;
     }
 
 
