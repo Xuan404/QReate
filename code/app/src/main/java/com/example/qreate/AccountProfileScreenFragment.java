@@ -79,7 +79,11 @@ public class AccountProfileScreenFragment extends Fragment {
         return view;
     }
 
-    //bitmap to Base64
+    /**
+     * Turns bitmap into Base64 in order to store it to Firestore
+     * @param profilePictureBitmap a bitmap
+     * @return Base64 of the bitmap
+     */
     private String encodeBitmap(Bitmap profilePictureBitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         profilePictureBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
@@ -90,9 +94,9 @@ public class AccountProfileScreenFragment extends Fragment {
     }
 
     /**
-     * Generate initials from user name
+     * Generate initials from user name from Firestore
      * @param name The user's name
-     * @return initials of user
+     * @return initials of user in string format
      */
 
     private String getInitials(String name){
@@ -135,6 +139,11 @@ public class AccountProfileScreenFragment extends Fragment {
 
     }
 
+    /**
+     * Checks if name entered by user is letters
+     * @param name
+     * @return true if name is appropriate, false if not
+     */
     private boolean isLetters(String name){
         for(char c: name.toCharArray()){
             if(Character.isLetter(c)){
@@ -145,7 +154,10 @@ public class AccountProfileScreenFragment extends Fragment {
     }
 
 
-    // authenticates updated user info
+    /**
+     * Authenticates updated user info
+     * @param view
+     */
     private void authenticateUserInfo(View view) {
 
         boolean nonEmptyInput = true;
@@ -164,8 +176,8 @@ public class AccountProfileScreenFragment extends Fragment {
         String email = editTextEmail.getText().toString();
         String homepage = editTextHomepage.getText().toString();
 
+        //generate a profile pic if none stored by user
         Bitmap generatedProfilePic = GenerateProfilePic.generateProfilePicture(getInitials(name));
-
 
         // Name condition check.
         if (TextUtils.isEmpty(name)) {

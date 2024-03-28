@@ -232,9 +232,9 @@ public class EditProfileScreenFragment extends Fragment {
     }
 
     /**
-     * Generate initials from user name
+     * Generate initials from user name from Firestore
      * @param name The user's name
-     * @return initials of user
+     * @return initials of user in string format
      */
 
     private String getInitials(String name){
@@ -277,6 +277,11 @@ public class EditProfileScreenFragment extends Fragment {
 
     }
 
+    /**
+     * Checks if name entered by user is letters
+     * @param name
+     * @return true if name is appropriate, false if not
+     */
     private boolean isLetters(String name){
         for(char c: name.toCharArray()){
             if(Character.isLetter(c)){
