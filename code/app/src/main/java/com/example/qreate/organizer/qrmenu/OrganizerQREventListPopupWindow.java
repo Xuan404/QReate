@@ -1,8 +1,15 @@
 package com.example.qreate.organizer.qrmenu;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,11 +33,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 // https://www.youtube.com/watch?v=qCoidM98zNk
 
@@ -44,6 +56,10 @@ public class OrganizerQREventListPopupWindow {
     private Button uploadPosterButton;
 
     private Date selectedDate;
+    private Uri selectedImageUri;
+    private String imageName;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    public static final int IMAGE_PICK_CODE = 1000;
 
     public OrganizerQREventListPopupWindow(Context context) {
 
@@ -55,6 +71,26 @@ public class OrganizerQREventListPopupWindow {
 
         initializePopupWindow(); // Creates the pop up menu
 
+        // Sets up the date picker button
+        dateButton = popupView.findViewById(R.id.dateselector);
+        dateButton.setText(getTodaysDate());
+        dateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //showDatePickerDialog();
+                initDatePicker();
+            }
+        });
+
+        uploadPosterButton = popupView.findViewById(R.id.uploadButton);
+        uploadPosterButton.setOnClickListener(view -> {
+//            Activity activity = (Activity) context;
+//            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//            activity.startActivityForResult(intent, PICK_IMAGE_REQUEST);
+            openImageSelector();
+
+        });
+
         // Confirm button actions
         Button confirmDataButton = popupView.findViewById(R.id.buttonCreateEvent);
         confirmDataButton.setOnClickListener(new View.OnClickListener() {
@@ -62,12 +98,80 @@ public class OrganizerQREventListPopupWindow {
             public void onClick(View view) {
 
                 createEvent(popupView);
+                uploadImageToFirebaseStorage(selectedImageUri);
                 popupWindow.dismiss();
 
             }
         });
 
     }
+
+    private void openImageSelector() {
+        Activity activity = (Activity) context;
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        activity.startActivityForResult(intent, IMAGE_PICK_CODE);
+    }
+
+    public void setImageUri(Uri imageUri) {
+        this.selectedImageUri = imageUri;
+        Log.w("UriImage", String.valueOf(selectedImageUri));
+    }
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+        uploadPosterButton.setText(imageName);
+        Log.w("UriImage", String.valueOf(imageName));
+    }
+
+
+    public String getFileNameByUri(Context context, Uri uri) {
+        String fileName = "unknown"; // Default to "unknown" if the file name can't be found
+        Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+
+        if (cursor != null) {
+            // If the device version is Android Q or above
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Try to get the file name from the column DISPLAY_NAME
+                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                cursor.moveToFirst();
+                fileName = cursor.getString(nameIndex);
+            } else {
+                // For devices below Android Q, you may need to manually parse the last segment
+                // of the URI path as the file name
+                List<String> pathSegments = uri.getPathSegments();
+                if (pathSegments != null && pathSegments.size() > 0) {
+                    fileName = pathSegments.get(pathSegments.size() - 1);
+                }
+            }
+            cursor.close();
+        }
+        return fileName;
+    }
+
+
+
+    // Test
+    private void uploadImageToFirebaseStorage(Uri fileUri) {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference("posters/" + UUID.randomUUID().toString());
+        storageRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // Handle success
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -102,7 +206,6 @@ public class OrganizerQREventListPopupWindow {
 
 
         Map<String, Object> device = new HashMap<>();
-        //device.put("organizer", name);
         device.put("name", name);
         device.put("description", description);
         device.put("date", selectedDate);
@@ -130,43 +233,10 @@ public class OrganizerQREventListPopupWindow {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private void initializePopupWindow() {
 
         // Create PopupWindow
         popupWindow = new PopupWindow(popupView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, true);
-
-        // Sets up the date picker button
-        dateButton = popupView.findViewById(R.id.dateselector);
-        dateButton.setText(getTodaysDate());
-        dateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //showDatePickerDialog();
-                initDatePicker();
-            }
-        });
 
         // Dismiss the popup window when touched outside
         popupWindow.setOutsideTouchable(true);
