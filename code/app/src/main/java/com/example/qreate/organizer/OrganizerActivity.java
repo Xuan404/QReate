@@ -226,7 +226,7 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
                 // Add all necessary document fields here
                 Map<String, Object> device = new HashMap<>();
                 device.put("user_document_id", docRef);
-                device.put("event_list", eventList);
+                device.put("events_list", eventList);
                 device.put("device_id", device_id);
 
                 db.collection("Organizers").add(device);

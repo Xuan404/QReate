@@ -50,7 +50,7 @@ import java.util.UUID;
  */
 public class OrganizerQRGeneratorActivity extends AppCompatActivity {
 
-    String documentId = "t1IPHNATtoCOXrEHphlF" ; // Dummy variable containing event doc id, should be the spinner value
+    String documentId = "lZM5pJSzSYqScDprIKnP" ; // Dummy variable containing event doc id, should be the spinner value
     int selectedId ;
 
     @Override
