@@ -1,0 +1,56 @@
+- git & harshita
+1. the events being created on app cant be viewed in admin dashboard (US 04.01.01, US 04.04.01)
+2. admin image debugging (US 04.03.01, US 04.06.01) (profile pics bit map, posters bitmap)
+
+note: image dashboard should be restricited to only events and profiles that have uploaded images, not deterministicaly profile or event without poster. 
+deleting a pfp should revert back to deterministically generated pic. 
+
+3. debug event browsing and view details (US 02.08.01 & US 02.04.01)
+4. signing up for an event & figure out database stuff for it (US 02.07.01)
+5. US 01.11.011
+5. current events (todays event) -> when we view details, there should be an option to see if attendee had checked in that event or not (US 02.09.01)
+6. upcoming events (tomorrow's events) (US 02.09.01)
+7. event list for organizer
+8. promitional qr code - US 01.07.01 (find event on firebase, pull
+9. editing created event
+
+User Stories:
+1. US 04.01.01
+2. US 04.04.01
+3. US 04.03.01
+4. US 04.06.01
+5. US 02.08.01
+6. US 02.04.01
+7. US 02.07.01
+8. US 01.11.011
+9. US 02.09.01
+10. US 02.09.01
+11. US 01.07.01
+
+
+- akib 
+1. US 02.01.01
+2. US 02.03.01
+3. US 01.01.01
+4. US 01.02.01
+5. US 01.03.01
+6. US 01.05.01
+7. US 01.07.01
+8. US 01.08.01
+9. US 01.09.01
+10.US 01.10.01
+
+- dennis
+1. US 01.01.02
+2. US 01.06.01
+3. TIME & LOCATION TO BE DONE FOR EVENT CREATION
+
+- ryan
+1. US 02.02.01 & US 02.02.02
+
+- shraddha
+1. US 02.04.01
+2. figure out home screen pfp (US 02.05.01)
+
+
+
