@@ -3,21 +3,26 @@ package com.example.qreate.organizer.attendeesmenu;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.Base64;
 import android.util.Log;
-import android.view.ContextMenu;
+
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
-import android.widget.Spinner;
+
+import android.content.DialogInterface;
+import androidx.appcompat.app.AlertDialog;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,7 +44,7 @@ import java.util.ArrayList;
 public class OrganizerAttendeeListMenuFragment extends Fragment {
 
     ArrayList<OrganizerEvent> events;
-    Spinner eventsSpinner;
+    private Button testButton;
     OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
     /**
      * Creates the view and inflates the organizer_attendee_list_menu_screen layout
@@ -57,8 +62,11 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        fetchProfilePicInfoFromDataBase();
+
         View view = inflater.inflate(R.layout.organizer_attendee_list_menu_screen, container, false);
         ImageButton profileButton = view.findViewById(R.id.attendee_list_menu_screen_profile_button);
+        testButton = view.findViewById(R.id.attendee_list_menu_screen_spinner);
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,47 +74,84 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
             }
         });
 
-
-
-        events = new ArrayList<OrganizerEvent>();
-
-        addEventsInit();
-
-        eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this.getActivity(), events);
-
-        //NEED TO GRAB THE ARRAY FROM FIREBASE THEN PARSE IT INTO THIS
-        eventsSpinner = view.findViewById(R.id.attendee_list_menu_screen_spinner);
-
-        eventsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            /**
-             * gets selected item string
-             *
-             * @param parent the adapter-view of the view
-             * @param view current view
-             * @param position current position in spinner
-             * @param id current id
-             *
-             */
+        testButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onClick(View v) {
+                showOptionsDialog();
             }
         });
-        addEventsInit();
-
-        eventSpinnerArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
-
-        eventsSpinner.setAdapter(eventSpinnerArrayAdapter);
-
-        fetchProfilePicInfoFromDataBase();
 
         return view;
     }
+
+
+    private void showOptionsDialog() {
+        final String[] items = {"Option 1", "Option 2", "Option 3", "Option 4", "Option 5"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Events");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                testButton.setText(items[which]);
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+
+        // Make sure the dialog has a window
+        if (dialog.getWindow() != null) {
+            // Create a new GradientDrawable with rounded corners
+            GradientDrawable drawable = new GradientDrawable();
+            drawable.setCornerRadius(50f); // Set the corner radius
+            drawable.setColor(Color.WHITE); // Set the background color (change if needed)
+
+            // Set the GradientDrawable as the background of the dialog's window
+            dialog.getWindow().setBackgroundDrawable(drawable);
+        }
+
+        dialog.show();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void fetchProfilePicInfoFromDataBase(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -191,16 +236,4 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
         transaction.commit();
     }
 
-
-
-
-
-    //Temporary to test swap this with the firebase data
-    private void addEventsInit(){
-        String []cities ={"Edmonton", "Vancouver", "Toronto", "Hamilton", "Denver", "Los Angeles"};
-        String []provinces = {"AB", "BC", "ON", "ON", "CO", "CA"};
-        for(int i=0;i<cities.length;i++){
-            events.add((new OrganizerEvent(cities[i], provinces[i], "date", Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID),"temp")));
-        }
-    }
 }

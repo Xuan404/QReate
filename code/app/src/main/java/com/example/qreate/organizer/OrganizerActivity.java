@@ -243,15 +243,6 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
 
 
-
-
-
-
-
-
-
-
-
     private void authenticateOrganizer() {
         //Function to help set up checkIfOrganizerExists
 
@@ -299,11 +290,6 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
 
     }
-
-
-
-
-
 
 
 

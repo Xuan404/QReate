@@ -1,7 +1,9 @@
 package com.example.qreate.attendee;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +20,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
+import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
+import com.google.zxing.WriterException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.w3c.dom.Text;
+
+import java.util.UUID;
 
 /**
  * AttendeeScanFragment provides a user interface for attendees to scan QR codes within the event app.
@@ -40,11 +46,13 @@ import org.w3c.dom.Text;
  * @author Shraddha Mehta
  */
 
-public class AttendeeScanFragment extends Fragment implements View.OnClickListener{
+public class AttendeeScanFragment extends Fragment {
 
     ImageButton scanButton;
     TextView textContent;
     private ActivityResultLauncher<Intent> scanLauncher;
+
+    String stringQR;
 
     /**
      * This method inflates the layout for the attendee QR code scanning page, initializes UI components,
@@ -67,7 +75,17 @@ public class AttendeeScanFragment extends Fragment implements View.OnClickListen
 
         scanButton = view.findViewById(R.id.tap_to_scan_qr_button);
         textContent = view.findViewById(R.id.text_content);
-        scanButton.setOnClickListener(this);
+        //scanButton.setOnClickListener(this);
+
+        // Clicking scan image pops out scan camera
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view.getId() == R.id.tap_to_scan_qr_button){
+                    startQRScan();
+                }
+            }
+        });
 
         //initialize the scan launcher
         scanLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -75,14 +93,17 @@ public class AttendeeScanFragment extends Fragment implements View.OnClickListen
                 Intent data = result.getData();
                 IntentResult intentResult = IntentIntegrator.parseActivityResult(result.getResultCode(), data);
 
-                if(intentResult != null){
+                stringQR = intentResult.getContents();
+                Log.w("Scannerr", stringQR);
+                if (stringQR == null) {
+                    popUpAlert("Scan Aborted");
 
-                    if (intentResult.getContents() == null){
-                        popUpAlert("Scan Aborted");
+                } else {
 
-                    } else if (intentResult.getContents() != null){
-                        popUpResultDialog(intentResult.getContents());
-                    }
+                    // all checking and inserting goes here
+
+
+                    popUpResultDialog(intentResult.getContents());
                 }
             } else{
                 popUpAlert("Scan Aborted");
@@ -122,16 +143,7 @@ public class AttendeeScanFragment extends Fragment implements View.OnClickListen
         builder.show();
     }
 
-    /**
-     * For when user clicks on the scan qr code button, the scan process starts.
-     * @param v The view that was clicked.
-     */
-    @Override
-    public void onClick(View v){
-        if (v.getId() == R.id.tap_to_scan_qr_button){
-            startQRScan();
-        }
-    }
+
 
     /**
      * For starting scanner using IntentIntegrator library
