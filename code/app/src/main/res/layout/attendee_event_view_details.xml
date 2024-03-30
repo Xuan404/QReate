@@ -6,19 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/rounded_dark_blue"
-    android:layout_marginTop="150dp"
+    android:layout_marginTop="0dp"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp">
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="392dp"
+        android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="5dp"
-        tools:ignore="MissingConstraints">
+        tools:layout_editor_absoluteY="5dp">
 
         <ImageView
             android:id="@+id/event_details_poster"
@@ -97,33 +97,28 @@
             android:textColor="#D9D9D9"
             android:textSize="18sp" />
 
+        <Button
+            android:id="@+id/event_details_signup_button"
+            android:layout_width="254dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/blue_button"
+            android:text="Sign Up"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/event_details_cancel_button"
+            android:layout_width="254dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/yellow"
+            android:text="Cancel"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
     </LinearLayout>
-
-    <Button
-        android:id="@+id/event_details_cancel_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/yellow"
-        android:text="Cancel"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintEnd_toStartOf="@+id/event_details_signup_button"/>
-
-    <Button
-        android:id="@+id/event_details_signup_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/blue_button"
-        android:text="Sign Up"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        app:layout_constraintStart_toEndOf="@+id/event_details_cancel_button"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
