@@ -3,6 +3,7 @@ package com.example.qreate.attendee;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,7 +58,8 @@ public class AttendeeScanFragment extends Fragment {
     TextView textContent;
     private ActivityResultLauncher<Intent> scanLauncher;
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String device_id;
 
     String stringQR;
 
@@ -77,6 +79,8 @@ public class AttendeeScanFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         View view = inflater.inflate(R.layout.attendee_tap_to_scan_page, container, false);
 
@@ -138,8 +142,8 @@ public class AttendeeScanFragment extends Fragment {
                             QueryDocumentSnapshot document = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
                             String documentId = document.getId(); // This is your document ID
                             // You can now use this documentId as needed
-                            // For example, store it in a class variable or use directly
-                            Toast.makeText(getContext(), "Document ID: " + documentId, Toast.LENGTH_SHORT).show();
+                            checkCurrentlyCheckedIn(device_id, documentId);
+                            //Toast.makeText(getContext(), "Document ID: " + documentId, Toast.LENGTH_SHORT).show();
                         } else {
                             // Document not found, show a Toast message
                             Toast.makeText(getContext(), "Could not identify QRcode", Toast.LENGTH_SHORT).show();
@@ -151,7 +155,37 @@ public class AttendeeScanFragment extends Fragment {
                 });
     }
 
+    public void checkCurrentlyCheckedIn(String deviceId, String documentId) {
+        db.collection("Attendees")
+                .whereEqualTo("device_id", deviceId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        // Assuming device_id is unique, get the first document.
+                        QueryDocumentSnapshot document = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
+                        String currentlyCheckedIn = document.getString("currently_checkedin");
 
+                        // Compare the currently_checkedin field with the provided documentId
+                        if (documentId.equals(currentlyCheckedIn)) {
+                            Toast.makeText(getContext(), "You are already checked into this event", Toast.LENGTH_SHORT).show();
+                        } else {
+
+                            // Run Test on document
+                            // Insert
+
+
+
+                            //Toast.makeText(getContext(), "Mismatch: The document ID does not match the currently checked-in status.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        //Toast.makeText(getContext(), "No attendee found with the given device ID.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    public void validCheckIn(){
+
+    }
 
 
 

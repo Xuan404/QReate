@@ -308,6 +308,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                         device.put("user_document_id", docRef);
                         device.put("event_list", eventList);
                         device.put("fcm_token", tokenFCM);
+                        device.put("currently_checkedin", "");
 
                         db.collection("Attendees").add(device);
                     }

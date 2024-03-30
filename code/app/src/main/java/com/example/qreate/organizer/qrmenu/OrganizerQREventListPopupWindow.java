@@ -219,6 +219,8 @@ public class OrganizerQREventListPopupWindow {
         device.put("date", selectedDate);
         device.put("poster", imagePath);
         device.put("signup_limit", signupLimit);
+        device.put("signup_count", 0);
+        device.put("checkin_count", 0);
 
 
         // Creates a new Events document in Firestore
