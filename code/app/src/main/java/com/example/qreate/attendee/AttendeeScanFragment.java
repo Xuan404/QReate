@@ -1,7 +1,13 @@
 package com.example.qreate.attendee;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -18,17 +24,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
 
 import com.example.qreate.R;
 import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.WriterException;
@@ -66,9 +79,14 @@ public class AttendeeScanFragment extends Fragment {
     private ActivityResultLauncher<Intent> scanLauncher;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String device_id;
+    private String device_id;
 
-    String stringQR;
+    private String stringQR;
+    private FusedLocationProviderClient fusedLocationClient;
+    private ActivityResultLauncher<String> locationPermissionRequest;
+    private SharedPreferences sharedPreferences;
+    private Double latitude;
+    private Double longitude;
 
     /**
      * This method inflates the layout for the attendee QR code scanning page, initializes UI components,
@@ -99,7 +117,7 @@ public class AttendeeScanFragment extends Fragment {
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (view.getId() == R.id.tap_to_scan_qr_button){
+                if (view.getId() == R.id.tap_to_scan_qr_button) {
                     startQRScan();
                 }
             }
@@ -107,7 +125,7 @@ public class AttendeeScanFragment extends Fragment {
 
         //initialize the scan launcher
         scanLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            if (result.getResultCode() == AppCompatActivity.RESULT_OK){
+            if (result.getResultCode() == AppCompatActivity.RESULT_OK) {
                 Intent data = result.getData();
                 IntentResult intentResult = IntentIntegrator.parseActivityResult(result.getResultCode(), data);
 
@@ -120,11 +138,11 @@ public class AttendeeScanFragment extends Fragment {
                     // ALL CHECKING AND INSERTION GOES HERE
 
                     // First seaches checkin qr document then promo qr
-                    findDocumentByFieldValueCheckin("attendee_qr_code_string",stringQR); // First seaches dor
+                    findDocumentByFieldValueCheckin("attendee_qr_code_string", stringQR); // First seaches dor
                     //TODO findDocumentByFieldValuePromo
                     popUpResultDialog(intentResult.getContents());
                 }
-            } else{
+            } else {
                 popUpAlert("Scan Aborted");
             }
         });
@@ -134,7 +152,6 @@ public class AttendeeScanFragment extends Fragment {
 
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 
     private void findDocumentByFieldValueCheckin(String fieldName, String fieldValue) {
@@ -191,12 +208,12 @@ public class AttendeeScanFragment extends Fragment {
                                     if (validCheckIn(date)) {
                                         setEventCheckin(documentId);
                                         setCheckinAttendee(documentId);
+                                        setAttendeeGeolocation();
 
 
-                                    } else{
+                                    } else {
                                         Toast.makeText(getContext(), "Unable to checkin", Toast.LENGTH_SHORT).show();
                                     }
-
 
 
                                 }
@@ -210,7 +227,7 @@ public class AttendeeScanFragment extends Fragment {
                 });
     }
 
-    private boolean validCheckIn(Date date){
+    private boolean validCheckIn(Date date) {
         // TODO add the signup validation after harshita and gitanjali finish their side of things
 
         // Convert the timestamp to a LocalDate
@@ -233,7 +250,7 @@ public class AttendeeScanFragment extends Fragment {
     }
 
 
-    private void setEventCheckin(String eventId){
+    private void setEventCheckin(String eventId) {
         // inserts the attendee ref into the checked in list of event doc
         db.collection("Attendees").whereEqualTo("device_id", device_id)
                 .get()
@@ -253,7 +270,8 @@ public class AttendeeScanFragment extends Fragment {
                 });
 
     }
-    private void setCheckinAttendee(String eventDocId){
+
+    private void setCheckinAttendee(String eventDocId) {
 
         // Get the event document reference from the "Events" collection
         //DocumentReference eventDocRef = db.collection("Events").document(eventDocId);
@@ -266,17 +284,92 @@ public class AttendeeScanFragment extends Fragment {
 
                     DocumentReference attendeeDocRef = task.getResult().getDocuments().get(0).getReference();
                     // Update the currently_checkedin field with the event document reference
-                    attendeeDocRef.update("currently_checkedin",eventDocId);
+                    attendeeDocRef.update("currently_checkedin", eventDocId);
 
                 });
 
 
     }
 
-    private void setAttendeeGeolocation(){
+    private void setAttendeeGeolocation() {
         // sets the current checked in event to event to the event scanned
 
+        // Query for the user with the matching deviceId
+        db.collection("Users")
+                .whereEqualTo("device_id", device_id)
+                .get()
+                .addOnCompleteListener(task -> {
+
+
+                    // Assuming device_id is unique, there should only be one matching document
+                    DocumentSnapshot userDocument = task.getResult().getDocuments().get(0);
+
+                    // Check if the allow_coordinates field is true
+                    if (userDocument.getBoolean("allow_coordinates") != null && userDocument.getBoolean("allow_coordinates")) {
+
+                        // function for retriving geolocation
+
+                        //getLocationAndUpdate();
+                        //Log.d("Geolocation", "Yayy");
+
+
+                        // Update the coordinates field with the new GeoPoint
+                        userDocument.getReference().update("coordinates", new GeoPoint(latitude, longitude));
+                    }
+
+
+                });
+
     }
+
+
+
+
+
+
+//    private void getLocationAndUpdate() {
+//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+//        //Log.d("Geolocation", "Yayy1");
+//
+//
+//        //Log.d("Geolocation", "Yayy3");
+//        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        fusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        // Got last known location. In some rare situations, this can be null.
+//                        if (location != null) {
+//                            // Assign the location to the appropriate variables
+//
+//                            //Log.d("Geolocation", String.valueOf(location));
+//
+//                            latitude = location.getLatitude();
+//                            longitude = location.getLongitude();
+//                            //Log.d("Geolocation", String.valueOf(latitude));
+//                            //Log.d("Geolocation", String.valueOf(longitude));
+//
+//                        }
+//                    }
+//                });
+//    }
+
+
+
+
+
+
+
+
 
 
 
