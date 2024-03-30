@@ -21,6 +21,11 @@ import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
 import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.zxing.WriterException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -51,6 +56,8 @@ public class AttendeeScanFragment extends Fragment {
     ImageButton scanButton;
     TextView textContent;
     private ActivityResultLauncher<Intent> scanLauncher;
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();;
 
     String stringQR;
 
@@ -99,9 +106,10 @@ public class AttendeeScanFragment extends Fragment {
                     popUpAlert("Scan Aborted");
 
                 } else {
+                    // ALL CHECKING AND INSERTION GOES HERE
 
-                    // all checking and inserting goes here
-
+                    // First seaches attendee qr document then promo qr
+                    findDocumentByFieldValue("attendee_qr_code_string",stringQR); // First seaches dor
 
                     popUpResultDialog(intentResult.getContents());
                 }
@@ -112,6 +120,71 @@ public class AttendeeScanFragment extends Fragment {
 
         return view;
     }
+
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+    public void findDocumentByFieldValue(String fieldName, String fieldValue) {
+        db.collection("Events")
+                .whereEqualTo(fieldName, fieldValue)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            // Assuming you are looking for the first document that matches the criteria
+                            QueryDocumentSnapshot document = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
+                            String documentId = document.getId(); // This is your document ID
+                            // You can now use this documentId as needed
+                            // For example, store it in a class variable or use directly
+                            Toast.makeText(getContext(), "Document ID: " + documentId, Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Document not found, show a Toast message
+                            Toast.makeText(getContext(), "Could not identify QRcode", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+
+                });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //-------------------------------------------------------------------------------END-------------------------------------------------------------------------------------
+
 
     /**
      * For displaying pop-up dialog after scanning of qr code

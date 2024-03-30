@@ -38,6 +38,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -110,6 +111,8 @@ public class OrganizerQREventListPopupWindow {
 
                 if (imageName != null && !Objects.equals(name, "") && !Objects.equals(description, "")) {
                     // Uploads the image and then creates the event automatically
+
+
                     uploadImageToFirebaseStorage(selectedImageUri);
                     //createEvent(popupView); // had to insert this in uploadImageToFirebaseStorage as its an asynchronous event
                     popupWindow.dismiss();
@@ -204,11 +207,13 @@ public class OrganizerQREventListPopupWindow {
     private void createEvent(View view){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String device_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        setInfoUp(view);
+        //setInfoUp(view);
 
         // Database insertion goes here
         Map<String, Object> device = new HashMap<>();
+        device.put("org_device_id", device_id);
         device.put("name", name);
         device.put("description", description);
         device.put("date", selectedDate);
@@ -279,13 +284,6 @@ public class OrganizerQREventListPopupWindow {
 
 
     }
-
-
-
-
-
-
-
 
 
 

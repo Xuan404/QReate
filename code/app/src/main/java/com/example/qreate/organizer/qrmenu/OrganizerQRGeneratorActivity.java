@@ -55,7 +55,7 @@ import java.util.UUID;
  */
 public class OrganizerQRGeneratorActivity extends AppCompatActivity {
 
-    String documentId = "LrXKKSgx3TmrSWiWZnQc"; // Dummy variable containing event doc id, should be the spinner value
+    String documentId = "3Z0RAltfeXSvMg3zO7Kw"; // Dummy variable containing event doc id, should be the spinner value
     private FirebaseFirestore db;
     ArrayList<OrganizerEvent> events;
     private Button testButton;

@@ -65,6 +65,8 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     private String tokenFCM;
     private String selectedEventId;
 
+    String device_id;
+
     /**
      * Called when the activity is starting. This is where most initialization should go:
      * calling setContentView(int) to inflate the activity's UI, using findViewById(int)
@@ -79,6 +81,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_handler);
 
+        device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         bottomNavigationView = findViewById(R.id.attendee_navigation_bar);
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholderAttendee);
@@ -302,6 +305,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                         List<String> eventList = new ArrayList<>();
 
                         Map<String, Object> device = new HashMap<>();
+                        device.put("device_id", device_id);
                         device.put("user_document_id", docRef);
                         device.put("event_list", eventList);
                         device.put("fcm_token", tokenFCM);
@@ -369,8 +373,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
 
     public void retrieveUserDocument(DocumentIdCallback callback) {
-
-        String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 
         db.collection("Users")
                 .whereEqualTo("device_id", device_id)
