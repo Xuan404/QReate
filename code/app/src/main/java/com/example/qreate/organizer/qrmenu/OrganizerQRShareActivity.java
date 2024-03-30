@@ -16,10 +16,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 
+import com.bumptech.glide.Glide;
 import com.example.qreate.R;
 import com.example.qreate.organizer.qrmenu.OrganizerEvent;
 import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
@@ -56,7 +58,9 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
     ArrayList<OrganizerEvent> events;
     private Button testButton;
     private OrganizerEvent selectedEvent;
+    File cacheDir = getCacheDir();
     private FirebaseFirestore db;
+    ImageView qrImage;
     Uri firebaseUri;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
@@ -64,7 +68,7 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
     Context context;
     OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
     //temporary fake id
-    String documentId = "LrXKKSgx3TmrSWiWZnQc";
+    String documentId = "3Z0RAltfeXSvMg3zO7Kw";
 
 
     @Override
@@ -83,7 +87,7 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
 
 
         eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this, events);
-
+        qrImage = findViewById(R.id.share_qr_code_qr_image);
 
         //NEED TO GRAB THE ARRAY FROM FIREBASE THEN PARSE IT INTO THIS
         //eventsSpinner = findViewById(R.id.share_qr_code_spinner);
@@ -105,6 +109,7 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
         });*/
         //TODO get promo qr grabs the qr for the selected event so call it everytime a new event is selected
         getPromoQR();
+        //Glide.with(this).load(firebaseUri.toString()).into(qrImage); GLIDE FIX DIDNT WORK im on like 10 attempts now i cant even find anything else online
 
 
         //eventSpinnerArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
@@ -129,7 +134,7 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("image/*");
-                //GOTTA PUT THE IMAGE LOCATION HERE
+                //GOTTA PUT THE IMAGE LOCATION HERE even this basic one doesnt work btw :(
                 //Uri imageUri = Uri.parse("android.resource://" + getPackageName() + "/drawable/qricon.png");
 
                 sharingIntent.putExtra(Intent.EXTRA_STREAM, firebaseUri);
@@ -160,6 +165,7 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                                 //Content uri code this fix didn't work
                                 //firebaseUri = FileProvider.getUriForFile(context, "com.example.qreate.organizer.qrmenu", new File(uri.getPath()));
                                 firebaseUri = uri;
+
 
                             }).addOnFailureListener(exception -> {
                                 // Handle any errors (e.g., image not found, network issues)
@@ -224,11 +230,11 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                                             if (referencedDocument.exists()) {
                                                 //TODO description/dates are not set in most firebase stuff this will cause it to crash
                                                 String eventName = referencedDocument.getString("name");
-                                                //String eventDetails = document.getString("description");
-                                                //String eventDate = document.getString("date");
+                                                String eventDetails = document.getString("description");
+                                                String eventDate = document.getString("date");
                                                 String eventOrganizer = referencedDocument.getString("organizer");
                                                 String eventID = referencedDocument.getId();
-                                                events.add(new OrganizerEvent(eventName, "details", "date", eventOrganizer, eventID));
+                                                events.add(new OrganizerEvent(eventName, eventDetails, eventDate, eventOrganizer, eventID));
                                             } else {
                                                 System.out.println("Referenced document does not exist");
                                             }

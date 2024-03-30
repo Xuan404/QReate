@@ -57,6 +57,7 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
 
     String documentId = "LrXKKSgx3TmrSWiWZnQc"; // Dummy variable containing event doc id, should be the spinner value
     private FirebaseFirestore db;
+    private OrganizerEvent selectedEvent;
     ArrayList<OrganizerEvent> events;
     private Button testButton;
     int selectedId;
@@ -295,6 +296,7 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 testButton.setText(items[which]);
+                selectedEvent = events.get(which);
             }
         });
         builder.setNegativeButton("Cancel", null);

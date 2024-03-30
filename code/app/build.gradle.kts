@@ -54,6 +54,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:latest_version")
     implementation("com.google.firebase:firebase-messaging:23.4.1")
 
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
     implementation("com.google.zxing:core:3.4.1")
     implementation("com.journeyapps:zxing-android-embedded:4.2.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")

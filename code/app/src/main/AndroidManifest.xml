@@ -49,7 +49,7 @@
             android:screenOrientation="fullSensor"
             android:theme="@style/zxing_CaptureTheme" />
         <provider
-            android:authorities="com.example.qreate.organizer.qrmenu"
+            android:authorities="com.example.qreate"
             android:name="androidx.core.content.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
