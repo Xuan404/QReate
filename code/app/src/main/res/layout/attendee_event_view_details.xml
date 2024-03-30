@@ -33,7 +33,6 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_bold"
             android:paddingTop="10dp"
-            android:text="Event"
             android:textColor="#FFFFFF"
             android:textSize="20sp" />
 
@@ -57,7 +56,6 @@
             android:fontFamily="@font/poppins_bold"
             android:paddingStart="16dp"
             android:paddingTop="10dp"
-            android:text="Event Description"
             android:textColor="#D9D9D9"
             android:textSize="18sp" />
 
@@ -69,7 +67,6 @@
             android:fontFamily="@font/poppins_bold"
             android:paddingStart="16dp"
             android:paddingTop="10dp"
-            android:text="Date"
             android:textColor="#D9D9D9"
             android:textSize="18sp" />
 
