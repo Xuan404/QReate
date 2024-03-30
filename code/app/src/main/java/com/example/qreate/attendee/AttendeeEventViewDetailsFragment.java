@@ -53,6 +53,7 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showBottomNavigationBar();
                 // Pop the current fragment off the stack to return to the previous one
                 if (getParentFragmentManager().getBackStackEntryCount() > 0) {
                     getParentFragmentManager().popBackStack();
@@ -70,5 +71,10 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
         args.putString("eventId", eventId);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    private void showBottomNavigationBar() {
+        // Find the BottomNavigationView and set its visibility to GONE
+        ((AttendeeActivity)getActivity()).showBottomNavigationBar();
     }
 }
