@@ -1,7 +1,11 @@
 package com.example.qreate.organizer.qrmenu;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -9,12 +13,15 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 
 import com.example.qreate.R;
 import com.example.qreate.organizer.qrmenu.OrganizerEvent;
 import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -28,8 +35,12 @@ import com.google.firebase.storage.StorageReference;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +52,7 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
     Spinner eventsSpinner;
+    Context context;
     OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
     //temporary fake id
     String documentId = "LrXKKSgx3TmrSWiWZnQc";
@@ -50,6 +62,7 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_share_qr_code_screen);
+        this.context = context;
 
         db = FirebaseFirestore.getInstance();
 
@@ -98,7 +111,7 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                sharingIntent.setType("image/jpeg");
+                sharingIntent.setType("image/*");
                 //GOTTA PUT THE IMAGE LOCATION HERE
                 //Uri imageUri = Uri.parse("android.resource://" + getPackageName() + "/drawable/qricon.png");
 
@@ -127,17 +140,42 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             storageRef.child(document.getString("promo_qr_code")).getDownloadUrl().addOnSuccessListener(uri -> {
+                                //Content uri code this fix didn't work
+                                /*Uri contentUri = FileProvider.getUriForFile(context, "com.example.qreate.organizer.qrmenu", new File(uri.getPath())
+                                );
+                                firebaseUri = contentUri;*/
                                 firebaseUri = uri;
+
                             }).addOnFailureListener(exception -> {
                                 // Handle any errors (e.g., image not found, network issues)
                             });
+                            /*StorageReference imageRef = storageRef.child(document.getString("promo_qr_code"));
+                            imageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    // Convert byte array to Bitmap
+                                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArray);
+                                    String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Promo", null);
+                                    firebaseUri = Uri.parse(path);
+
+                                }*/
+                            /*}).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Handle any errors
+                                }
+                            });*/
                         } else {
                             // Task failed with an exception
                             Log.d("Firestore", "get failed with ", task.getException());
                         }
+
                     }
                 });
     }
+
 
 
     //Temporary to test swap this with the firebase data
@@ -198,6 +236,22 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+    private Uri getmageToShare(Bitmap bitmap) {
+        File imagefolder = new File(getCacheDir(), "images");
+        Uri uri = null;
+        try {
+            imagefolder.mkdirs();
+            File file = new File(imagefolder, "shared_image.png");
+            FileOutputStream outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
+            outputStream.flush();
+            outputStream.close();
+            uri = FileProvider.getUriForFile(this, "com.anni.shareimage.fileprovider", file);
+        } catch (Exception e) {
+            Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        return uri;
     }
 }
 

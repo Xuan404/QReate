@@ -1,13 +1,23 @@
 package com.example.qreate.organizer.qrmenu;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,9 +30,20 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.Result;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * The following class is responsible for the reuse existing qr code screen
@@ -35,15 +56,30 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
     Spinner eventsSpinner;
     private FirebaseFirestore db;
     OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
+    Uri image;
+    String documentId = "LrXKKSgx3TmrSWiWZnQc";
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_reuse_exisiting_qr_code_screen);
         db = FirebaseFirestore.getInstance();
+        imagePickerLauncher = registerForActivityResult(
+
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        assert data != null;
+                        image = data.getData();
+                    }
+                }
+        );
 
         events = new ArrayList<OrganizerEvent>();
 
         addEventsInit();
+
 
         eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this, events);
 
@@ -77,17 +113,89 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
 
         //Back Button
         ImageButton backButton = findViewById(R.id.reuse_existing_qr_code_screen_backbutton);
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+        //TODO
+        //share Button
+        Button shareButton = findViewById(R.id.reuse_existing_qr_code_screen_confirmbutton);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                imagePickerLauncher.launch(photoPickerIntent);
+                try {
+                    String randomString = UUID.randomUUID().toString();
+                    Bitmap bitmap = rebuildQR(decodeQRCode(image));
+                    uploadQRCode(bitmap, randomString);
+                } catch (WriterException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+    }
+
+    private String decodeQRCode(Uri uri){
+
+        return decodeQRCode(uri);
+    }
+
+    private Bitmap rebuildQR(String text) throws WriterException {
+        QRCodeWriter writer = new QRCodeWriter();
+        BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, 512, 512);
+        Bitmap bitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
+        for (int x = 0; x < 512; x++) {
+            for (int y = 0; y < 512; y++) {
+                bitmap.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+            }
+        }
+        return bitmap;
+    }
+    private void uploadQRCode(Bitmap bitmap, final String imageName) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        // This is the storage path we're going to save in Firestore
+        String storagePath = "qr_codes/" + imageName + ".png";
+        StorageReference qrCodeRef = storageRef.child(storagePath);
+
+        qrCodeRef.putBytes(data)
+                .addOnSuccessListener(taskSnapshot -> {
+                    saveImagePathToFirestore(storagePath, documentId, "attendee_qr_code");
+
+                })
+                .addOnFailureListener(e -> {
+                    // Handle unsuccessful uploads
+                });
+    }
+
+    private void saveImagePathToFirestore(String storagePath, String documentId, String QRtype) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> data = new HashMap<>();
+        data.put(QRtype, storagePath);
+
+        db.collection("Events").document(documentId)
+                .update(data)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "QRcode was successfully generated", Toast.LENGTH_SHORT).show();
+                    //finish();
+                    // Handle success
+                })
+                .addOnFailureListener(e -> {
+                    // Handle error
+                });
     }
     //Temporary to test swap this with the firebase data
     private void addEventsInit(){
-
-
         // TODO THIS CODE CRASHES IF THERES NO DETAIL OR DATE SO I COMMENTED IT OUT UNCOMMENT WHEN DATA IS FIXED
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         db.collection("Organizers")
@@ -100,15 +208,9 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             QuerySnapshot querySnapshot = task.getResult();
                             if (!querySnapshot.isEmpty()) {
-
-
                                 // Since the unique ID is unique, we only expect one result
                                 DocumentSnapshot document = querySnapshot.getDocuments().get(0);
-
-
                                 List<DocumentReference> referenceArray = (List<DocumentReference>) document.get("events_list");
-
-
                                 //assert createdEvents != null;
                                 for (DocumentReference reference : referenceArray) {
                                     reference.get().addOnCompleteListener(referencedTask -> {
@@ -130,10 +232,6 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
                                         }
                                     });
                                 }
-
-
-
-
                             } else {
                                 Log.d("Firestore", "No such document");
                             }
