@@ -12,10 +12,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.w3c.dom.Text;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class AdministratorEventDetailsFragment extends Fragment {
     private TextView eventName;
@@ -55,11 +60,17 @@ public class AdministratorEventDetailsFragment extends Fragment {
                             if (document.exists()) {
                                 // Extract event details from the document and update the UI
                                 eventName.setText(document.getString("name"));
-                                eventOrganizer.setText(document.getString("organizer"));
+                                // eventOrganizer.setText(document.getString("organizer"));
                                 eventDescription.setText(document.getString("description"));
-                                eventDate.setText(document.getString("date"));
-                                eventTime.setText(document.getString("time"));
-                                eventLocation.setText(document.getString("location"));
+                                Timestamp dateTimestamp = document.getTimestamp("date");
+                                if (dateTimestamp != null) {
+                                    // Format the Timestamp as a String to include only the date part in dd-MM-yyyy format
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+                                    String formattedDate = dateFormat.format(dateTimestamp.toDate());
+                                    eventDate.setText(formattedDate);
+                                }
+                                // eventTime.setText(document.getString("time"));
+                                // eventLocation.setText(document.getString("location"));
                                 // Ensure you have fields named accordingly in your Firestore document
                             } else {
                                 Log.d("Firestore", "Error getting documents: ", task.getException());
@@ -81,3 +92,5 @@ public class AdministratorEventDetailsFragment extends Fragment {
         return fragment;
     }
 }
+
+
