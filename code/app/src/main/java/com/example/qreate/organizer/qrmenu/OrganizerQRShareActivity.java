@@ -1,8 +1,11 @@
 package com.example.qreate.organizer.qrmenu;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -34,6 +37,7 @@ import com.google.firebase.storage.StorageReference;
 
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
@@ -47,11 +51,12 @@ import java.util.List;
 
 public class OrganizerQRShareActivity extends AppCompatActivity {
     ArrayList<OrganizerEvent> events;
+    private Button testButton;
     private FirebaseFirestore db;
     Uri firebaseUri;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     StorageReference storageRef = storage.getReference();
-    Spinner eventsSpinner;
+    //Spinner eventsSpinner;
     Context context;
     OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
     //temporary fake id
@@ -77,10 +82,10 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
 
 
         //NEED TO GRAB THE ARRAY FROM FIREBASE THEN PARSE IT INTO THIS
-        eventsSpinner = findViewById(R.id.share_qr_code_spinner);
+        //eventsSpinner = findViewById(R.id.share_qr_code_spinner);
 
 
-        eventsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        /*eventsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();
@@ -93,15 +98,23 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
 
 
             }
-        });
+        });*/
         //TODO get promo qr grabs the qr for the selected event so call it everytime a new event is selected
         getPromoQR();
 
 
-        eventSpinnerArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
+        //eventSpinnerArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
+        testButton = findViewById(R.id.share_qr_code_spinner);
+
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOptionsDialog();
+            }
+        });
 
 
-        eventsSpinner.setAdapter(eventSpinnerArrayAdapter);
+        //eventsSpinner.setAdapter(eventSpinnerArrayAdapter);
 
 
         Button shareButton = findViewById(R.id.share_qr_code_sharebutton);
@@ -252,6 +265,35 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
             Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
         return uri;
+    }
+    private void showOptionsDialog() {
+        final String[] items = new String[events.size()];
+        for (int i = 0; i < events.size(); i++) {
+            items[i] = events.get(i).getEvent();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Events");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                testButton.setText(items[which]);
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+
+        // Make sure the dialog has a window
+        if (dialog.getWindow() != null) {
+            // Create a new GradientDrawable with rounded corners
+            GradientDrawable drawable = new GradientDrawable();
+            drawable.setCornerRadius(50f); // Set the corner radius
+            drawable.setColor(Color.WHITE); // Set the background color (change if needed)
+
+            // Set the GradientDrawable as the background of the dialog's window
+            dialog.getWindow().setBackgroundDrawable(drawable);
+        }
+
+        dialog.show();
     }
 }
 

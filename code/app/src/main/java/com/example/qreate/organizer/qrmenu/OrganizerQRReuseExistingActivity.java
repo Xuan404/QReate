@@ -1,9 +1,11 @@
 package com.example.qreate.organizer.qrmenu;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.qreate.R;
@@ -53,7 +56,8 @@ import java.util.UUID;
  */
 public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
     ArrayList<OrganizerEvent> events;
-    Spinner eventsSpinner;
+    //Spinner eventsSpinner;
+    private Button testButton;
     private FirebaseFirestore db;
     OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
     Uri image;
@@ -81,12 +85,21 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
         addEventsInit();
 
 
-        eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this, events);
+        //eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this, events);
+
+        testButton = findViewById(R.id.reuse_existing_qr_code_screen_spinner);
+
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOptionsDialog();
+            }
+        });
 
         //NEED TO GRAB THE ARRAY FROM FIREBASE THEN PARSE IT INTO THIS
-        eventsSpinner = findViewById(R.id.reuse_existing_qr_code_screen_spinner);
+        /*eventsSpinner = findViewById(R.id.reuse_existing_qr_code_screen_spinner);
 
-        eventsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        eventsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {*/
             /**
              * gets selected item string
              *
@@ -96,7 +109,7 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
              * @param id current id
              *
              */
-            @Override
+            /*@Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();
             }
@@ -109,7 +122,7 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
 
         eventSpinnerArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
 
-        eventsSpinner.setAdapter(eventSpinnerArrayAdapter);
+        eventsSpinner.setAdapter(eventSpinnerArrayAdapter);*/
 
         //Back Button
         ImageButton backButton = findViewById(R.id.reuse_existing_qr_code_screen_backbutton);
@@ -241,4 +254,34 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
                     }
                 });
     }
+    private void showOptionsDialog() {
+        final String[] items = new String[events.size()];
+        for (int i = 0; i < events.size(); i++) {
+            items[i] = events.get(i).getEvent();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Events");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                testButton.setText(items[which]);
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+
+        // Make sure the dialog has a window
+        if (dialog.getWindow() != null) {
+            // Create a new GradientDrawable with rounded corners
+            GradientDrawable drawable = new GradientDrawable();
+            drawable.setCornerRadius(50f); // Set the corner radius
+            drawable.setColor(Color.WHITE); // Set the background color (change if needed)
+
+            // Set the GradientDrawable as the background of the dialog's window
+            dialog.getWindow().setBackgroundDrawable(drawable);
+        }
+
+        dialog.show();
+    }
 }
+

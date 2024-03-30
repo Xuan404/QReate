@@ -46,14 +46,20 @@
         android:layout_marginTop="20dp"
         android:src="@drawable/qrgeneratorart" />
 
-    <Spinner
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/generate_qr_code_spinner"
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_below="@id/generate_qr_code_screen_image"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:background="@drawable/rounded_dark_blue" />
+        android:background="@drawable/drop_down_menus"
+        android:text="Click to select Event"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        style="@style/Widget.AppCompat.Spinner"/>
 
     <RelativeLayout
         android:layout_width="300dp"
