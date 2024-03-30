@@ -53,6 +53,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore:24.10.3")
     implementation("com.google.firebase:firebase-auth:latest_version")
     implementation("com.google.firebase:firebase-messaging:23.4.1")
+    //implementation ("com.google.firebase:firebase-appcheck")
 
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     implementation("com.google.zxing:core:3.4.1")

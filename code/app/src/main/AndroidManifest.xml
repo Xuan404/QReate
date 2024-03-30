@@ -48,7 +48,7 @@
         <activity android:name=".attendee.CapActivityForAttendeeQRScannerPage"
             android:screenOrientation="fullSensor"
             android:theme="@style/zxing_CaptureTheme" />
-        <provider
+        <!--<provider
             android:authorities="com.example.qreate"
             android:name="androidx.core.content.FileProvider"
             android:exported="false"
@@ -57,7 +57,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/paths"
                 />
-        </provider>
+        </provider>-->
 
 
         <meta-data

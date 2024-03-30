@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -58,15 +59,16 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
     ArrayList<OrganizerEvent> events;
     private Button testButton;
     private OrganizerEvent selectedEvent;
-    File cacheDir = getCacheDir();
+    //File cacheDir = getCacheDir();
     private FirebaseFirestore db;
     ImageView qrImage;
     Uri firebaseUri;
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference storageRef = storage.getReference();
+    String downloadUrl;
+    StorageReference promoRef;
+    FirebaseStorage storage;
+    StorageReference storageRef;
     //Spinner eventsSpinner;
-    Context context;
-    OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
+    //OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
     //temporary fake id
     String documentId = "3Z0RAltfeXSvMg3zO7Kw";
 
@@ -75,7 +77,9 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_share_qr_code_screen);
-        this.context = context;
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+        //FirebaseApp.initializeApp(this);
 
         db = FirebaseFirestore.getInstance();
 
@@ -86,7 +90,7 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
         addEventsInit();
 
 
-        eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this, events);
+        //eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this, events);
         qrImage = findViewById(R.id.share_qr_code_qr_image);
 
         //NEED TO GRAB THE ARRAY FROM FIREBASE THEN PARSE IT INTO THIS
@@ -108,9 +112,10 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
             }
         });*/
         //TODO get promo qr grabs the qr for the selected event so call it everytime a new event is selected
+         //FIX DIDNT WORK im on like 10 attempts now i cant even find anything else online
         getPromoQR();
-        //Glide.with(this).load(firebaseUri.toString()).into(qrImage); GLIDE FIX DIDNT WORK im on like 10 attempts now i cant even find anything else online
 
+        Glide.with(this).load(promoRef).into(qrImage);
 
         //eventSpinnerArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
         testButton = findViewById(R.id.share_qr_code_spinner);
@@ -132,13 +137,19 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
         shareButton.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                /*Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("image/*");
                 //GOTTA PUT THE IMAGE LOCATION HERE even this basic one doesnt work btw :(
                 //Uri imageUri = Uri.parse("android.resource://" + getPackageName() + "/drawable/qricon.png");
 
                 sharingIntent.putExtra(Intent.EXTRA_STREAM, firebaseUri);
-                startActivity(Intent.createChooser(sharingIntent, "Share Image"));
+                startActivity(Intent.createChooser(sharingIntent, "Share Image"));*/
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("image/png"); // Set the appropriate image type
+                //shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(downloadUrl));
+                shareIntent.putExtra(Intent.EXTRA_STREAM, firebaseUri);
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(Intent.createChooser(shareIntent, "Share Image"));
             }
         }));
 
@@ -161,14 +172,17 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                     public void onComplete(Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
+                            promoRef = storageRef.child(document.getString("promo_qr_code"));
                             storageRef.child(document.getString("promo_qr_code")).getDownloadUrl().addOnSuccessListener(uri -> {
                                 //Content uri code this fix didn't work
                                 //firebaseUri = FileProvider.getUriForFile(context, "com.example.qreate.organizer.qrmenu", new File(uri.getPath()));
+                                //String imageUrl = String.valueOf(uri);
+
                                 firebaseUri = uri;
-
-
+                                //downloadUrl = uri.toString();
                             }).addOnFailureListener(exception -> {
                                 // Handle any errors (e.g., image not found, network issues)
+                                Log.e("ImageError", "Error downloading image: " + exception.getMessage());
                             });
                             //different content uri fix this didn't work either
                             /*StorageReference imageRef = storageRef.child(document.getString("promo_qr_code"));
