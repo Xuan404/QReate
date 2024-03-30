@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,7 +45,9 @@ import androidx.core.content.FileProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +55,7 @@ import java.util.List;
 public class OrganizerQRShareActivity extends AppCompatActivity {
     ArrayList<OrganizerEvent> events;
     private Button testButton;
+    private OrganizerEvent selectedEvent;
     private FirebaseFirestore db;
     Uri firebaseUri;
     FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -154,14 +158,13 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                             DocumentSnapshot document = task.getResult();
                             storageRef.child(document.getString("promo_qr_code")).getDownloadUrl().addOnSuccessListener(uri -> {
                                 //Content uri code this fix didn't work
-                                /*Uri contentUri = FileProvider.getUriForFile(context, "com.example.qreate.organizer.qrmenu", new File(uri.getPath())
-                                );
-                                firebaseUri = contentUri;*/
+                                //firebaseUri = FileProvider.getUriForFile(context, "com.example.qreate.organizer.qrmenu", new File(uri.getPath()));
                                 firebaseUri = uri;
 
                             }).addOnFailureListener(exception -> {
                                 // Handle any errors (e.g., image not found, network issues)
                             });
+                            //different content uri fix this didn't work either
                             /*StorageReference imageRef = storageRef.child(document.getString("promo_qr_code"));
                             imageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                                 @Override
@@ -173,8 +176,8 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                                     String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Promo", null);
                                     firebaseUri = Uri.parse(path);
 
-                                }*/
-                            /*}).addOnFailureListener(new OnFailureListener() {
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception exception) {
                                     // Handle any errors
@@ -208,13 +211,10 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                             QuerySnapshot querySnapshot = task.getResult();
                             if (!querySnapshot.isEmpty()) {
 
-
                                 // Since the unique ID is unique, we only expect one result
                                 DocumentSnapshot document = querySnapshot.getDocuments().get(0);
 
-
                                 List<DocumentReference> referenceArray = (List<DocumentReference>) document.get("events_list");
-
 
                                 //assert createdEvents != null;
                                 for (DocumentReference reference : referenceArray) {
@@ -238,9 +238,6 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                                     });
                                 }
 
-
-
-
                             } else {
                                 Log.d("Firestore", "No such document");
                             }
@@ -250,7 +247,13 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                     }
                 });
     }
-    private Uri getmageToShare(Bitmap bitmap) {
+// fix attempt 5 or 6 https://youtu.be/_3JFZqfYLNU?si=NaCYlFKy99ELE0tZ
+    /*private void shareImage(){
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        Uri uri = getImageToShare(bitmap);
+    }
+    private Uri getImageToShare(Bitmap bitmap) {
         File imagefolder = new File(getCacheDir(), "images");
         Uri uri = null;
         try {
@@ -265,7 +268,8 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
             Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
         }
         return uri;
-    }
+    }*/
+
     private void showOptionsDialog() {
         final String[] items = new String[events.size()];
         for (int i = 0; i < events.size(); i++) {
@@ -277,6 +281,7 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 testButton.setText(items[which]);
+                selectedEvent = events.get(which);
             }
         });
         builder.setNegativeButton("Cancel", null);

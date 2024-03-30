@@ -56,6 +56,7 @@ import java.util.UUID;
  */
 public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
     ArrayList<OrganizerEvent> events;
+    private OrganizerEvent selectedEvent;
     //Spinner eventsSpinner;
     private Button testButton;
     private FirebaseFirestore db;
@@ -265,6 +266,7 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 testButton.setText(items[which]);
+                selectedEvent = events.get(which);
             }
         });
         builder.setNegativeButton("Cancel", null);

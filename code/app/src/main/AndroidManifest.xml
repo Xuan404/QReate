@@ -48,6 +48,16 @@
         <activity android:name=".attendee.CapActivityForAttendeeQRScannerPage"
             android:screenOrientation="fullSensor"
             android:theme="@style/zxing_CaptureTheme" />
+        <provider
+            android:authorities="com.example.qreate.organizer.qrmenu"
+            android:name="androidx.core.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/paths"
+                />
+        </provider>
 
 
         <meta-data
@@ -58,7 +68,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCSV_pfTNca1vaC-TLGsHjL4aj_dxELA8k"/>
 
-
+        
     </application>
 
 </manifest>

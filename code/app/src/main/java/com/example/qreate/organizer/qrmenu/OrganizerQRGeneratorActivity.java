@@ -1,10 +1,14 @@
 package com.example.qreate.organizer.qrmenu;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.CompoundButtonCompat;
 
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -27,6 +31,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.zxing.BarcodeFormat;
@@ -51,6 +56,9 @@ import java.util.UUID;
 public class OrganizerQRGeneratorActivity extends AppCompatActivity {
 
     String documentId = "LrXKKSgx3TmrSWiWZnQc"; // Dummy variable containing event doc id, should be the spinner value
+    private FirebaseFirestore db;
+    ArrayList<OrganizerEvent> events;
+    private Button testButton;
     int selectedId;
     String randomString;
 
@@ -58,15 +66,25 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_generate_qr_code_screen);
-
+        db = FirebaseFirestore.getInstance();
         changeRadioColor(); // Sets the radio color button to be orange when selected
+        testButton = findViewById(R.id.generate_qr_code_spinner);
 
         ImageButton backButton = findViewById(R.id.generate_qr_code_screen_backbutton);
         Button confirmButton = findViewById(R.id.generate_qr_code_confirmbutton);
         RadioGroup radioGroup = findViewById(R.id.generate_qr_code_radio_group);
         ImageView qrCodeImageView = findViewById(R.id.generate_qr_code_qr_image);
+        events = new ArrayList<OrganizerEvent>();
+        addEventsInit();
+
 
         //DummyLoadUpData(); // Dummy Variable func call
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOptionsDialog();
+            }
+        });
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,6 +283,93 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
             }
         }
 
+    }
+    private void showOptionsDialog() {
+        final String[] items = new String[events.size()];
+        for (int i = 0; i < events.size(); i++) {
+            items[i] = events.get(i).getEvent();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Events");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                testButton.setText(items[which]);
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+
+        // Make sure the dialog has a window
+        if (dialog.getWindow() != null) {
+            // Create a new GradientDrawable with rounded corners
+            GradientDrawable drawable = new GradientDrawable();
+            drawable.setCornerRadius(50f); // Set the corner radius
+            drawable.setColor(Color.WHITE); // Set the background color (change if needed)
+
+            // Set the GradientDrawable as the background of the dialog's window
+            dialog.getWindow().setBackgroundDrawable(drawable);
+        }
+
+        dialog.show();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    private void addEventsInit(){
+        // TODO THIS CODE CRASHES IF THERES NO DETAIL OR DATE SO I COMMENTED IT OUT UNCOMMENT WHEN DATA IS FIXED
+        String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        db.collection("Organizers")
+                .whereEqualTo("device_id", device_id)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (!querySnapshot.isEmpty()) {
+                                // Since the unique ID is unique, we only expect one result
+                                DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                                List<DocumentReference> referenceArray = (List<DocumentReference>) document.get("events_list");
+                                //assert createdEvents != null;
+                                for (DocumentReference reference : referenceArray) {
+                                    reference.get().addOnCompleteListener(referencedTask -> {
+                                        if (referencedTask.isSuccessful()) {
+                                            DocumentSnapshot referencedDocument = referencedTask.getResult();
+                                            if (referencedDocument.exists()) {
+                                                //TODO description/dates are not set in most firebase stuff this will cause it to crash
+                                                String eventName = referencedDocument.getString("name");
+                                                //String eventDetails = document.getString("description");
+                                                //String eventDate = document.getString("date");
+                                                String eventOrganizer = referencedDocument.getString("organizer");
+                                                String eventID = referencedDocument.getId();
+                                                events.add(new OrganizerEvent(eventName, "details", "date", eventOrganizer, eventID));
+                                            } else {
+                                                System.out.println("Referenced document does not exist");
+                                            }
+                                        } else {
+                                            System.out.println("Error fetching referenced document: " + referencedTask.getException());
+                                        }
+                                    });
+                                }
+                            } else {
+                                Log.d("Firestore", "No such document");
+                            }
+                        } else {
+                            Log.d("Firestore", "get failed with ", task.getException());
+                        }
+                    }
+                });
     }
 
 
