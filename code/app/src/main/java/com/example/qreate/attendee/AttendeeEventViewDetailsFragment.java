@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,6 +48,17 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
         if (args != null) {
             eventId = args.getString("eventId");
         }
+
+        Button cancelButton = view.findViewById(R.id.event_details_cancel_button);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Pop the current fragment off the stack to return to the previous one
+                if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                    getParentFragmentManager().popBackStack();
+                }
+            }
+        });
 
         return view;
 
