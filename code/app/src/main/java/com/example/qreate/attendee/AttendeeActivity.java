@@ -248,7 +248,8 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                 if (itemId == R.id.cancel_icon) {
                     hideDetailsNavigationBar();
                     showBottomNavigationBar();
-                } else if (itemId == R.id.events_icon) {
+                } else if (itemId == R.id.view_details_icon) {
+                    hideDetailsNavigationBar();
                     Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.attendee_handler_frame);
                     if (currentFragment instanceof OtherEventsFragment) {
                         selectedEventId = ((OtherEventsFragment) currentFragment).getSelectedEventId();
