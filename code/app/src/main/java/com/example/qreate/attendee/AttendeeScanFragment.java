@@ -159,6 +159,7 @@ public class AttendeeScanFragment extends Fragment {
                     // First seaches checkin qr document then promo qr
                     findDocumentByFieldValueCheckin("attendee_qr_code_string", stringQR); // First seaches dor
                     //TODO findDocumentByFieldValuePromo
+                    findDocumentByFieldValueCheckin("promo_qr_code_string", stringQR);
                     popUpResultDialog(intentResult.getContents());
                 }
             } else {
@@ -184,8 +185,16 @@ public class AttendeeScanFragment extends Fragment {
                             // Assuming you are looking for the first document that matches the criteria
                             QueryDocumentSnapshot document = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
                             String documentId = document.getId(); // This is your document ID
-                            // You can now use this documentId as needed
-                            checkCurrentlyCheckedIn(device_id, documentId);
+
+                            // If Promo
+                            if (fieldName == "promo_qr_code_string") {
+                                
+
+                            } else if (fieldName == "attendee_qr_code_string") {
+                                // If Attendee
+                                checkCurrentlyCheckedIn(device_id, documentId);
+                            }
+
                             //Toast.makeText(getContext(), "Document ID: " + documentId, Toast.LENGTH_SHORT).show();
                         } else {
                             // Document not found, show a Toast message
