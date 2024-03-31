@@ -1,6 +1,7 @@
 package com.example.qreate.attendee;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,21 +9,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
-import com.example.qreate.administrator.AdministratorEventDetailsFragment;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class AttendeeEventViewDetailsFragment extends Fragment {
     private ImageView poster;
@@ -50,13 +54,15 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
 
         // Retrieve the event ID passed from the previous fragment
         Bundle args = getArguments();
-        String eventId = null;
+        String eventId;
         if (args != null) {
             eventId = args.getString("eventId");
+        } else {
+            eventId = null;
         }
 
-        Button cancelButton = view.findViewById(R.id.event_details_cancel_button);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
+        Button backButton = view.findViewById(R.id.event_details_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showBottomNavigationBar();
@@ -64,6 +70,119 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                 if (getParentFragmentManager().getBackStackEntryCount() > 0) {
                     getParentFragmentManager().popBackStack();
                 }
+            }
+        });
+
+        Button signUpButton = view.findViewById(R.id.event_details_signup_button);
+        signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                // Step 1: Find the user document by device_id
+                db.collection("Users").whereEqualTo("device_id", device_id).limit(1).get().addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot userDoc = queryDocumentSnapshots.getDocuments().get(0);
+                        DocumentReference userRef = userDoc.getReference();
+
+                        // Step 2: Find the corresponding attendee document
+                        db.collection("Attendees").whereEqualTo("user_document_id", userDoc.getReference()).limit(1).get().addOnSuccessListener(attendees -> {
+                            if (!attendees.isEmpty()) {
+                                DocumentSnapshot attendeeDoc = attendees.getDocuments().get(0);
+                                DocumentReference attendeeRef = attendeeDoc.getReference();
+
+                                // Step 3: Update the event document
+                                DocumentReference eventRef = db.collection("Events").document(eventId);
+                                eventRef.get().addOnSuccessListener(eventDoc -> {
+                                    if (eventDoc.exists()) {
+                                        List<Map<String, Object>> signedupAttendeesList = (List<Map<String, Object>>) eventDoc.get("signedup_attendees");
+                                        boolean alreadySignedUp = false;
+                                        String signupLimitStr = eventDoc.getString("signup_limit");
+                                        Long sign_up_limit = null;
+
+                                        if (signupLimitStr != null && !signupLimitStr.isEmpty()) {
+                                            try {
+                                                sign_up_limit = Long.parseLong(signupLimitStr);
+                                            } catch (NumberFormatException e) {
+                                                // Handle the case where signup_limit is not a valid number
+                                                Log.e("SignUpEvent", "signup_limit is not a valid number", e);
+                                                sign_up_limit = null; // Ensures no restriction if the string was not numeric
+                                            }
+                                        }
+
+                                        if (signedupAttendeesList != null) {
+                                            for (Map<String, Object> attendee : signedupAttendeesList) {
+                                                DocumentReference signedUpAttendeeRef = (DocumentReference) attendee.get("attendeeRef");
+                                                if (signedUpAttendeeRef.getId().equals(attendeeRef.getId())) {
+                                                    alreadySignedUp = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (alreadySignedUp) {
+                                            if (isAdded()) { // Check if the fragment is still added
+                                                Toast.makeText(getContext(), "You have already signed up for this event!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } else if (sign_up_limit != null && signedupAttendeesList != null && signedupAttendeesList.size() >= sign_up_limit) {
+                                            // Check if the sign-up limit has been reached
+                                            if (isAdded()) {
+                                                Toast.makeText(getContext(), "The sign-up limit for this event has been reached.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } else {
+                                            if (signedupAttendeesList == null) {
+                                                signedupAttendeesList = new ArrayList<>();
+                                            }
+
+
+
+                                            Map<String, Object> newEntry = new HashMap<>();
+                                            newEntry.put("attendeeRef", attendeeDoc.getReference());
+                                            newEntry.put("checkInCount", 0);
+
+                                            signedupAttendeesList.add(newEntry);
+
+                                            eventRef.update("signedup_attendees", signedupAttendeesList)
+                                                    .addOnSuccessListener(aVoid -> {
+                                                        if (isAdded()) {
+                                                            Toast.makeText(getContext(), "You are signed up for the event!", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(e -> Log.e("SignUpEvent", "Error updating document", e));
+                                        }
+                                    }
+                                });
+                                userRef.get().addOnSuccessListener(userDocument -> {
+                                    List<DocumentReference> signupEventList;
+                                    Object signupEventObj = userDocument.get("signup_event_list");
+                                    if (signupEventObj instanceof List<?>) {
+                                        signupEventList = (List<DocumentReference>) signupEventObj;
+                                    } else {
+                                        signupEventList = new ArrayList<>();
+                                    }
+
+                                    // Add the current event reference to the list, if it's not already there
+                                    if (!signupEventList.contains(eventRef)) {
+                                        signupEventList.add(eventRef);
+                                        userRef.update("signup_event_list", signupEventList)
+                                                .addOnSuccessListener(aVoid -> Log.d("UpdateUser", "User signup_event_list updated successfully"))
+                                                .addOnFailureListener(e -> Log.e("UpdateUser", "Error updating user document", e));
+                                    }
+
+                                }).addOnFailureListener(e -> {
+                                    if (isAdded()) { // Ensure fragment is still attached
+                                        Toast.makeText(getContext(), "Error message or handling", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+                        });
+                    }
+                }).addOnFailureListener(e -> {
+                    if (isAdded()) { // Check if the fragment is still added
+                        Toast.makeText(getContext(), "Error finding user or attendee", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
@@ -113,4 +232,5 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).showBottomNavigationBar();
     }
+
 }
