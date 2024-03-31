@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -36,12 +37,18 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -124,6 +131,9 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
         eventSpinnerArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
 
         eventsSpinner.setAdapter(eventSpinnerArrayAdapter);*/
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        imagePickerLauncher.launch(photoPickerIntent);
 
         //Back Button
         ImageButton backButton = findViewById(R.id.reuse_existing_qr_code_screen_backbutton);
@@ -140,9 +150,9 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                /*Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
-                imagePickerLauncher.launch(photoPickerIntent);
+                imagePickerLauncher.launch(photoPickerIntent);*/
                 try {
                     String randomString = UUID.randomUUID().toString();
                     Bitmap bitmap = rebuildQR(decodeQRCode(image));
@@ -156,8 +166,38 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
     }
 
     private String decodeQRCode(Uri uri){
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
-        return decodeQRCode(uri);
+            if (bitmap == null) {
+                //Log.e(TAG, "URI is not a bitmap: " + uri.toString());
+                return null;
+            }
+
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            int[] pixels = new int[width * height];
+            bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+            bitmap.recycle();
+
+            RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
+            BinaryBitmap bBitmap = new BinaryBitmap(new HybridBinarizer(source));
+            MultiFormatReader reader = new MultiFormatReader();
+
+            try {
+                Result result = reader.decode(bBitmap);
+                return result.getText();
+            } catch (NotFoundException e) {
+                Log.e("QR", "QR code decoding exception", e);
+                return null;
+            }
+        } catch (Exception e) {
+            Log.e("QR", "Error reading QR code: " + e.getMessage());
+            return null;
+        }
+
+
     }
 
     private Bitmap rebuildQR(String text) throws WriterException {
@@ -189,6 +229,7 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     // Handle unsuccessful uploads
+                    Toast.makeText(this, "somethings wrong qr upload", Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -206,6 +247,7 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     // Handle error
+                    Toast.makeText(this, "somethings wrong", Toast.LENGTH_SHORT).show();
                 });
     }
     //Temporary to test swap this with the firebase data
@@ -233,11 +275,11 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
                                             if (referencedDocument.exists()) {
                                                 //TODO description/dates are not set in most firebase stuff this will cause it to crash
                                                 String eventName = referencedDocument.getString("name");
-                                                //String eventDetails = document.getString("description");
-                                                //String eventDate = document.getString("date");
+                                                String eventDetails = document.getString("description");
+                                                String eventDate = document.getString("date");
                                                 String eventOrganizer = referencedDocument.getString("organizer");
                                                 String eventID = referencedDocument.getId();
-                                                events.add(new OrganizerEvent(eventName, "details", "date", eventOrganizer, eventID));
+                                                events.add(new OrganizerEvent(eventName, eventDetails, eventDate, eventOrganizer, eventID));
                                             } else {
                                                 System.out.println("Referenced document does not exist");
                                             }
