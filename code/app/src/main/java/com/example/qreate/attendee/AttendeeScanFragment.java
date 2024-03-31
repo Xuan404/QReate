@@ -80,8 +80,8 @@ public class AttendeeScanFragment extends Fragment {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String device_id;
-
     private String stringQR;
+    private int count;
     private FusedLocationProviderClient fusedLocationClient;
     private ActivityResultLauncher<String> locationPermissionRequest;
     private SharedPreferences sharedPreferences;
@@ -157,6 +157,7 @@ public class AttendeeScanFragment extends Fragment {
                     // ALL CHECKING AND INSERTION GOES HERE
 
                     // First seaches promo then checkin
+                    count = 0; // To check if neither promo not checkin
                     findDocumentByFieldValueCheckin("promo_qr_code_string", stringQR);
                     findDocumentByFieldValueCheckin("attendee_qr_code_string", stringQR); // First seaches dor
 
@@ -186,9 +187,11 @@ public class AttendeeScanFragment extends Fragment {
                             QueryDocumentSnapshot document = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
                             String documentId = document.getId(); // This is your document ID
 
-                            // If Promo
+
                             if (fieldName.equals("promo_qr_code_string")) {
+                                // If Promo
                                 // TODO Promo stuff
+                                //Log.d("PromoTest", "Yayy ");
 
                             } else if (fieldName.equals("attendee_qr_code_string")) {
                                 // If Attendee
@@ -198,7 +201,12 @@ public class AttendeeScanFragment extends Fragment {
                             //Toast.makeText(getContext(), "Document ID: " + documentId, Toast.LENGTH_SHORT).show();
                         } else {
                             // Document not found, show a Toast message
-                            Toast.makeText(getContext(), "Could not identify QRcode", Toast.LENGTH_SHORT).show();
+                            count += 1;
+                            if (count == 2) {
+                                // both test failed
+                                Toast.makeText(getContext(), "Could not identify QRcode", Toast.LENGTH_SHORT).show();
+                            }
+
                         }
 
                     }
