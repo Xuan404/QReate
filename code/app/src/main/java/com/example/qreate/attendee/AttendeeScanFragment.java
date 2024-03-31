@@ -156,10 +156,10 @@ public class AttendeeScanFragment extends Fragment {
                 } else {
                     // ALL CHECKING AND INSERTION GOES HERE
 
-                    // First seaches checkin qr document then promo qr
-                    findDocumentByFieldValueCheckin("attendee_qr_code_string", stringQR); // First seaches dor
-                    //TODO findDocumentByFieldValuePromo
+                    // First seaches promo then checkin
                     findDocumentByFieldValueCheckin("promo_qr_code_string", stringQR);
+                    findDocumentByFieldValueCheckin("attendee_qr_code_string", stringQR); // First seaches dor
+
                     popUpResultDialog(intentResult.getContents());
                 }
             } else {
@@ -187,10 +187,10 @@ public class AttendeeScanFragment extends Fragment {
                             String documentId = document.getId(); // This is your document ID
 
                             // If Promo
-                            if (fieldName == "promo_qr_code_string") {
-                                
+                            if (fieldName.equals("promo_qr_code_string")) {
+                                // TODO Promo stuff
 
-                            } else if (fieldName == "attendee_qr_code_string") {
+                            } else if (fieldName.equals("attendee_qr_code_string")) {
                                 // If Attendee
                                 checkCurrentlyCheckedIn(device_id, documentId);
                             }
