@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
@@ -26,11 +27,22 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.administrator.AdministratorEvent;
+import com.example.qreate.administrator.EventArrayAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class CurrentEventsFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
+
+public class CurrentEventsFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener {
+    private EventArrayAdapter eventArrayAdapter;
+    private ListView eventList;
+    private FirebaseFirestore db;
     /**
      * Creates and Inflates the current events view
      *
@@ -50,6 +62,10 @@ public class CurrentEventsFragment extends Fragment {
         View view = inflater.inflate(R.layout.current_events_listview,container,false);
         AppCompatButton backButton = view.findViewById(R.id.button_back_current_event_details);
         ImageButton profileButton = view.findViewById(R.id.current_events_profic_pic_icon);
+
+        eventList = view.findViewById(R.id.current_event_list);
+        db = FirebaseFirestore.getInstance();
+
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,6 +189,54 @@ public class CurrentEventsFragment extends Fragment {
         transaction.commit();
     }
 
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadAllEvents();
+    }
 
+    public void loadAllEvents(){
+        CollectionReference eventsRef = db.collection("Events");
+        ArrayList<AdministratorEvent> events = new ArrayList<>();
+        eventArrayAdapter = new EventArrayAdapter(getContext(), events, this); // Use class field here
+        eventList.setAdapter(eventArrayAdapter);
 
+        eventsRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<AdministratorEvent> eventsList = new ArrayList<>();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String eventName = document.getString("name");
+                    String eventOrganizer = document.getString("organizer");
+                    String eventId = document.getId();
+                    eventsList.add(new AdministratorEvent(eventName, eventOrganizer, eventId));
+                }
+                // Update the adapter with the new list
+                eventArrayAdapter.clear();
+                eventArrayAdapter.addAll(eventsList);
+                eventArrayAdapter.notifyDataSetChanged();
+            } else {
+                Log.d("Firestore", "Error getting documents: ", task.getException());
+            }
+        });
+
+    }
+
+    @Override
+    public void onEventSelected() {
+        hideBottomNavigationBar(); // Implement this method
+        showDetailsNavigationBar(); // Implement this method
+    }
+
+    private void hideBottomNavigationBar() {
+        // Find the BottomNavigationView and set its visibility to GONE
+        ((AttendeeActivity)getActivity()).hideBottomNavigationBar();
+    }
+
+    private void showDetailsNavigationBar() {
+        // Find the BottomNavigationView and set its visibility to GONE
+        ((AttendeeActivity)getActivity()).showDetailsNavigationBar();
+    }
+
+    public String getSelectedEventId() {
+        return eventArrayAdapter.getSelectedEventId();
+    }
 }
