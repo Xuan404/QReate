@@ -44,7 +44,6 @@ public class OtherEventsFragment extends Fragment implements EventArrayAdapter.O
     private EventArrayAdapter eventArrayAdapter;
     private ListView eventList;
     private FirebaseFirestore db;
-    private BottomNavigationView bottomNavigationView;
 
     /**
      * Creates and Inflates the other events view
@@ -247,7 +246,6 @@ public class OtherEventsFragment extends Fragment implements EventArrayAdapter.O
     public String getSelectedEventId() {
         return eventArrayAdapter.getSelectedEventId();
     }
-
 
 
 }

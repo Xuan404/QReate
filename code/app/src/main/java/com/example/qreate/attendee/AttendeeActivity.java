@@ -254,7 +254,12 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                     if (currentFragment instanceof OtherEventsFragment) {
                         selectedEventId = ((OtherEventsFragment) currentFragment).getSelectedEventId();
                         if (selectedEventId != null) {
-                            navigateToEventDetails(selectedEventId);
+                            navigateToOtherEventDetails(selectedEventId);
+                        }
+                    } else if (currentFragment instanceof CurrentEventsFragment) {
+                        selectedEventId = ((CurrentEventsFragment) currentFragment).getSelectedEventId();
+                        if (selectedEventId != null) {
+                            navigatetoCurrentEventDetails(selectedEventId);
                         }
                     }
                 }
@@ -263,8 +268,16 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         });
     }
 
-    private void navigateToEventDetails(String eventId) {
+    private void navigateToOtherEventDetails(String eventId) {
         AttendeeEventViewDetailsFragment detailsFragment = AttendeeEventViewDetailsFragment.newInstance(eventId);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.attendee_handler_frame, detailsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    private void navigatetoCurrentEventDetails(String eventId) {
+        AttendeeCurrentEventsDetailsFragment detailsFragment = AttendeeCurrentEventsDetailsFragment.newInstance(eventId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.attendee_handler_frame, detailsFragment);
         transaction.addToBackStack(null);
