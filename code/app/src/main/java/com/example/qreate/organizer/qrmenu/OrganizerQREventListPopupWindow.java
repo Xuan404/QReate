@@ -307,7 +307,6 @@ public class OrganizerQREventListPopupWindow {
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
-        month = month + 1;
         int day = cal.get(Calendar.DAY_OF_MONTH);
         selectedDate = cal.getTime(); // Store the selected date fir firestore use
 
@@ -323,7 +322,6 @@ public class OrganizerQREventListPopupWindow {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
 
-                month = month + 1;
                 String date = makeDateString(day, month, year);
                 dateButton.setText(date);
 
@@ -354,29 +352,29 @@ public class OrganizerQREventListPopupWindow {
 
     private String getMonthFormat(int month)
     {
-        if(month == 1)
+        if(month == 0)
             return "JAN";
-        if(month == 2)
+        if(month == 1)
             return "FEB";
-        if(month == 3)
+        if(month == 2)
             return "MAR";
-        if(month == 4)
+        if(month == 3)
             return "APR";
-        if(month == 5)
+        if(month == 4)
             return "MAY";
-        if(month == 6)
+        if(month == 5)
             return "JUN";
-        if(month == 7)
+        if(month == 6)
             return "JUL";
-        if(month == 8)
+        if(month == 7)
             return "AUG";
-        if(month == 9)
+        if(month == 8)
             return "SEP";
-        if(month == 10)
+        if(month == 9)
             return "OCT";
-        if(month == 11)
+        if(month == 10)
             return "NOV";
-        if(month == 12)
+        if(month == 11)
             return "DEC";
 
         //default should never happen
