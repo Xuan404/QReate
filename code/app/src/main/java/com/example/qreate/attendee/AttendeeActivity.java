@@ -1,18 +1,13 @@
 package com.example.qreate.attendee;
 
-import android.app.Notification;
 import android.content.Context;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -22,18 +17,10 @@ import com.example.qreate.HomeScreenFragment;
 import com.example.qreate.R;
 import com.example.qreate.WelcomeScreenFragment;
 import com.example.qreate.administrator.AdministratorDashboardFragment;
-import com.example.qreate.administrator.AdministratorEventDetailsFragment;
-import com.example.qreate.attendee.AttendeeEventDetailsFragment;
-import com.example.qreate.attendee.AttendeeNotificationsFragment;
-import com.example.qreate.attendee.AttendeeScanFragment;
-import com.example.qreate.organizer.OrganizerActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -238,6 +225,18 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         navBar.setVisibility(View.INVISIBLE);
     }
 
+    public void showDeleteNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.attendee_delete_navigation_bar);
+        navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
+        navBar.setSelectedItemId(R.id.defaultNavPlaceholder);
+        setupDeleteNavigationBar();
+    }
+
+    public void hideDeleteNavigationBar() {
+        BottomNavigationView navBar = findViewById(R.id.attendee_delete_navigation_bar);
+        navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar reappear
+    }
+
     public void setupDetailsNavigationBar() {
         BottomNavigationView detailsNavBar = findViewById(R.id.attendee_view_details_navigation_bar);
 
@@ -259,13 +258,36 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                     } else if (currentFragment instanceof CurrentEventsFragment) {
                         selectedEventId = ((CurrentEventsFragment) currentFragment).getSelectedEventId();
                         if (selectedEventId != null) {
-                            navigatetoCurrentEventDetails(selectedEventId);
+                            navigateToCurrentEventDetails(selectedEventId);
                         }
+                        showDeleteNavigationBar();
                     }
                 }
                 return true;
             }
         });
+    }
+
+    public void setupDeleteNavigationBar(){
+        BottomNavigationView deleteNavBar = findViewById(R.id.attendee_delete_navigation_bar);
+        deleteNavBar.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                AdministratorDashboardFragment selectedFragment = null;
+                int itemId = item.getItemId();
+
+                if (itemId == R.id.cancel_icon_two) {
+                    hideDeleteNavigationBar();
+                    showBottomNavigationBar();
+                    getSupportFragmentManager().popBackStackImmediate();
+                } else if (itemId == R.id.delete_icon) {
+                    hideDeleteNavigationBar();
+                    showBottomNavigationBar();
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+                return true;
+            }
+        });
+
     }
 
     private void navigateToOtherEventDetails(String eventId) {
@@ -276,16 +298,13 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         transaction.commit();
     }
 
-    private void navigatetoCurrentEventDetails(String eventId) {
-        AttendeeCurrentEventsDetailsFragment detailsFragment = AttendeeCurrentEventsDetailsFragment.newInstance(eventId);
+    private void navigateToCurrentEventDetails(String eventId) {
+        AttendeeSignedUpEventsDetailsFragment detailsFragment = AttendeeSignedUpEventsDetailsFragment.newInstance(eventId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.attendee_handler_frame, detailsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
-
-
 
 
 
