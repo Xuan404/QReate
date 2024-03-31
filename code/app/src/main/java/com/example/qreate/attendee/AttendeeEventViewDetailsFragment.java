@@ -149,31 +149,32 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                                                         }
                                                     })
                                                     .addOnFailureListener(e -> Log.e("SignUpEvent", "Error updating document", e));
+
+                                            attendeeRef.get().addOnSuccessListener(attendeeDocument -> {
+                                                List<DocumentReference> signedUpEventsList;
+                                                Object signedUpEventsObj = attendeeDocument.get("signup_event_list");
+                                                if (signedUpEventsObj instanceof List<?>) {
+                                                    signedUpEventsList = (List<DocumentReference>) signedUpEventsObj;
+                                                } else {
+                                                    signedUpEventsList = new ArrayList<>();
+                                                }
+
+                                                // Add the current event reference to the list, if it's not already there
+                                                if (!signedUpEventsList.contains(eventRef)) {
+                                                    signedUpEventsList.add(eventRef);
+                                                    attendeeRef.update("signup_event_list", signedUpEventsList)
+                                                            .addOnSuccessListener(aVoid -> Log.d("UpdateAttendee", "Attendee signed_up_events updated successfully"))
+                                                            .addOnFailureListener(e -> Log.e("UpdateAttendee", "Error updating attendee document", e));
+                                                }
+                                            }).addOnFailureListener(e -> {
+                                                if (isAdded()) { // Ensure fragment is still attached
+                                                    Toast.makeText(getContext(), "Error retrieving attendee document", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
                                         }
                                     }
                                 });
-                                userRef.get().addOnSuccessListener(userDocument -> {
-                                    List<DocumentReference> signupEventList;
-                                    Object signupEventObj = userDocument.get("signup_event_list");
-                                    if (signupEventObj instanceof List<?>) {
-                                        signupEventList = (List<DocumentReference>) signupEventObj;
-                                    } else {
-                                        signupEventList = new ArrayList<>();
-                                    }
 
-                                    // Add the current event reference to the list, if it's not already there
-                                    if (!signupEventList.contains(eventRef)) {
-                                        signupEventList.add(eventRef);
-                                        userRef.update("signup_event_list", signupEventList)
-                                                .addOnSuccessListener(aVoid -> Log.d("UpdateUser", "User signup_event_list updated successfully"))
-                                                .addOnFailureListener(e -> Log.e("UpdateUser", "Error updating user document", e));
-                                    }
-
-                                }).addOnFailureListener(e -> {
-                                    if (isAdded()) { // Ensure fragment is still attached
-                                        Toast.makeText(getContext(), "Error message or handling", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
 
                             }
                         });
