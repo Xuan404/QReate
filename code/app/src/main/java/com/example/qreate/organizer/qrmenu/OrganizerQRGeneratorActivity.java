@@ -55,12 +55,12 @@ import java.util.UUID;
  */
 public class OrganizerQRGeneratorActivity extends AppCompatActivity {
 
-    String documentId = "3Z0RAltfeXSvMg3zO7Kw"; // Dummy variable containing event doc id, should be the spinner value
+    String documentId ; // Dummy variable containing event doc id, should be the spinner value
     private FirebaseFirestore db;
     private OrganizerEvent selectedEvent;
     ArrayList<OrganizerEvent> events;
     private Button testButton;
-    int selectedId;
+    private int selectedId;
     String randomString;
 
     @Override
@@ -91,6 +91,11 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // If statement to check if QRcode for that event already exists
+
+                if (documentId == null) {
+                    Toast.makeText(OrganizerQRGeneratorActivity.this, "Please select an event", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 selectedId = radioGroup.getCheckedRadioButtonId();
                 if (selectedId == -1) {
@@ -297,6 +302,7 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 testButton.setText(items[which]);
                 selectedEvent = events.get(which);
+                documentId = selectedEvent.getDocumentID();
             }
         });
         builder.setNegativeButton("Cancel", null);
