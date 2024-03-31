@@ -1,7 +1,5 @@
 package com.example.qreate.organizer.notificationsmenu;
 
-import static java.security.AccessController.getContext;
-
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -9,29 +7,43 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+
 import com.example.qreate.R;
 import com.example.qreate.organizer.qrmenu.OrganizerEvent;
 import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
+import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Firebase;
+
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -41,60 +53,40 @@ import java.util.List;
  * @author Denis Soh
  */
 public class OrganizerNotificationsSendActivity extends AppCompatActivity {
+
+    private String documentId;
+    private String eventName;
+    private String eventMessage;
+    private final String SERVER_KEY = "AAAAt7_rZSU:APA91bGBInjDrDS8HBa2NTqp6YSiczU_GaR5ejD59JlmFB4RjwMOHEAIJ_HDY-BZ8MdUms7PrQVB_yjO_ja7ThicTwlCkwxdxXAWtWkUhsXJvwJPgWAgkZEm1QFQjHc2UOOJ1uEZI7Oi";
     ArrayList<OrganizerEvent> events;
     private FirebaseFirestore db;
-    private Button testButton;
+    private Button eventSelectButton;
     private OrganizerEvent selectedEvent;
-    Spinner eventsSpinner;
-    OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
+    private ExecutorService executorService; // An ExecutorService that can schedule commands to run after a given delay, or to execute periodically.
 
+
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_send_notification_screen);
-        db = FirebaseFirestore.getInstance();
-        events = new ArrayList<OrganizerEvent>();
 
+        executorService = Executors.newSingleThreadExecutor();
+
+        db = FirebaseFirestore.getInstance();
+
+        events = new ArrayList<OrganizerEvent>();
         addEventsInit();
 
-        //eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this, events);
 
-        //NEED TO GRAB THE ARRAY FROM FIREBASE THEN PARSE IT INTO THIS
-
-        /*eventsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            *//**
-             * changes the string in the spinner
-             *
-             * @param parent the adapter view of the item
-             * @param view the current view
-             * @param position the current position in spinner
-             * @param id the id
-             *
-             * @return
-             *//*
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });*/
-        testButton = findViewById(R.id.send_notifications_screen_spinner);
-
-        testButton.setOnClickListener(new View.OnClickListener() {
+        eventSelectButton = findViewById(R.id.send_notifications_screen_spinner);
+        eventSelectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showOptionsDialog();
             }
         });
-
-        /*eventSpinnerArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
-
-        eventsSpinner.setAdapter(eventSpinnerArrayAdapter);*/
-
+        
         //Back Button
         ImageButton backButton = findViewById(R.id.send_notifications_screen_backbutton);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -103,35 +95,141 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
+        Button confirmButton = findViewById(R.id.send_notifications_screen_condirmbutton);
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //sendPushNotification(FCMtoken);
+
+                if (documentId == null) {
+                    Toast.makeText(OrganizerNotificationsSendActivity.this, "Please select an event", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                eventName = selectedEvent.getEvent();
+                EditText editTextMessage = findViewById(R.id.send_notifications_screen_text_box);
+                eventMessage = editTextMessage.getText().toString();
+
+                retrieveFcmTokens(documentId);
+
+                //sendFcmMessage(SERVER_KEY, FCMtoken, eventName, eventMessage);
+
+
+            }
+        });
+
+
     }
 
-//      // Dummy code (modify it after dennis has completed events)
-//    public void sendNotificationToAllUsers(String title, String message) {
-//        store db = FirestoreClient.getFirestore();
-//        ApiFuture<QuerySnapshot> query = db.collection("Attendees").get();
-//        List<String> fcmTokens = new ArrayList<>();
-//
-//        // Retrieve all documents from the "Attendees" collection
-//        QuerySnapshot querySnapshot = query.get();
-//        List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
-//        for (QueryDocumentSnapshot document : documents) {
-//            String fcmToken = document.getString("fcmToken");
-//            if (fcmToken != null && !fcmToken.isEmpty()) {
-//                fcmTokens.add(fcmToken);
-//            }
-//        }
-//
-//        // Prepare a message to be sent to all FCM tokens
-//        MulticastMessage message = MulticastMessage.builder()
-//                .putData("title", title)
-//                .putData("message", message)
-//                .addAllTokens(fcmTokens)
-//                .build();
-//
-//        // Send the message
-//        BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
-//        // You can log or handle the response if needed
-//    }
+
+
+    // Retrieves the fcm token and sends a notification
+    public void retrieveFcmTokens(String eventId) {
+
+        DocumentReference eventDocRef = db.collection("Events").document(eventId);
+        //List<String> fcmTokens = new ArrayList<>();
+
+        eventDocRef.get().addOnSuccessListener(eventDocument -> {
+            // Extract the signedup_attendees list, which contains maps
+            List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) eventDocument.get("signedup_attendees");
+            if (signedUpAttendees != null) {
+                for (Map<String, Object> attendeeInfo : signedUpAttendees) {
+                    // The attendeeRef is a DocumentReference
+                    DocumentReference attendeeRef = (DocumentReference) attendeeInfo.get("attendeeRef");
+
+                    // Retrieve the attendee document by the reference
+                    attendeeRef.get().addOnSuccessListener(attendeeDocument -> {
+                        if (attendeeDocument.exists()) {
+                            String fcmToken = attendeeDocument.getString("fcm_token");
+                            //fcmTokens.add(fcmToken);
+                            sendFcmMessage(SERVER_KEY, fcmToken, eventName, eventMessage);
+
+                        }
+                    }).addOnFailureListener(e -> {
+                            // Handle failure to retrieve the attendee document
+                    });
+                }
+            }
+
+        }).addOnFailureListener(e -> {
+            // Handle failure to retrieve the event document
+        });
+
+    }
+
+
+
+    // Sends notification to the fcm tokens passed
+    public void sendFcmMessage(String serverKey, String deviceToken, String messageTitle, String messageBody) {
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Authorization", "key=" + serverKey);
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setDoOutput(true);
+
+                    // JSON payload
+                    String jsonPayload = "{\"to\":\"" + deviceToken + "\","
+                            + "\"notification\":{"
+                            + "\"title\":\"" + messageTitle + "\","
+                            + "\"body\":\"" + messageBody + "\""
+                            + "},"
+                            + "\"data\":{"
+                            + "\"customKey1\":\"value1\","
+                            + "\"customKey2\":\"value2\""
+                            + "}}";
+
+                    // Sending the request
+                    OutputStream outputStream = conn.getOutputStream();
+                    outputStream.write(jsonPayload.getBytes("UTF-8"));
+                    outputStream.close();
+
+
+                    int responseCode = conn.getResponseCode();
+
+                    InputStream inputStream = responseCode == HttpURLConnection.HTTP_OK
+                            ? conn.getInputStream()
+                            : conn.getErrorStream();
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+                    String inputLine;
+                    StringBuilder response = new StringBuilder();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+
+                    // Log the response code and response message
+                    Log.d("FCM_RESPONSE", "Response Code: " + responseCode);
+                    Log.d("FCM_RESPONSE_BODY", "Response: " + response.toString());
+
+                    conn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // Handle the error on the UI thread if needed
+                    Log.e("FCM_ERROR", "Exception sending FCM message", e);
+                }
+            }
+        });
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (executorService != null && !executorService.isShutdown()) {
+            executorService.shutdown();
+        }
+    }
 
 
     //Temporary to test swap this with the firebase data
@@ -197,8 +295,9 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                testButton.setText(items[which]);
+                eventSelectButton.setText(items[which]);
                 selectedEvent = events.get(which);
+                documentId = selectedEvent.getDocumentID();
             }
         });
         builder.setNegativeButton("Cancel", null);
