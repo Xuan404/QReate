@@ -114,8 +114,18 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
         //TODO get promo qr grabs the qr for the selected event so call it everytime a new event is selected
          //FIX DIDNT WORK im on like 10 attempts now i cant even find anything else online
         getPromoQR();
+        //grabbed the access token just to make sure the image could even be loaded
+        Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/qreate-bb8b8.appspot.com/o/qr_codes%2F537b55b1-7ed9-4202-9a82-815cca1715a5.png?alt=media&token=77d6e246-c9de-47ad-8a90-838889935feb").into(qrImage);
+        //Glide.with(this).load(firebaseUri).into(qrImage);
+        //checks if url can parse into bitmap the exception didnt pop up so im even more lost now
+        /*Bitmap mIcon11 = null;
+        try {
+            InputStream in = new java.net.URL(firebaseUri.toString()).openStream();
+            mIcon11 = BitmapFactory.decodeStream(in);
+        } catch (Exception e) {
+            Log.d("Error", e.getStackTrace().toString());
 
-        Glide.with(this).load(promoRef).into(qrImage);
+        }*/
 
         //eventSpinnerArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
         testButton = findViewById(R.id.share_qr_code_spinner);
@@ -132,6 +142,13 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
 
 
         Button shareButton = findViewById(R.id.share_qr_code_sharebutton);
+        //it cant be set as text but it pulls up the correct file idk whats wrong
+        /*try{
+            shareButton.setText(firebaseUri.toString()); //uh somethings wrong with the uri i think
+        }catch (NullPointerException e) {
+            // Handle the null Uri case
+            e.printStackTrace();
+        }*/
 
 
         shareButton.setOnClickListener((new View.OnClickListener() {
@@ -172,8 +189,14 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                     public void onComplete(Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
-                            promoRef = storageRef.child(document.getString("promo_qr_code"));
+                            promoRef = storage.getInstance().getReference(document.getString("promo_qr_code"));
                             storageRef.child(document.getString("promo_qr_code")).getDownloadUrl().addOnSuccessListener(uri -> {
+                            /*promoRef.child("537b55b1-7ed9-4202-9a82-815cca1715a5.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
+                            {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    firebaseUri = uri;
+                                }*/
                                 //Content uri code this fix didn't work
                                 //firebaseUri = FileProvider.getUriForFile(context, "com.example.qreate.organizer.qrmenu", new File(uri.getPath()));
                                 //String imageUrl = String.valueOf(uri);
