@@ -88,6 +88,25 @@ public class AttendeeScanFragment extends Fragment {
     private Double latitude;
     private Double longitude;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Initialize the ActivityResultLauncher here
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
+        locationPermissionRequest = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        // Permission has been granted, you can retrieve the location
+                        retrieveLocation();
+                    } else {
+                        // Permission was denied, handle the situation
+                    }
+                }
+        );
+    }
+
     /**
      * This method inflates the layout for the attendee QR code scanning page, initializes UI components,
      * and sets up a click listener for the scan button.
@@ -300,21 +319,24 @@ public class AttendeeScanFragment extends Fragment {
                 .get()
                 .addOnCompleteListener(task -> {
 
-
                     // Assuming device_id is unique, there should only be one matching document
                     DocumentSnapshot userDocument = task.getResult().getDocuments().get(0);
 
                     // Check if the allow_coordinates field is true
                     if (userDocument.getBoolean("allow_coordinates") != null && userDocument.getBoolean("allow_coordinates")) {
 
-                        // function for retriving geolocation
+                        // Initialize the launcher with a callback to handle the permission result
+                        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            // You already have permission, you can retrieve the location
+                            retrieveLocation();
+                        } else {
+                            // You don't have permission, so you request it
+                            locationPermissionRequest.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+                        }
+                        // Request location permission
+                        requestLocationPermission();
 
-                        //getLocationAndUpdate();
-                        //Log.d("Geolocation", "Yayy");
 
-
-                        // Update the coordinates field with the new GeoPoint
-                        userDocument.getReference().update("coordinates", new GeoPoint(latitude, longitude));
                     }
 
 
@@ -322,60 +344,59 @@ public class AttendeeScanFragment extends Fragment {
 
     }
 
+    private void requestLocationPermission() {
+        // Check if location permission is not already granted
+        if (ContextCompat.checkSelfPermission(
+                getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Permission not granted, request it
+            locationPermissionRequest.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+        } else {
+            // Permission already granted, proceed with location retrieval
+            retrieveLocation();
+        }
+    }
+
+    private void retrieveLocation() {
+
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // You have the permission, get the location
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener((Activity) getContext(), location -> {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Assign the location to the global variables
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+
+                            db.collection("Users")
+                                    .whereEqualTo("device_id", device_id)
+                                    .get()
+                                    .addOnCompleteListener(task -> {
+                                        // Assuming device_id is unique, there should only be one matching document
+                                        DocumentSnapshot userDocument = task.getResult().getDocuments().get(0);
+                                        // Update the coordinates field with the new latitude and longitude
+                                        userDocument.getReference().update("coordinates", new GeoPoint(latitude, longitude));
+                                    });
 
 
+                        }
+                    });
 
 
-
-//    private void getLocationAndUpdate() {
-//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
-//        //Log.d("Geolocation", "Yayy1");
-//
-//
-//        //Log.d("Geolocation", "Yayy3");
-//        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        fusedLocationClient.getLastLocation()
-//                .addOnSuccessListener(requireActivity(), new OnSuccessListener<Location>() {
-//                    @Override
-//                    public void onSuccess(Location location) {
-//                        // Got last known location. In some rare situations, this can be null.
-//                        if (location != null) {
-//                            // Assign the location to the appropriate variables
-//
-//                            //Log.d("Geolocation", String.valueOf(location));
-//
-//                            latitude = location.getLatitude();
-//                            longitude = location.getLongitude();
-//                            //Log.d("Geolocation", String.valueOf(latitude));
-//                            //Log.d("Geolocation", String.valueOf(longitude));
-//
-//                        }
-//                    }
-//                });
-//    }
+        }
 
 
-
-
-
-
-
-
+    }
 
 
 
 
 
     //-------------------------------------------------------------------------------END-------------------------------------------------------------------------------------
+
+
+
+
 
 
     /**
