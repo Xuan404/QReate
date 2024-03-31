@@ -21,7 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class AttendeeCurrentEventsDetailsFragment extends Fragment {
+public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
     private ImageView poster;
     private TextView eventName;
     private TextView eventOrganizer;
@@ -93,8 +93,8 @@ public class AttendeeCurrentEventsDetailsFragment extends Fragment {
 
     }
 
-    public static AttendeeCurrentEventsDetailsFragment newInstance(String eventId) {
-        AttendeeCurrentEventsDetailsFragment fragment = new AttendeeCurrentEventsDetailsFragment();
+    public static AttendeeSignedUpEventsDetailsFragment newInstance(String eventId) {
+        AttendeeSignedUpEventsDetailsFragment fragment = new AttendeeSignedUpEventsDetailsFragment();
         Bundle args = new Bundle();
         args.putString("eventId", eventId);
         fragment.setArguments(args);
