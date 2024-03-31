@@ -84,7 +84,6 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                 db.collection("Users").whereEqualTo("device_id", device_id).limit(1).get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         DocumentSnapshot userDoc = queryDocumentSnapshots.getDocuments().get(0);
-                        DocumentReference userRef = userDoc.getReference();
 
                         // Step 2: Find the corresponding attendee document
                         db.collection("Attendees").whereEqualTo("user_document_id", userDoc.getReference()).limit(1).get().addOnSuccessListener(attendees -> {
@@ -124,7 +123,7 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                                             if (isAdded()) { // Check if the fragment is still added
                                                 Toast.makeText(getContext(), "You have already signed up for this event!", Toast.LENGTH_SHORT).show();
                                             }
-                                        } else if (sign_up_limit != null && signedupAttendeesList != null && signedupAttendeesList.size() >= sign_up_limit) {
+                                        } else if (sign_up_limit != null && (signedupAttendeesList != null && signedupAttendeesList.size() >= sign_up_limit) || sign_up_limit == 0) {
                                             // Check if the sign-up limit has been reached
                                             if (isAdded()) {
                                                 Toast.makeText(getContext(), "The sign-up limit for this event has been reached.", Toast.LENGTH_SHORT).show();
