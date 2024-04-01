@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
 import com.example.qreate.organizer.OrganizerActivity;
+import com.example.qreate.organizer.notificationsmenu.OrganizerNotificationsSendActivity;
 import com.example.qreate.organizer.qrmenu.OrganizerEvent;
 import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
 import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
@@ -51,6 +53,7 @@ import java.util.List;
  */
 public class OrganizerGeolocationMenuFragment extends Fragment {
 
+    private String documentId;
     ArrayList<OrganizerEvent> events;
     private OrganizerEvent selectedEvent;
     private FirebaseFirestore db;
@@ -102,6 +105,11 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
         seeMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (documentId == null) {
+                    Toast.makeText(getContext(), "Please select an event", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent = new Intent(getActivity(), OrganizerGeolocationMap.class);
                 startActivity(intent);
             }
@@ -122,6 +130,7 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 testButton.setText(items[which]);
                 selectedEvent = events.get(which);
+                documentId = selectedEvent.getDocumentID();
             }
         });
         builder.setNegativeButton("Cancel", null);
