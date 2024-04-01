@@ -1,9 +1,11 @@
 package com.example.qreate.organizer.geolocationmenu;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.SpannableString;
@@ -21,6 +23,7 @@ import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -28,10 +31,18 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
 import com.example.qreate.organizer.OrganizerActivity;
+import com.example.qreate.organizer.qrmenu.OrganizerEvent;
+import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
 import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The following class allows the user to see the map and check attendee checkin locations
@@ -39,6 +50,12 @@ import com.google.firebase.firestore.QuerySnapshot;
  * @author Akib Zaman Choudhurhy
  */
 public class OrganizerGeolocationMenuFragment extends Fragment {
+
+    ArrayList<OrganizerEvent> events;
+    private OrganizerEvent selectedEvent;
+    private FirebaseFirestore db;
+    private Button testButton;
+    OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
 
     /**
      * Creates the view and inflates the organizer_geolocation_menu_screen layout
@@ -59,6 +76,18 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.organizer_geolocation_menu_screen, container, false);
+        db = FirebaseFirestore.getInstance();
+
+        testButton = view.findViewById(R.id.geolocation_menu_screen_spinner);
+        events = new ArrayList<OrganizerEvent>();
+        addEventsInit();
+        testButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOptionsDialog();
+            }
+        });
+
 
         ImageButton profileButton = view.findViewById(R.id.geolocation_menu_screen_profile_button);
         profileButton.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +96,7 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
                 showPopupMenu(view);
             }
         });
+
 
         Button seeMap = view.findViewById(R.id.geolocation_menu_screen_see_attendee_checkins);
         seeMap.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +108,86 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
         });
         fetchProfilePicInfoFromDataBase();
         return view;
+    }
+
+    private void showOptionsDialog() {
+        final String[] items = new String[events.size()];
+        for (int i = 0; i < events.size(); i++) {
+            items[i] = events.get(i).getEvent();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Events");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                testButton.setText(items[which]);
+                selectedEvent = events.get(which);
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+
+        // Make sure the dialog has a window
+        if (dialog.getWindow() != null) {
+            // Create a new GradientDrawable with rounded corners
+            GradientDrawable drawable = new GradientDrawable();
+            drawable.setCornerRadius(50f); // Set the corner radius
+            drawable.setColor(Color.WHITE); // Set the background color (change if needed)
+
+            // Set the GradientDrawable as the background of the dialog's window
+            dialog.getWindow().setBackgroundDrawable(drawable);
+        }
+
+        dialog.show();
+    }
+
+
+
+    private void addEventsInit(){
+        // TODO THIS CODE CRASHES IF THERES NO DETAIL OR DATE SO I COMMENTED IT OUT UNCOMMENT WHEN DATA IS FIXED
+        String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        db.collection("Organizers")
+                .whereEqualTo("device_id", device_id)
+                .limit(1)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (!querySnapshot.isEmpty()) {
+                                // Since the unique ID is unique, we only expect one result
+                                DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                                List<DocumentReference> referenceArray = (List<DocumentReference>) document.get("events_list");
+                                //assert createdEvents != null;
+                                for (DocumentReference reference : referenceArray) {
+                                    reference.get().addOnCompleteListener(referencedTask -> {
+                                        if (referencedTask.isSuccessful()) {
+                                            DocumentSnapshot referencedDocument = referencedTask.getResult();
+                                            if (referencedDocument.exists()) {
+                                                //TODO description/dates are not set in most firebase stuff this will cause it to crash
+                                                String eventName = referencedDocument.getString("name");
+                                                //String eventDetails = document.getString("description");
+                                                //String eventDate = document.getString("date");
+                                                String eventOrganizer = referencedDocument.getString("organizer");
+                                                String eventID = referencedDocument.getId();
+                                                events.add(new OrganizerEvent(eventName, "details", "date", eventOrganizer, eventID));
+                                            } else {
+                                                System.out.println("Referenced document does not exist");
+                                            }
+                                        } else {
+                                            System.out.println("Error fetching referenced document: " + referencedTask.getException());
+                                        }
+                                    });
+                                }
+                            } else {
+                                Log.d("Firestore", "No such document");
+                            }
+                        } else {
+                            Log.d("Firestore", "get failed with ", task.getException());
+                        }
+                    }
+                });
     }
 
     private void fetchProfilePicInfoFromDataBase(){
