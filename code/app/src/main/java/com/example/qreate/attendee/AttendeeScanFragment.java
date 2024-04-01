@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 
 import com.example.qreate.R;
@@ -190,7 +191,7 @@ public class AttendeeScanFragment extends Fragment {
 
                             if (fieldName.equals("promo_qr_code_string")) {
                                 // If Promo
-                                // TODO Promo stuff
+                                navigateToEventDetailsFragment(documentId);
                                 //Log.d("PromoTest", "Yayy ");
 
                             } else if (fieldName.equals("attendee_qr_code_string")) {
@@ -213,6 +214,14 @@ public class AttendeeScanFragment extends Fragment {
 
 
                 });
+    }
+
+    private void navigateToEventDetailsFragment(String eventId){
+        AttendeeEventViewDetailsFragment detailsFragment = AttendeeEventViewDetailsFragment.newInstance(eventId);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.attendee_handler_frame, detailsFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void checkCurrentlyCheckedIn(String deviceId, String documentId) {
