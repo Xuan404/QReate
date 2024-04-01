@@ -17,9 +17,12 @@ import com.example.qreate.HomeScreenFragment;
 import com.example.qreate.R;
 import com.example.qreate.WelcomeScreenFragment;
 import com.example.qreate.administrator.AdministratorDashboardFragment;
+import com.example.qreate.administrator.AdministratorEvent;
+import com.example.qreate.administrator.EventArrayAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -41,7 +44,7 @@ import java.util.Map;
  * @author Akib Zaman Choudhury
  */
 
-public class AttendeeActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
+public class AttendeeActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener{
     /*
     This class is used as the MainActivity class for the Administrator UI
      */
@@ -51,8 +54,8 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     private String retrievedDocumentId;
     private String tokenFCM;
     private String selectedEventId;
-
     String device_id;
+    private EventArrayAdapter eventArrayAdapter;
 
     /**
      * Called when the activity is starting. This is where most initialization should go:
@@ -272,7 +275,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         BottomNavigationView deleteNavBar = findViewById(R.id.attendee_delete_navigation_bar);
         deleteNavBar.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                AdministratorDashboardFragment selectedFragment = null;
                 int itemId = item.getItemId();
 
                 if (itemId == R.id.cancel_icon_two) {
@@ -280,6 +282,32 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                     showBottomNavigationBar();
                     getSupportFragmentManager().popBackStackImmediate();
                 } else if (itemId == R.id.delete_icon) {
+                    String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("Attendees")
+                            .whereEqualTo("device_id", device_id)
+                            .limit(1)
+                            .get()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    QuerySnapshot querySnapshot = task.getResult();
+                                    if (!querySnapshot.isEmpty()) {
+                                        // Assuming there is only one document per device_id
+                                        DocumentSnapshot attendeeDocument = querySnapshot.getDocuments().get(0);
+                                        String attendeeId = attendeeDocument.getId(); // This is the attendeeId you need
+
+                                        // Now that you have the attendeeId, call the method to remove the event from the attendee
+                                        // and subsequently remove the attendee from the event
+                                        removeEventFromAttendee(selectedEventId, attendeeId);
+                                    } else {
+                                        Log.d("FetchAttendee", "No attendee found with the given device ID");
+                                    }
+                                } else {
+                                    Log.e("FetchAttendee", "Error fetching attendee document", task.getException());
+                                }
+                            });
+
                     hideDeleteNavigationBar();
                     showBottomNavigationBar();
                     getSupportFragmentManager().popBackStackImmediate();
@@ -306,12 +334,36 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         transaction.commit();
     }
 
+    private void removeEventFromAttendee(String eventId, String attendeeId) {
+        DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
 
+        // Remove the event reference from the attendee's signedup_events_list
+        attendeeRef.update("signup_event_list", FieldValue.arrayRemove(db.collection("Events").document(eventId)))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("UpdateAttendee", "Event removed from attendee's signup_event_list");
+                    // Proceed to remove attendee from the event
+                    removeAttendeeFromEvent(eventId, attendeeId);
+                })
+                .addOnFailureListener(e -> Log.e("UpdateAttendee", "Error removing event from attendee's list", e));
+    }
 
+    private void removeAttendeeFromEvent(String eventId, String attendeeId) {
+        DocumentReference eventRef = db.collection("Events").document(eventId);
 
+        // Assuming 'signedup_attendees' is a List of Maps and you use a specific field in the map to store the attendeeId
+        // This is a more complex operation because Firestore does not directly support removing an item from an array by field value
+        // You would first need to fetch the current list, modify it in memory, and then update it
 
-
-
+        eventRef.get().addOnSuccessListener(documentSnapshot -> {
+            List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) documentSnapshot.get("signedup_attendees");
+            if (signedUpAttendees != null) {
+                signedUpAttendees.removeIf(attendee -> attendeeId.equals(((DocumentReference) attendee.get("attendeeRef")).getId()));
+                eventRef.update("signedup_attendees", signedUpAttendees)
+                        .addOnSuccessListener(aVoid -> Log.d("UpdateEvent", "Attendee removed from event's signedup_attendees"))
+                        .addOnFailureListener(e -> Log.e("UpdateEvent", "Error removing attendee from event", e));
+            }
+        }).addOnFailureListener(e -> Log.e("FetchEvent", "Error fetching event document", e));
+    }
 
 ////////////// FUNCTIONS FOR HANDLING ORGANIZER COLLECTION CREATION //////////////////////////////////
 
