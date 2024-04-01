@@ -44,7 +44,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class CurrentEventsFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener {
+public class CurrentEventsFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener{
     private EventArrayAdapter eventArrayAdapter;
     private ListView eventList;
     private FirebaseFirestore db;
@@ -224,13 +224,20 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
     }
 
     private void fetchEventsByReferences(List<DocumentReference> eventRefs) {
-        // Prepare to fetch today's and future events
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, 0); // Set hour to midnight
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        Date today = cal.getTime();
+        // Prepare to fetch today's events
+        Calendar startOfDay = Calendar.getInstance();
+        startOfDay.set(Calendar.HOUR_OF_DAY, 0); // Set hour to midnight
+        startOfDay.set(Calendar.MINUTE, 0);
+        startOfDay.set(Calendar.SECOND, 0);
+        startOfDay.set(Calendar.MILLISECOND, 0);
+        Date today = startOfDay.getTime();
+
+        Calendar endOfDay = Calendar.getInstance();
+        endOfDay.set(Calendar.HOUR_OF_DAY, 23); // Set hour to almost midnight
+        endOfDay.set(Calendar.MINUTE, 59);
+        endOfDay.set(Calendar.SECOND, 59);
+        endOfDay.set(Calendar.MILLISECOND, 999);
+        Date tomorrow = endOfDay.getTime();
 
         List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
         for (DocumentReference ref : eventRefs) {
@@ -243,7 +250,7 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
             ArrayList<AdministratorEvent> events = new ArrayList<>();
             for (DocumentSnapshot document : documentSnapshots) {
                 Date eventDate = document.getDate("date");
-                if (eventDate != null && !eventDate.before(today)) {
+                if (eventDate != null && eventDate.after(today) && eventDate.before(tomorrow)) {
                     String eventName = document.getString("name");
                     String eventOrganizer = document.getString("organizer");
                     String eventId = document.getId();
