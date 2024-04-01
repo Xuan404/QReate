@@ -45,6 +45,13 @@ public class OrganizerGeolocationMap extends AppCompatActivity implements OnMapR
         mapFragment.getMapAsync(this);
     }
 
+
+
+
+    
+
+
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
 
