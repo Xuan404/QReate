@@ -29,8 +29,11 @@ import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
 import com.example.qreate.administrator.AdministratorEvent;
 import com.example.qreate.administrator.EventArrayAdapter;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -67,6 +70,8 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
 
         eventList = view.findViewById(R.id.current_event_list);
         db = FirebaseFirestore.getInstance();
+        eventArrayAdapter = new EventArrayAdapter(getContext(), new ArrayList<>(), this);
+        eventList.setAdapter(eventArrayAdapter);
 
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,38 +201,60 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
         loadAllEvents();
     }
 
-    public void loadAllEvents(){
-        CollectionReference eventsRef = db.collection("Events");
-        ArrayList<AdministratorEvent> events = new ArrayList<>();
-        eventArrayAdapter = new EventArrayAdapter(getContext(), events, this); // Use class field here
-        eventList.setAdapter(eventArrayAdapter);
+    public void loadAllEvents() {
+        String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Get the current date at the start of the day (midnight)
+        // First, find the attendee document for the current user
+        db.collection("Attendees")
+                .whereEqualTo("device_id", device_id)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(attendeeQuerySnapshot -> {
+                    if (!attendeeQuerySnapshot.isEmpty()) {
+                        DocumentSnapshot attendeeDoc = attendeeQuerySnapshot.getDocuments().get(0);
+                        List<DocumentReference> signedUpEventsRefs = (List<DocumentReference>) attendeeDoc.get("signup_event_list");
+                        if (signedUpEventsRefs != null && !signedUpEventsRefs.isEmpty()) {
+                            // Now fetch each event by its reference
+                            fetchEventsByReferences(signedUpEventsRefs);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("CurrentEventsFragment", "Error fetching attendee info", e));
+    }
+
+    private void fetchEventsByReferences(List<DocumentReference> eventRefs) {
+        // Prepare to fetch today's and future events
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0); // Set hour to midnight
-        cal.set(Calendar.MINUTE, 0); // Set minute to 0
-        cal.set(Calendar.SECOND, 0); // Set second to 0
-        cal.set(Calendar.MILLISECOND, 0); // Set millisecond to 0
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
         Date today = cal.getTime();
 
-        eventsRef.whereGreaterThanOrEqualTo("date", today).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                List<AdministratorEvent> eventsList = new ArrayList<>();
-                for (QueryDocumentSnapshot document : task.getResult()) {
+        List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+        for (DocumentReference ref : eventRefs) {
+            tasks.add(ref.get());
+        }
+
+        // Wait for all event fetch tasks to complete
+        Task<List<DocumentSnapshot>> allTasks = Tasks.whenAllSuccess(tasks);
+        allTasks.addOnSuccessListener(documentSnapshots -> {
+            ArrayList<AdministratorEvent> events = new ArrayList<>();
+            for (DocumentSnapshot document : documentSnapshots) {
+                Date eventDate = document.getDate("date");
+                if (eventDate != null && !eventDate.before(today)) {
                     String eventName = document.getString("name");
                     String eventOrganizer = document.getString("organizer");
                     String eventId = document.getId();
-                    eventsList.add(new AdministratorEvent(eventName, eventOrganizer, eventId));
+                    events.add(new AdministratorEvent(eventName, eventOrganizer, eventId));
                 }
-                // Update the adapter with the new list
-                eventArrayAdapter.clear();
-                eventArrayAdapter.addAll(eventsList);
-                eventArrayAdapter.notifyDataSetChanged();
-            } else {
-                Log.d("Firestore", "Error getting documents: ", task.getException());
             }
+            // Update the ListView
+            eventArrayAdapter.clear();
+            eventArrayAdapter.addAll(events);
+            eventArrayAdapter.notifyDataSetChanged();
         });
-
     }
 
     @Override

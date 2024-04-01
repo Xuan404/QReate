@@ -119,6 +119,10 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                                                 }
                                             }
                                         }
+                                        if (sign_up_limit == null) {
+                                            // Assuming null means no limit
+                                            sign_up_limit = Long.MAX_VALUE; // This effectively means no limit
+                                        }
                                         if (alreadySignedUp) {
                                             if (isAdded()) { // Check if the fragment is still added
                                                 Toast.makeText(getContext(), "You have already signed up for this event!", Toast.LENGTH_SHORT).show();
