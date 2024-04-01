@@ -263,7 +263,13 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                     } else if (currentFragment instanceof CurrentEventsFragment) {
                         selectedEventId = ((CurrentEventsFragment) currentFragment).getSelectedEventId();
                         if (selectedEventId != null) {
-                            navigateToCurrentEventDetails(selectedEventId);
+                            navigateToCurrentAndUpcomingEventDetails(selectedEventId);
+                        }
+                        showDeleteNavigationBar();
+                    } else if (currentFragment instanceof UpcomingEventsFragment) {
+                        selectedEventId = ((UpcomingEventsFragment) currentFragment).getSelectedEventId();
+                        if (selectedEventId != null) {
+                            navigateToCurrentAndUpcomingEventDetails(selectedEventId);
                         }
                         showDeleteNavigationBar();
                     }
@@ -326,13 +332,14 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         transaction.commit();
     }
 
-    private void navigateToCurrentEventDetails(String eventId) {
+    private void navigateToCurrentAndUpcomingEventDetails(String eventId) {
         AttendeeSignedUpEventsDetailsFragment detailsFragment = AttendeeSignedUpEventsDetailsFragment.newInstance(eventId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.attendee_handler_frame, detailsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
 
     private void removeEventFromAttendee(String eventId, String attendeeId) {
         DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
@@ -363,6 +370,8 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.attendee_handler_frame);
         if (currentFragment instanceof CurrentEventsFragment) {
             ((CurrentEventsFragment) currentFragment).removeEventFromList(eventId);
+        } else if (currentFragment instanceof UpcomingEventsFragment) {
+            ((UpcomingEventsFragment) currentFragment).removeEventFromList(eventId);
         }
     }
 

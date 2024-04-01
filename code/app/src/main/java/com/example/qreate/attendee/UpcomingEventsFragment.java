@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
@@ -26,17 +27,29 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.administrator.AdministratorEvent;
+import com.example.qreate.administrator.EventArrayAdapter;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * This fragment is for the upcoming events page where there is information about
  * what events users signed up for are coming up.
  *
  */
-public class UpcomingEventsFragment extends Fragment {
-
+public class UpcomingEventsFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener{
+    private EventArrayAdapter eventArrayAdapter;
+    private ListView eventList;
+    private FirebaseFirestore db;
     /**
      * Creates and Inflates the upcoming events view
      *
@@ -54,9 +67,14 @@ public class UpcomingEventsFragment extends Fragment {
     @Override
     public View onCreateView (@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.upcoming_events_listview,container,false);
-
         AppCompatButton backButton = view.findViewById(R.id.button_back_upcoming_event_details);
         ImageButton profileButton = view.findViewById(R.id.upcoming_events_profile_pic_icon);
+
+        eventList = view.findViewById(R.id.upcoming_event_list);
+        db = FirebaseFirestore.getInstance();
+        eventArrayAdapter = new EventArrayAdapter(getContext(), new ArrayList<>(), this);
+        eventList.setAdapter(eventArrayAdapter);
+
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,6 +198,106 @@ public class UpcomingEventsFragment extends Fragment {
         transaction.commit();
     }
 
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadAllEvents();
+    }
+
+    public void loadAllEvents() {
+        String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // First, find the attendee document for the current user
+        db.collection("Attendees")
+                .whereEqualTo("device_id", device_id)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(attendeeQuerySnapshot -> {
+                    if (!attendeeQuerySnapshot.isEmpty()) {
+                        DocumentSnapshot attendeeDoc = attendeeQuerySnapshot.getDocuments().get(0);
+                        List<DocumentReference> signedUpEventsRefs = (List<DocumentReference>) attendeeDoc.get("signup_event_list");
+                        if (signedUpEventsRefs != null && !signedUpEventsRefs.isEmpty()) {
+                            // Now fetch each event by its reference
+                            fetchEventsByReferences(signedUpEventsRefs);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("CurrentEventsFragment", "Error fetching attendee info", e));
+    }
+
+    private void fetchEventsByReferences(List<DocumentReference> eventRefs) {
+        // Prepare to fetch today's events
+        Calendar startOfDay = Calendar.getInstance();
+        startOfDay.set(Calendar.HOUR_OF_DAY, 0); // Set hour to midnight
+        startOfDay.set(Calendar.MINUTE, 0);
+        startOfDay.set(Calendar.SECOND, 0);
+        startOfDay.set(Calendar.MILLISECOND, 0);
+        Date today = startOfDay.getTime();
+
+        Calendar endOfDay = Calendar.getInstance();
+        endOfDay.set(Calendar.HOUR_OF_DAY, 23); // Set hour to almost midnight
+        endOfDay.set(Calendar.MINUTE, 59);
+        endOfDay.set(Calendar.SECOND, 59);
+        endOfDay.set(Calendar.MILLISECOND, 999);
+        Date tomorrow = endOfDay.getTime();
+
+        List<Task<DocumentSnapshot>> tasks = new ArrayList<>();
+        for (DocumentReference ref : eventRefs) {
+            tasks.add(ref.get());
+        }
+
+        // Wait for all event fetch tasks to complete
+        Task<List<DocumentSnapshot>> allTasks = Tasks.whenAllSuccess(tasks);
+        allTasks.addOnSuccessListener(documentSnapshots -> {
+            ArrayList<AdministratorEvent> events = new ArrayList<>();
+            for (DocumentSnapshot document : documentSnapshots) {
+                Date eventDate = document.getDate("date");
+                if (eventDate != null && eventDate.after(today)) {
+                    String eventName = document.getString("name");
+                    String eventOrganizer = document.getString("organizer");
+                    String eventId = document.getId();
+                    events.add(new AdministratorEvent(eventName, eventOrganizer, eventId));
+                }
+            }
+            // Update the ListView
+            eventArrayAdapter.clear();
+            eventArrayAdapter.addAll(events);
+            eventArrayAdapter.notifyDataSetChanged();
+        });
+    }
+
+    @Override
+    public void onEventSelected() {
+        hideBottomNavigationBar(); // Implement this method
+        showDetailsNavigationBar(); // Implement this method
+    }
+
+    private void hideBottomNavigationBar() {
+        // Find the BottomNavigationView and set its visibility to GONE
+        ((AttendeeActivity)getActivity()).hideBottomNavigationBar();
+    }
+
+    private void showDetailsNavigationBar() {
+        // Find the BottomNavigationView and set its visibility to GONE
+        ((AttendeeActivity)getActivity()).showDetailsNavigationBar();
+    }
+
+    public String getSelectedEventId() {
+        return eventArrayAdapter.getSelectedEventId();
+    }
+
+    public void removeEventFromList(String eventId) {
+        if (eventArrayAdapter != null) {
+            for (int i = 0; i < eventArrayAdapter.getCount(); i++) {
+                AdministratorEvent event = eventArrayAdapter.getItem(i);
+                if (event != null && eventId.equals(event.getId())) { // Assuming AdministratorEvent has a getId() method
+                    eventArrayAdapter.remove(event);
+                    eventArrayAdapter.notifyDataSetChanged();
+                    break; // Stop the loop once the event is found and removed
+                }
+            }
+        }
+    }
 
 
 
