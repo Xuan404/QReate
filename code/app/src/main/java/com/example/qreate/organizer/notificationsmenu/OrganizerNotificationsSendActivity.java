@@ -114,6 +114,7 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
                 eventMessage = editTextMessage.getText().toString();
 
                 retrieveFcmTokens(documentId);
+                createAnnouncement(eventName, eventMessage, documentId);
 
                 //sendFcmMessage(SERVER_KEY, FCMtoken, eventName, eventMessage);
 
@@ -122,6 +123,18 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    public void createAnnouncement(String title, String description, String documentId) {
+
+        // Create a new document with title and description
+        Map<String, Object> announcement = new HashMap<>();
+        announcement.put("title", title);
+        announcement.put("description", description);
+        announcement.put("event_doc_id", documentId);
+
+        // Add a new document with a generated ID
+        db.collection("Announcements").add(announcement);
     }
 
 
