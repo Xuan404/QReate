@@ -38,6 +38,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class OtherEventsFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener {
@@ -100,7 +102,15 @@ public class OtherEventsFragment extends Fragment implements EventArrayAdapter.O
         eventArrayAdapter = new EventArrayAdapter(getContext(), events, this); // Use class field here
         eventList.setAdapter(eventArrayAdapter);
 
-        eventsRef.get().addOnCompleteListener(task -> {
+        // Get the current date at the start of the day (midnight)
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0); // Set hour to midnight
+        cal.set(Calendar.MINUTE, 0); // Set minute to 0
+        cal.set(Calendar.SECOND, 0); // Set second to 0
+        cal.set(Calendar.MILLISECOND, 0); // Set millisecond to 0
+        Date today = cal.getTime();
+
+        eventsRef.whereGreaterThanOrEqualTo("date", today).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<AdministratorEvent> eventsList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
