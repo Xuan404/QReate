@@ -110,7 +110,9 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
                     Toast.makeText(getContext(), "Please select an event", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 Intent intent = new Intent(getActivity(), OrganizerGeolocationMap.class);
+                intent.putExtra("eventDocId", documentId);
                 startActivity(intent);
             }
         });
