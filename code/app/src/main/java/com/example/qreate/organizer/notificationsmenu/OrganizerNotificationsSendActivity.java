@@ -116,6 +116,8 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
                 retrieveFcmTokens(documentId);
                 createAnnouncement(eventName, eventMessage, documentId);
 
+                Toast.makeText(OrganizerNotificationsSendActivity.this, "Push Notification Sent!", Toast.LENGTH_SHORT).show();
+
                 //sendFcmMessage(SERVER_KEY, FCMtoken, eventName, eventMessage);
 
 
@@ -159,7 +161,7 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
                             String fcmToken = attendeeDocument.getString("fcm_token");
                             //fcmTokens.add(fcmToken);
                             sendFcmMessage(SERVER_KEY, fcmToken, eventName, eventMessage);
-                            Toast.makeText(OrganizerNotificationsSendActivity.this, "Push Notification Sent!", Toast.LENGTH_SHORT).show();
+
                         }
                     }).addOnFailureListener(e -> {
                             // Handle failure to retrieve the attendee document
