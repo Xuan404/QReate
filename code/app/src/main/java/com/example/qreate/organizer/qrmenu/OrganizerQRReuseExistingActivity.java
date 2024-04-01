@@ -309,6 +309,7 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 testButton.setText(items[which]);
                 selectedEvent = events.get(which);
+                documentId = selectedEvent.getDocumentID();
             }
         });
         builder.setNegativeButton("Cancel", null);

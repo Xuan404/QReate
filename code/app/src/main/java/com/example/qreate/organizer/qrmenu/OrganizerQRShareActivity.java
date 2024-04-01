@@ -70,7 +70,7 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
     //Spinner eventsSpinner;
     //OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
     //temporary fake id
-    String documentId = "3Z0RAltfeXSvMg3zO7Kw";
+    String documentId = "qtzystFFCwtIsHpVE0eM";
 
 
     @Override
@@ -325,6 +325,8 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 testButton.setText(items[which]);
                 selectedEvent = events.get(which);
+                documentId = selectedEvent.getDocumentID();
+                getPromoQR();
             }
         });
         builder.setNegativeButton("Cancel", null);
