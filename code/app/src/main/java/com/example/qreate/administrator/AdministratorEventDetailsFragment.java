@@ -15,6 +15,7 @@ import com.example.qreate.R;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import org.w3c.dom.Text;
 
@@ -57,10 +58,23 @@ public class AdministratorEventDetailsFragment extends Fragment {
                     .get().addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
+
                             if (document.exists()) {
                                 // Extract event details from the document and update the UI
                                 eventName.setText(document.getString("name"));
-                                // eventOrganizer.setText(document.getString("organizer"));
+
+                                String device_id = document.getString("org_device_id");
+                                db.collection("Users")
+                                        .whereEqualTo("device_id", device_id)
+                                        .get()
+                                        .addOnCompleteListener(task1 -> {
+                                                    if (task1.isSuccessful() && !task1.getResult().isEmpty()) {
+                                                        // Assuming device_id is unique, get the first document.
+                                                        QueryDocumentSnapshot doc = (QueryDocumentSnapshot) task1.getResult().getDocuments().get(0);
+                                                        String orgName = doc.getString("name");
+                                                        eventOrganizer.setText(orgName);
+                                                    }
+                                                });
                                 eventDescription.setText(document.getString("description"));
                                 Timestamp dateTimestamp = document.getTimestamp("date");
                                 if (dateTimestamp != null) {
@@ -71,7 +85,6 @@ public class AdministratorEventDetailsFragment extends Fragment {
                                 }
                                 // eventTime.setText(document.getString("time"));
                                 // eventLocation.setText(document.getString("location"));
-                                // Ensure you have fields named accordingly in your Firestore document
                             } else {
                                 Log.d("Firestore", "Error getting documents: ", task.getException());
                             }

@@ -20,6 +20,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -198,7 +199,18 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                             if (document.exists()) {
                                 // Extract event details from the document and update the UI
                                 eventName.setText(document.getString("name"));
-                                // eventOrganizer.setText(document.getString("organizer"));
+                                String device_id = document.getString("org_device_id");
+                                db.collection("Users")
+                                        .whereEqualTo("device_id", device_id)
+                                        .get()
+                                        .addOnCompleteListener(task1 -> {
+                                            if (task1.isSuccessful() && !task1.getResult().isEmpty()) {
+                                                // Assuming device_id is unique, get the first document.
+                                                QueryDocumentSnapshot doc = (QueryDocumentSnapshot) task1.getResult().getDocuments().get(0);
+                                                String orgName = doc.getString("name");
+                                                eventOrganizer.setText(orgName);
+                                            }
+                                        });
                                 eventDescription.setText(document.getString("description"));
                                 Timestamp dateTimestamp = document.getTimestamp("date");
                                 if (dateTimestamp != null) {
