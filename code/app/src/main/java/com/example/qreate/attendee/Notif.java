@@ -12,18 +12,18 @@ package com.example.qreate.attendee;
  */
 
 public class Notif {
-    private String notification;
-    private String organizer;
+    private String description;
+    private String title;
+
 
     /**
-     * Constructs a new Notif object with specified notification message and organizer name.
-     *
-     * @param notification The notification message content.
-     * @param organizer The name of the organizer related to this notification.
+     * notification details
+     * @param description
+     * @param title
      */
-    Notif(String notification, String organizer){
-        this.notification = notification;
-        this.organizer = organizer;
+    Notif(String description, String title){
+        this.description = description;
+        this.title = title;
     }
 
     /**
@@ -33,7 +33,7 @@ public class Notif {
      */
 
     String getNotificationDescription(){
-        return notification;
+        return description;
     }
 
     /**
@@ -42,7 +42,7 @@ public class Notif {
      * @return The organizer's name.
      */
 
-    String getOrganizerName(){
-        return organizer;
+    String getTitle(){
+        return title;
     }
 }

@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 
 import com.example.qreate.R;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 /**
  * NotifArrayAdapter is a custom ArrayAdapter designed to display notification objects (Notif) within a ListView.
@@ -62,11 +64,12 @@ public class NotifArrayAdapter extends ArrayAdapter<Notif> {
 
         Notif currentNotif = notifs.get(position);
 
-        TextView notifName = viewItem.findViewById(R.id.notif_description_text);
-        TextView organizerName = viewItem.findViewById(R.id.notif_organizer_text);
+        TextView notifDescriptionText = viewItem.findViewById(R.id.notif_description_text);
+        TextView notifTitleText = viewItem.findViewById(R.id.notif_title_text);
 
-        notifName.setText(currentNotif.getNotificationDescription());
-        organizerName.setText(currentNotif.getOrganizerName());
+        //set the text
+        notifDescriptionText.setText(currentNotif.getNotificationDescription());
+        notifTitleText.setText(currentNotif.getTitle());
 
         return viewItem;
     }

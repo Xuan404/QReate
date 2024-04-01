@@ -8,7 +8,7 @@
     android:background="@drawable/rounded_dark_blue">
 
     <TextView
-        android:id="@+id/notif_description_text"
+        android:id="@+id/notif_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -22,17 +22,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/notif_organizer_text"
+        android:id="@+id/notif_description_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="1dp"
         android:fontFamily="@font/poppins_bold"
-        android:text="Posted by: Event Organizer"
+        android:text="Description"
         android:textColor="#D9D9D9"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/notif_description_text" />
+        app:layout_constraintTop_toBottomOf="@+id/notif_title_text" />
 
     <RadioButton
         android:id="@+id/notif_radio_button"
