@@ -206,6 +206,8 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     }
 
+    ////////////// FUNCTIONS FOR HANDLING ATTENDEE EVENTS PAGE //////////////////////////////////
+
     public void hideBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.attendee_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar disappear
@@ -283,7 +285,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                     getSupportFragmentManager().popBackStackImmediate();
                 } else if (itemId == R.id.delete_icon) {
                     String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                     db.collection("Attendees")
                             .whereEqualTo("device_id", device_id)
@@ -307,7 +308,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                                     Log.e("FetchAttendee", "Error fetching attendee document", task.getException());
                                 }
                             });
-
                     hideDeleteNavigationBar();
                     showBottomNavigationBar();
                     getSupportFragmentManager().popBackStackImmediate();
@@ -350,10 +350,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     private void removeAttendeeFromEvent(String eventId, String attendeeId) {
         DocumentReference eventRef = db.collection("Events").document(eventId);
 
-        // Assuming 'signedup_attendees' is a List of Maps and you use a specific field in the map to store the attendeeId
-        // This is a more complex operation because Firestore does not directly support removing an item from an array by field value
-        // You would first need to fetch the current list, modify it in memory, and then update it
-
         eventRef.get().addOnSuccessListener(documentSnapshot -> {
             List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) documentSnapshot.get("signedup_attendees");
             if (signedUpAttendees != null) {
@@ -363,7 +359,14 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                         .addOnFailureListener(e -> Log.e("UpdateEvent", "Error removing attendee from event", e));
             }
         }).addOnFailureListener(e -> Log.e("FetchEvent", "Error fetching event document", e));
+
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.attendee_handler_frame);
+        if (currentFragment instanceof CurrentEventsFragment) {
+            ((CurrentEventsFragment) currentFragment).removeEventFromList(eventId);
+        }
     }
+
+
 
 ////////////// FUNCTIONS FOR HANDLING ORGANIZER COLLECTION CREATION //////////////////////////////////
 
