@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/poppins_bold"
             android:text="Share QR Code"
             android:textColor="#FFFFFF"
@@ -91,18 +91,43 @@
             android:layout_height="250dp"
             android:layout_below="@id/share_qr_code_text"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/qrimage" />
+
+        <RadioGroup
+            android:id="@+id/share_qr_code_radio_group"
+            android:layout_below="@id/share_qr_code_qr_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RadioButton
+                android:id="@+id/share_qr_code_radio_attendee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="0dp"
+                android:fontFamily="@font/poppins_light"
+                android:text="Attendee QR Code"
+                android:textColor="#FFFFFF" />
+
+            <RadioButton
+                android:id="@+id/share_qr_code_radio_promo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/share_qr_code_radio_attendee"
+                android:layout_marginLeft="25dp"
+                android:fontFamily="@font/poppins_light"
+                android:text="Promo QR Code"
+                android:textColor="#FFFFFF" />
+        </RadioGroup>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/share_qr_code_sharebutton"
             android:layout_width="120dp"
             android:layout_height="40dp"
-            android:layout_below="@id/share_qr_code_qr_image"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_below="@id/share_qr_code_radio_group"
+            android:layout_centerInParent="true"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="30dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/rounded_blue_buttons"

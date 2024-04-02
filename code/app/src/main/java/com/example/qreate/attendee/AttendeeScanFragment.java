@@ -165,7 +165,7 @@ public class AttendeeScanFragment extends Fragment {
                     findDocumentByFieldValueCheckin("promo_qr_code_string", stringQR);
                     findDocumentByFieldValueCheckin("attendee_qr_code_string", stringQR); // First seaches dor
 
-                    popUpResultDialog(intentResult.getContents());
+                    //popUpResultDialog(intentResult.getContents());
                 }
             } else {
                 popUpAlert("Scan Aborted");

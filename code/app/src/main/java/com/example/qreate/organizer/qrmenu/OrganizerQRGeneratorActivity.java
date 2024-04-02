@@ -324,15 +324,6 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
-
     private void addEventsInit(){
         // TODO THIS CODE CRASHES IF THERES NO DETAIL OR DATE SO I COMMENTED IT OUT UNCOMMENT WHEN DATA IS FIXED
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);

@@ -2,12 +2,14 @@ package com.example.qreate.organizer.qrmenu;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -17,6 +19,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -44,92 +48,45 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
+import androidx.core.widget.CompoundButtonCompat;
 
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class OrganizerQRShareActivity extends AppCompatActivity {
+
+    String documentId ;
     ArrayList<OrganizerEvent> events;
     private Button testButton;
     private OrganizerEvent selectedEvent;
-    //File cacheDir = getCacheDir();
     private FirebaseFirestore db;
-    ImageView qrImage;
-    Uri firebaseUri;
-    String downloadUrl;
-    StorageReference promoRef;
-    FirebaseStorage storage;
-    StorageReference storageRef;
-    //Spinner eventsSpinner;
-    //OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
-    //temporary fake id
-    String documentId = "qtzystFFCwtIsHpVE0eM";
+    private Bitmap bitmapImage;
+    private ImageView imageView;
+    private Button buttonShare;
 
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_share_qr_code_screen);
-        storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReference();
-        //FirebaseApp.initializeApp(this);
 
         db = FirebaseFirestore.getInstance();
-
-
+        changeRadioColor();
         events = new ArrayList<OrganizerEvent>();
-
-
         addEventsInit();
+        imageView = findViewById(R.id.share_qr_code_qr_image);
 
 
-        //eventSpinnerArrayAdapter = new OrganizerEventSpinnerArrayAdapter(this, events);
-        qrImage = findViewById(R.id.share_qr_code_qr_image);
-
-        //NEED TO GRAB THE ARRAY FROM FIREBASE THEN PARSE IT INTO THIS
-        //eventsSpinner = findViewById(R.id.share_qr_code_spinner);
-
-
-        /*eventsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getItemAtPosition(position).toString();
-                //getPromoQR();
-            }
-
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-
-            }
-        });*/
-        //TODO get promo qr grabs the qr for the selected event so call it everytime a new event is selected
-         //FIX DIDNT WORK im on like 10 attempts now i cant even find anything else online
-        getPromoQR();
-        //grabbed the access token just to make sure the image could even be loaded
-        Glide.with(this).load("https://firebasestorage.googleapis.com/v0/b/qreate-bb8b8.appspot.com/o/qr_codes%2F537b55b1-7ed9-4202-9a82-815cca1715a5.png?alt=media&token=77d6e246-c9de-47ad-8a90-838889935feb").into(qrImage);
-        //Glide.with(this).load(firebaseUri).into(qrImage);
-        //checks if url can parse into bitmap the exception didnt pop up so im even more lost now
-        /*Bitmap mIcon11 = null;
-        try {
-            InputStream in = new java.net.URL(firebaseUri.toString()).openStream();
-            mIcon11 = BitmapFactory.decodeStream(in);
-        } catch (Exception e) {
-            Log.d("Error", e.getStackTrace().toString());
-
-        }*/
-
-        //eventSpinnerArrayAdapter.setDropDownViewResource(R.layout.organizer_event_list_recycler_row_layout);
         testButton = findViewById(R.id.share_qr_code_spinner);
-
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,38 +95,39 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
         });
 
 
-        //eventsSpinner.setAdapter(eventSpinnerArrayAdapter);
-
-
-        Button shareButton = findViewById(R.id.share_qr_code_sharebutton);
-        //it cant be set as text but it pulls up the correct file idk whats wrong
-        /*try{
-            shareButton.setText(firebaseUri.toString()); //uh somethings wrong with the uri i think
-        }catch (NullPointerException e) {
-            // Handle the null Uri case
-            e.printStackTrace();
-        }*/
-
-
-        shareButton.setOnClickListener((new View.OnClickListener() {
+        buttonShare = findViewById(R.id.share_qr_code_sharebutton);
+        //buttonShare.setEnabled(false);
+        buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                sharingIntent.setType("image/*");
-                //GOTTA PUT THE IMAGE LOCATION HERE even this basic one doesnt work btw :(
-                //Uri imageUri = Uri.parse("android.resource://" + getPackageName() + "/drawable/qricon.png");
-
-                sharingIntent.putExtra(Intent.EXTRA_STREAM, firebaseUri);
-                startActivity(Intent.createChooser(sharingIntent, "Share Image"));*/
-                Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.setType("image/png"); // Set the appropriate image type
-                //shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(downloadUrl));
-                shareIntent.putExtra(Intent.EXTRA_STREAM, firebaseUri);
-                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(Intent.createChooser(shareIntent, "Share Image"));
+                if (documentId == null){
+                    Toast.makeText(OrganizerQRShareActivity.this, "Error: Select an Event", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                //buttonShare.setEnabled(false);
+                shareImage(bitmapImage);
             }
-        }));
+        });
 
+
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.share_qr_code_radio_group);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // checkedId is the RadioButton selected
+                RadioButton checkedRadioButton = (RadioButton)group.findViewById(checkedId);
+                boolean isChecked = checkedRadioButton.isChecked();
+                if (isChecked && documentId != null) {
+                    // Sets up field value
+                    if (checkedId == R.id.share_qr_code_radio_attendee) {
+                        selectImage(documentId, "attendee_qr_code");
+                    } else if (checkedId == R.id.share_qr_code_radio_promo) {
+                        selectImage(documentId, "promo_qr_code");
+
+                    }
+                }
+            }
+        });
 
         //Back Button
         ImageButton backButton = findViewById(R.id.share_qr_code_screen_backbutton);
@@ -179,67 +137,142 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
     }
 
-    private void getPromoQR(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("Events").document(documentId).get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            promoRef = storage.getInstance().getReference(document.getString("promo_qr_code"));
-                            storageRef.child(document.getString("promo_qr_code")).getDownloadUrl().addOnSuccessListener(uri -> {
-                            /*promoRef.child("537b55b1-7ed9-4202-9a82-815cca1715a5.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>()
-                            {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    firebaseUri = uri;
-                                }*/
-                                //Content uri code this fix didn't work
-                                //firebaseUri = FileProvider.getUriForFile(context, "com.example.qreate.organizer.qrmenu", new File(uri.getPath()));
-                                //String imageUrl = String.valueOf(uri);
 
-                                firebaseUri = uri;
-                                //downloadUrl = uri.toString();
-                            }).addOnFailureListener(exception -> {
-                                // Handle any errors (e.g., image not found, network issues)
-                                Log.e("ImageError", "Error downloading image: " + exception.getMessage());
-                            });
-                            //different content uri fix this didn't work either
-                            /*StorageReference imageRef = storageRef.child(document.getString("promo_qr_code"));
-                            imageRef.getBytes(Long.MAX_VALUE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                @Override
-                                public void onSuccess(byte[] bytes) {
-                                    // Convert byte array to Bitmap
-                                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                    ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArray);
-                                    String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Promo", null);
-                                    firebaseUri = Uri.parse(path);
 
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    // Handle any errors
-                                }
-                            });*/
-                        } else {
-                            // Task failed with an exception
-                            Log.d("Firestore", "get failed with ", task.getException());
-                        }
+    private void selectImage(String documentId, String field) {
+        // Logic to retrieve and display image from Firebase Storage
 
-                    }
-                });
+        DocumentReference eventDocRef = db.collection("Events").document(documentId);
+        eventDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // Retrieve the image reference path
+                String imagePath = documentSnapshot.getString(field);
+
+                if (imagePath != null){
+                    buttonShare.setEnabled(false);
+                    downloadAndDisplayImage(imagePath);
+
+                } else {
+                    buttonShare.setEnabled(false);
+                    imageView.setImageResource(R.drawable.qrimage);
+                    Toast.makeText(OrganizerQRShareActivity.this, "QRcode image Does not exist", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(e -> {
+            // Handle any errors in fetching the document
+        });
+
+
+
     }
+
+
+    private void downloadAndDisplayImage(String imagePath) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference imageRef = storage.getReference().child(imagePath);
+
+        final long ONE_MEGABYTE = 1024 * 1024;
+        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            // Convert bytes data to a bitmap
+            bitmapImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            // Display image in ImageView
+            imageView.setImageBitmap(bitmapImage);
+            buttonShare.setEnabled(true);
+
+
+        }).addOnFailureListener(exception -> {
+            // Handle any errors
+        });
+    }
+
+    private void shareImage(Bitmap bitmapImage) {
+        // Save the bitmap to cache directory
+        try {
+            File cachePath = new File(getCacheDir(), "images");
+            cachePath.mkdirs(); // make the directory
+            FileOutputStream stream = new FileOutputStream(cachePath + "/image.png"); // overwrites this image every time
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Get URI from the saved bitmap
+        File imagePath = new File(getCacheDir(), "images");
+        File newFile = new File(imagePath, "image.png");
+        Uri contentUri = FileProvider.getUriForFile(this, "com.example.qreate.provider", newFile);
+
+        if (contentUri != null) {
+            // Create a sharing intent
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            // Temporarily grant permission to read the content URI
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            shareIntent.setDataAndType(contentUri, getContentResolver().getType(contentUri));
+            shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            // Start the sharing intent chooser
+            startActivity(Intent.createChooser(shareIntent, "Share image"));
+        }
+    }
+
+
+
+    private void setupQRselect(){
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.share_qr_code_radio_group);
+        // Pre-select the second radio button as an example
+        RadioButton radioButtonAttendee = (RadioButton) findViewById(R.id.share_qr_code_radio_attendee);
+        radioButtonAttendee.setChecked(true);
+        selectImage(documentId, "attendee_qr_code");
+
+    }
+
+    private void changeRadioColor() {
+
+        RadioGroup radioGroup = findViewById(R.id.share_qr_code_radio_group);
+
+        // Define the color state list for checked and unchecked states
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{-android.R.attr.state_checked}, // unchecked state
+                        new int[]{android.R.attr.state_checked} // checked state
+                },
+                new int[]{
+                        Color.parseColor("#CCCCCC"), // gray color for unchecked state in hex
+                        Color.parseColor("#FCA311") // red color for checked state in hex
+                }
+        );
+
+        // Iterate over all RadioButtons in the RadioGroup
+        for (int i = 0; i < radioGroup.getChildCount(); i++) {
+            View child = radioGroup.getChildAt(i);
+
+            // Check if the view is a RadioButton
+            if (child instanceof RadioButton) {
+                RadioButton radioButton = (RadioButton) child;
+
+                // Apply the color state list to the RadioButton
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    radioButton.setButtonTintList(colorStateList);
+                } else {
+                    CompoundButtonCompat.setButtonTintList(radioButton, colorStateList); // Support library for pre-Lollipop
+                }
+            }
+        }
+
+    }
+
+
+
+
 
 
 
     //Temporary to test swap this with the firebase data
     private void addEventsInit(){
-
 
         // TODO THIS CODE CRASHES IF THERES NO DETAIL OR DATE SO I COMMENTED IT OUT UNCOMMENT WHEN DATA IS FIXED
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -290,28 +323,6 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                     }
                 });
     }
-// fix attempt 5 or 6 https://youtu.be/_3JFZqfYLNU?si=NaCYlFKy99ELE0tZ
-    /*private void shareImage(){
-        BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
-        Bitmap bitmap = bitmapDrawable.getBitmap();
-        Uri uri = getImageToShare(bitmap);
-    }
-    private Uri getImageToShare(Bitmap bitmap) {
-        File imagefolder = new File(getCacheDir(), "images");
-        Uri uri = null;
-        try {
-            imagefolder.mkdirs();
-            File file = new File(imagefolder, "shared_image.png");
-            FileOutputStream outputStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
-            outputStream.flush();
-            outputStream.close();
-            uri = FileProvider.getUriForFile(this, "com.anni.shareimage.fileprovider", file);
-        } catch (Exception e) {
-            Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        return uri;
-    }*/
 
     private void showOptionsDialog() {
         final String[] items = new String[events.size()];
@@ -326,7 +337,8 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                 testButton.setText(items[which]);
                 selectedEvent = events.get(which);
                 documentId = selectedEvent.getDocumentID();
-                getPromoQR();
+
+                setupQRselect();
             }
         });
         builder.setNegativeButton("Cancel", null);
@@ -345,6 +357,9 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
 
         dialog.show();
     }
+
+
+
 }
 
 

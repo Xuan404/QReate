@@ -48,17 +48,16 @@
         <activity android:name=".attendee.CapActivityForAttendeeQRScannerPage"
             android:screenOrientation="fullSensor"
             android:theme="@style/zxing_CaptureTheme" />
-        <!--<provider
-            android:authorities="com.example.qreate"
+
+        <provider
             android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/paths"
-                />
-        </provider>-->
-
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <meta-data
             android:name="preloaded_fonts"
