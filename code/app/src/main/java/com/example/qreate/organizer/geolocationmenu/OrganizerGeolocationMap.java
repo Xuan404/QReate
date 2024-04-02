@@ -62,27 +62,6 @@ public class OrganizerGeolocationMap extends AppCompatActivity implements OnMapR
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
 
-//        //Change "Users" collection to the collection for attendees of a specific event afterwards
-//        db.collection("Users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    for (QueryDocumentSnapshot document : task.getResult()) {
-//                        GeoPoint geoPoint = document.getGeoPoint("coordinates");
-//                        if (geoPoint != null) {
-//                            // Add a marker for each user's location
-//                            LatLng userLocation = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
-//                            googleMap.addMarker(new MarkerOptions().position(userLocation).title(document.getId()));
-//                            googleMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
-//                        }
-//                    }
-//                } else {
-//                    Log.w("locationRetrievel", "Error getting documents.", task.getException());
-//                }
-//            }
-//        });
-
-
         DocumentReference eventDocRef = db.collection("Events").document(eventDocId);
         //List<GeoPoint> coordinatesList = new ArrayList<>();
 

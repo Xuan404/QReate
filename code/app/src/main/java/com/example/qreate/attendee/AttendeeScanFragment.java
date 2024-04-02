@@ -45,6 +45,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.zxing.WriterException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -54,6 +55,8 @@ import org.w3c.dom.Text;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -177,6 +180,7 @@ public class AttendeeScanFragment extends Fragment {
 
 
     private void findDocumentByFieldValueCheckin(String fieldName, String fieldValue) {
+
         db.collection("Events")
                 .whereEqualTo(fieldName, fieldValue)
                 .get()
@@ -236,33 +240,87 @@ public class AttendeeScanFragment extends Fragment {
 
 
                         // Compare the currently_checkedin field with the provided documentId
+
                         if (documentId.equals(currentlyCheckedIn)) {
                             Toast.makeText(getContext(), "You are already checked into this event", Toast.LENGTH_SHORT).show();
 
                         } else {
 
-                            // Run Test on document
-                            db.collection("Events").document(documentId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    DocumentSnapshot document = task.getResult();
-                                    Timestamp timestamp = document.getTimestamp("date");
-                                    Date date = timestamp.toDate();
+                            // if already checked in then remove currently checkin from event list
+                            if (currentlyCheckedIn != "") {
 
-                                    // Firestore Inserts
-                                    if (validCheckIn(date)) {
-                                        setEventCheckin(documentId);
-                                        setCheckinAttendee(documentId);
-                                        setAttendeeGeolocation();
+                                removeEventCheckin(currentlyCheckedIn);
+                                //Toast.makeText(getContext(), "(TEMP) REMOVING LIST REFERENCE", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                            //Signup validation
+                            db.collection("Attendees").whereEqualTo("device_id", device_id).get()
+                                    .addOnCompleteListener(attendeeTask -> {
+                                        // Assuming device_id is unique, we expect only one matching document
+                                        DocumentSnapshot attendeeDocument = attendeeTask.getResult().getDocuments().get(0);
+                                        DocumentReference attendeeRef = attendeeDocument.getReference();
+
+                                        // Step 2: Retrieve the event document using the provided event document id
+                                        DocumentReference eventDocRef = db.collection("Events").document(documentId);
+
+                                        eventDocRef.get().addOnCompleteListener(eventTask -> {
+                                            if (eventTask.isSuccessful() && eventTask.getResult().exists()) {
+                                                DocumentSnapshot eventDocument = eventTask.getResult();
+                                                List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) eventDocument.get("signedup_attendees");
+
+                                                // Step 3 & 4: Identify the matching attendee reference
+                                                if (signedUpAttendees != null) {
+
+                                                    boolean signupExist = false;
+
+                                                    for (int i = 0; i < signedUpAttendees.size(); i++) {
+                                                        Map<String, Object> attendeeInfo = signedUpAttendees.get(i);
+                                                        DocumentReference signedUpAttendeeRef = (DocumentReference) attendeeInfo.get("attendeeRef");
+
+                                                        if (signedUpAttendeeRef.getId().equals(attendeeRef.getId())) {
+
+                                                            signupExist = true;
+
+                                                            // Date validation
+                                                            db.collection("Events").document(documentId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                                    DocumentSnapshot document = task.getResult();
+                                                                    Timestamp timestamp = document.getTimestamp("date");
+                                                                    Date date = timestamp.toDate();
+
+                                                                    // Firestore Inserts and signup/date validation before checkin
+                                                                    if (validCheckIn(date)) {
+
+                                                                        setEventCheckin(documentId);
+                                                                        setCheckinAttendee(documentId);
+                                                                        updateCheckinCount(documentId);
+                                                                        setAttendeeGeolocation();
+
+                                                                        Toast.makeText(getContext(), "You have successfully checkedin", Toast.LENGTH_SHORT).show();
+
+                                                                    } else {
+                                                                        Toast.makeText(getContext(), "Cannot Checkin before due date", Toast.LENGTH_SHORT).show();
+                                                                    }
 
 
-                                    } else {
-                                        Toast.makeText(getContext(), "Unable to checkin", Toast.LENGTH_SHORT).show();
-                                    }
+                                                                }
+                                                            });
 
+                                                        }
+                                                    }
 
-                                }
-                            });
+                                                    if (!signupExist){
+                                                        Toast.makeText(getContext(), "You have not signed up for this event", Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                } else {
+                                                    Toast.makeText(getContext(), "You have not signed up for this event", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                    });
 
                             //Toast.makeText(getContext(), "Mismatch: The document ID does not match the currently checked-in status.", Toast.LENGTH_SHORT).show();
                         }
@@ -294,6 +352,56 @@ public class AttendeeScanFragment extends Fragment {
 
     }
 
+    private void removeEventCheckin(String eventId) {
+
+
+
+        db.collection("Attendees").whereEqualTo("device_id", device_id).get()
+                .addOnCompleteListener(attendeeTask -> {
+                    if (attendeeTask.isSuccessful() && !attendeeTask.getResult().isEmpty()) {
+
+                        DocumentSnapshot attendeeDocument = attendeeTask.getResult().getDocuments().get(0);
+                        DocumentReference attendeeRef = attendeeDocument.getReference();
+
+                        // Retrieve the event document using the provided event document id
+                        DocumentReference eventDocRef = db.collection("Events").document(eventId);
+
+                        db.runTransaction(transaction -> {
+                            DocumentSnapshot eventSnapshot = transaction.get(eventDocRef);
+                            // Decrement count
+                            Long currentCount = eventSnapshot.getLong("checkin_count");
+                            if (currentCount != null && currentCount > 0) {
+                                Long newCount = currentCount - 1;
+                                transaction.update(eventDocRef, "checkin_count", newCount);
+                            } else {
+                                // Handle the case where count is already 0 or not set (should not decrement below 0)
+                            }
+
+                            // Remove the attendee reference
+                            transaction.update(eventDocRef, "checkedin_attendees", FieldValue.arrayRemove(attendeeRef));
+                            return null; // Transaction success
+                        }).addOnSuccessListener(aVoid -> {
+                            // Handle transaction success
+                        }).addOnFailureListener(e -> {
+                            // Handle transaction failure
+                        });
+
+//                        // Remove the attendee reference from the checkedin_attendees field of the event document
+//                        eventDocRef.update("checkedin_attendees", FieldValue.arrayRemove(attendeeRef))
+//                                .addOnSuccessListener(aVoid -> {
+//                                    // Successfully removed the attendee reference from the event's checkedin_attendees list
+//                                })
+//                                .addOnFailureListener(e -> {
+//                                    // Handle the error
+//                                });
+
+                    } else {
+                        // Handle the case where no attendee matches the device_id or the query failed
+                    }
+                });
+
+    }
+
 
     private void setEventCheckin(String eventId) {
         // inserts the attendee ref into the checked in list of event doc
@@ -306,7 +414,19 @@ public class AttendeeScanFragment extends Fragment {
 
                         // Step 2 & 3: Add the attendee's document reference to the checkedin_attendees field of an event
                         DocumentReference eventRef = db.collection("Events").document(eventId);
-                        eventRef.update("checkedin_attendees", FieldValue.arrayUnion(attendeeRef));
+                        db.runTransaction(transaction -> {
+                            DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+                            // Fetch the count as a long and cast it to an int for further operations
+                            Long currentCountLong = eventSnapshot.getLong("checkin_count");
+                            int currentCount = (currentCountLong != null) ? currentCountLong.intValue() : 0;
+
+                            // Increment count and convert back to Long for Firestore
+                            transaction.update(eventRef, "checkedin_attendees", FieldValue.arrayUnion(attendeeRef));
+                            transaction.update(eventRef, "checkin_count", (long) (currentCount + 1));
+                            // Transaction success
+                            return null;
+                        });
+
 
                     }
                 })
@@ -332,6 +452,66 @@ public class AttendeeScanFragment extends Fragment {
                     attendeeDocRef.update("currently_checkedin", eventDocId);
 
                 });
+
+
+    }
+
+    private void updateCheckinCount(String eventId){
+
+        // Step 1: Find the attendee document with the provided device_id
+        db.collection("Attendees").whereEqualTo("device_id", device_id).get()
+                .addOnCompleteListener(attendeeTask -> {
+                    if (attendeeTask.isSuccessful() && !attendeeTask.getResult().isEmpty()) {
+                        // Assuming device_id is unique, we expect only one matching document
+                        DocumentSnapshot attendeeDocument = attendeeTask.getResult().getDocuments().get(0);
+                        DocumentReference attendeeRef = attendeeDocument.getReference();
+
+                        // Step 2: Retrieve the event document using the provided event document id
+                        DocumentReference eventDocRef = db.collection("Events").document(eventId);
+
+                        eventDocRef.get().addOnCompleteListener(eventTask -> {
+                            if (eventTask.isSuccessful() && eventTask.getResult().exists()) {
+                                DocumentSnapshot eventDocument = eventTask.getResult();
+                                List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) eventDocument.get("signedup_attendees");
+
+                                // Step 3 & 4: Identify the matching attendee reference and increment the count
+                                if (signedUpAttendees != null) {
+
+                                    WriteBatch batch = db.batch();
+
+                                    for (int i = 0; i < signedUpAttendees.size(); i++) {
+                                        Map<String, Object> attendeeInfo = signedUpAttendees.get(i);
+                                        DocumentReference signedUpAttendeeRef = (DocumentReference) attendeeInfo.get("attendeeRef");
+
+                                        if (signedUpAttendeeRef.getId().equals(attendeeRef.getId())) {
+                                            // Step 5: Increment the count for the matching item
+                                            int currentCount = ((Number) attendeeInfo.get("checkInCount")).intValue();
+                                            signedUpAttendees.get(i).put("checkInCount", currentCount + 1);
+
+                                            // Update the event document with the modified list
+                                            batch.update(eventDocRef, "signedup_attendees", signedUpAttendees);
+                                            break; // Assuming each attendee can only appear once in the list
+                                        }
+                                    }
+
+                                    // Commit the batch operation
+                                    batch.commit().addOnCompleteListener(commitTask -> {
+                                        if (commitTask.isSuccessful()) {
+                                            // The count has been successfully incremented
+                                        } else {
+                                            // Handle the error in committing the batch
+                                        }
+                                    });
+                                }
+                            } else {
+                                // Handle the case where the event document does not exist or the retrieval failed
+                            }
+                        });
+                    } else {
+                        // Handle the case where no attendee matches the device_id or the query failed
+                    }
+                });
+
 
 
     }
