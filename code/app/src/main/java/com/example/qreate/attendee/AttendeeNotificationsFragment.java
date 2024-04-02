@@ -99,7 +99,7 @@ public class AttendeeNotificationsFragment extends Fragment {
         });
 
         fetchProfilePicInfoFromDataBase();
-        //fetchNotificationsFromFireStore();
+        fetchNotificationsFromFireStore();
 
         return view;
     }
@@ -109,24 +109,28 @@ public class AttendeeNotificationsFragment extends Fragment {
      * them to the notificationsArrayList. It then notifies the notifArrayAdapter of the data
      * change to refresh the ListView. If there is an error fetching data, it logs the error.
      */
-//    private void fetchNotificationsFromFireStore() {
-//        db.collection("notifications")
-//                .get()
-//                .addOnSuccessListener(querySnapshot -> {
-//                    for(QueryDocumentSnapshot documentSnapshot : querySnapshot){
-//                        String notificationMessage = documentSnapshot.getString("message");
-//                        String organizerDetails = documentSnapshot.getString("details");
-//
-//                        Notif notification = new Notif(notificationMessage, organizerDetails);
-//                        notificationsArrayList.add(notification);
-//                    }
-//                    notifArrayAdapter.notifyDataSetChanged();
-//                })
-//                .addOnFailureListener(e -> {
-//                    Log.e("Firestore", "Error fetching notifications", e);
-//                    Toast.makeText(getContext(), "failed to fetch notifications. Try again later.", Toast.LENGTH_SHORT).show();
-//                });
-//    }
+    private void fetchNotificationsFromFireStore() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String userId = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        db.collection("Announcements")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+
+                    for(QueryDocumentSnapshot documentSnapshot : querySnapshot){
+                        String notificationDescription = documentSnapshot.getString("description");
+                        String notifTitle = documentSnapshot.getString("title");
+
+                        Notif notification = new Notif(notificationDescription, notifTitle);
+                        notificationsArrayList.add(notification);
+                    }
+                    notifArrayAdapter.notifyDataSetChanged();
+                })
+
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error fetching notifications", e);
+                    Toast.makeText(getContext(), "failed to fetch notifications. Try again later.", Toast.LENGTH_SHORT).show();
+                });
+    }
 
     /**
      * Fetch info about user information specifically their profile pic stored on firebase
