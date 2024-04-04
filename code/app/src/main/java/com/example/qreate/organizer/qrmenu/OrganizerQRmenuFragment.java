@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
@@ -37,6 +38,7 @@ import com.google.firebase.firestore.QuerySnapshot;
  * @author Akib Zaman Choudhury
  */
 public class OrganizerQRmenuFragment extends Fragment {
+    private com.example.qreate.attendee.profilePicViewModel profilePicViewModel;
 
     /**
      * Creates the view and inflates the organizer_qr_menu_screen layout
@@ -60,6 +62,7 @@ public class OrganizerQRmenuFragment extends Fragment {
         View view = inflater.inflate(R.layout.organizer_qr_menu_screen, container, false);
 
         ImageButton profileButton = view.findViewById(R.id.qr_menu_screen_profile_button);
+        initializePicViewModel(view);
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,46 +105,21 @@ public class OrganizerQRmenuFragment extends Fragment {
             }
         });
 
-        fetchProfilePicInfoFromDataBase();
+
 
         return view;
     }
 
-    private void fetchProfilePicInfoFromDataBase(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+    private void initializePicViewModel(View view){
+        profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
+        profilePicViewModel.getGeneratedProfilePic().observe(getViewLifecycleOwner(), bitmap -> {
+            ImageButton profileButton = view.findViewById(R.id.qr_menu_screen_profile_button);
+            profileButton.setImageBitmap(bitmap);
+        });
 
-        db.collection("Users")
-                .whereEqualTo("device_id", device_id)
-                .limit(1)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        QuerySnapshot querySnapshot = task.getResult();
-                        if(querySnapshot != null && !querySnapshot.isEmpty()){
-                            DocumentSnapshot documentSnap = querySnapshot.getDocuments().get(0);
-                            String generatedProfilePicBase64 = documentSnap.getString("generated_pic");
-                            if(generatedProfilePicBase64 != null){
-                                //decode and then set
-                                Bitmap profileBitmap = decodeBase64(generatedProfilePicBase64);
+        String deviceId = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        profilePicViewModel.fetchGeneratedPic(getContext(), deviceId);
 
-                                //set to image button
-                                ImageButton defaultProfileButton = getView().findViewById(R.id.qr_menu_screen_profile_button);
-                                defaultProfileButton.setImageBitmap(profileBitmap);
-
-                            }
-                        }
-                    }else {
-                        Log.e("FetchInfoFromUser", "Error fetching info from firestore", task.getException());
-                    }
-                });
-
-
-    }
-
-    private Bitmap decodeBase64(String generatedProfilePicBase64) {
-        byte[] bytes = android.util.Base64.decode(generatedProfilePicBase64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes,0, bytes.length);
     }
 
     private void showPopupMenu(View view) {
