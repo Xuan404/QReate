@@ -22,9 +22,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.attendee.profilePicViewModel;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -43,6 +45,7 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
     private EventArrayAdapter eventArrayAdapter;
     private ProfileArrayAdapter profileArrayAdapter;
     private ImageArrayAdapter imageArrayAdapter;
+    private profilePicViewModel profilePicViewModel;
 
     /**
      * Creates the view and inflates the administrator_dashboard layout, changing the custom ArrayAdapter ({@link EventArrayAdapter}, {@link ProfileArrayAdapter}, {@link ImageArrayAdapter}) for the ListView according to what the user chooses.
@@ -65,6 +68,7 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
 
         list = view.findViewById(R.id.list);
         db = FirebaseFirestore.getInstance();
+        initializePicViewModel(view);
 
         ImageButton profileButton = view.findViewById(R.id.admin_dashboard_profile_button);
         profileButton.setOnClickListener(new View.OnClickListener() {
@@ -74,47 +78,23 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
             }
         });
 
-        fetchProfilePicInfoFromDataBase(view);
+
 
         return view;
     }
 
-    private void fetchProfilePicInfoFromDataBase(View rootView){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+    private void initializePicViewModel(View view){
+        profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
+        profilePicViewModel.getGeneratedProfilePic().observe(getViewLifecycleOwner(), bitmap -> {
+            ImageButton profileButton = view.findViewById(R.id.admin_dashboard_profile_button);
+            profileButton.setImageBitmap(bitmap);
+        });
 
-        db.collection("Users")
-                .whereEqualTo("device_id", device_id)
-                .limit(1)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        QuerySnapshot querySnapshot = task.getResult();
-                        if(querySnapshot != null && !querySnapshot.isEmpty()){
-                            DocumentSnapshot documentSnap = querySnapshot.getDocuments().get(0);
-                            String generatedProfilePicBase64 = documentSnap.getString("generated_pic");
-                            if(generatedProfilePicBase64 != null){
-                                //decode and then set
-                                Bitmap profileBitmap = decodeBase64(generatedProfilePicBase64);
-
-                                //set to image button
-                                ImageButton defaultProfileButton = rootView.findViewById(R.id.admin_dashboard_profile_button);
-                                defaultProfileButton.setImageBitmap(profileBitmap);
-
-                            }
-                        }
-                    }else {
-                        Log.e("FetchInfoFromUser", "Error fetching info from firestore", task.getException());
-                    }
-                });
-
+        String deviceId = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        profilePicViewModel.fetchGeneratedPic(getContext(), deviceId);
 
     }
 
-    private Bitmap decodeBase64(String generatedProfilePicBase64) {
-        byte[] bytes = android.util.Base64.decode(generatedProfilePicBase64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes,0, bytes.length);
-    }
     public void loadEvents() {
         CollectionReference eventsRef = db.collection("Events");
         ArrayList<AdministratorEvent> events = new ArrayList<>();
