@@ -29,9 +29,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.attendee.profilePicViewModel;
 import com.example.qreate.organizer.OrganizerActivity;
 import com.example.qreate.organizer.qrmenu.OrganizerEvent;
 import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
@@ -46,12 +48,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrganizerAttendeeListMenuFragment extends Fragment {
-
+    private com.example.qreate.attendee.profilePicViewModel profilePicViewModel;
     ArrayList<OrganizerEvent> events;
     private OrganizerEvent selectedEvent;
     private FirebaseFirestore db;
     private Button testButton;
+
     OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
+
     /**
      * Creates the view and inflates the organizer_attendee_list_menu_screen layout
      *
@@ -68,7 +72,7 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        fetchProfilePicInfoFromDataBase();
+
 
         db = FirebaseFirestore.getInstance();
         View view = inflater.inflate(R.layout.organizer_attendee_list_menu_screen, container, false);
@@ -76,6 +80,7 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
         testButton = view.findViewById(R.id.attendee_list_menu_screen_spinner);
         events = new ArrayList<OrganizerEvent>();
         addEventsInit();
+        initializePicViewModel(view);
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,7 +137,17 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
 
 
 
+    private void initializePicViewModel(View view){
+        profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
+        profilePicViewModel.getGeneratedProfilePic().observe(getViewLifecycleOwner(), bitmap -> {
+            ImageButton profileButton = view.findViewById(R.id.attendee_list_menu_screen_profile_button);
+            profileButton.setImageBitmap(bitmap);
+        });
 
+        String deviceId = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        profilePicViewModel.fetchGeneratedPic(getContext(), deviceId);
+
+    }
 
 
 
@@ -193,42 +208,7 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
 
 
 
-    private void fetchProfilePicInfoFromDataBase(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        db.collection("Users")
-                .whereEqualTo("device_id", device_id)
-                .limit(1)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        QuerySnapshot querySnapshot = task.getResult();
-                        if(querySnapshot != null && !querySnapshot.isEmpty()){
-                            DocumentSnapshot documentSnap = querySnapshot.getDocuments().get(0);
-                            String generatedProfilePicBase64 = documentSnap.getString("generated_pic");
-                            if(generatedProfilePicBase64 != null){
-                                //decode and then set
-                                Bitmap profileBitmap = decodeBase64(generatedProfilePicBase64);
-
-                                //set to image button
-                                ImageButton defaultProfileButton = getView().findViewById(R.id.attendee_list_menu_screen_profile_button);
-                                defaultProfileButton.setImageBitmap(profileBitmap);
-
-                            }
-                        }
-                    }else {
-                        Log.e("FetchInfoFromUser", "Error fetching info from firestore", task.getException());
-                    }
-                });
-
-
-    }
-
-    private Bitmap decodeBase64(String generatedProfilePicBase64) {
-        byte[] bytes = android.util.Base64.decode(generatedProfilePicBase64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes,0, bytes.length);
-    }
 
     //Creates the profile pop up menu
     private void showPopupMenu(View view) {
