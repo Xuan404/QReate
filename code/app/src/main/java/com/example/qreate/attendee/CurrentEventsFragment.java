@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
@@ -48,6 +49,7 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
     private EventArrayAdapter eventArrayAdapter;
     private ListView eventList;
     private FirebaseFirestore db;
+    private profilePicViewModel profilePicViewModel;
     /**
      * Creates and Inflates the current events view
      *
@@ -72,6 +74,7 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
         db = FirebaseFirestore.getInstance();
         eventArrayAdapter = new EventArrayAdapter(getContext(), new ArrayList<>(), this);
         eventList.setAdapter(eventArrayAdapter);
+        initializePicViewModel(view);
 
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,55 +89,24 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
             }
         });
 
-        fetchProfilePicInfoFromDataBase();
+
         return view;
 
     }
 
-    /**
-     * Fetch info about user information specifically their profile pic stored on firebase
-     */
-    private void fetchProfilePicInfoFromDataBase(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+    private void initializePicViewModel(View view){
+        profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
+        profilePicViewModel.getGeneratedProfilePic().observe(getViewLifecycleOwner(), bitmap -> {
+            ImageButton profileButton = view.findViewById(R.id.current_events_profic_pic_icon);
+            profileButton.setImageBitmap(bitmap);
 
-        db.collection("Users")
-                .whereEqualTo("device_id", device_id)
-                .limit(1)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        QuerySnapshot querySnapshot = task.getResult();
-                        if(querySnapshot != null && !querySnapshot.isEmpty()){
-                            DocumentSnapshot documentSnap = querySnapshot.getDocuments().get(0);
-                            String generatedProfilePicBase64 = documentSnap.getString("generated_pic");
-                            if(generatedProfilePicBase64 != null){
-                                //decode and then set
-                                Bitmap profileBitmap = decodeBase64(generatedProfilePicBase64);
+        });
 
-                                //set to image button
-                                ImageButton defaultProfileButton = getView().findViewById(R.id.current_events_profic_pic_icon);
-                                defaultProfileButton.setImageBitmap(profileBitmap);
-
-                            }
-                        }
-                    }else {
-                        Log.e("FetchInfoFromUser", "Error fetching info from firestore", task.getException());
-                    }
-                });
-
+        String deviceId = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        profilePicViewModel.fetchGeneratedPic(getContext(), deviceId);
 
     }
 
-    /**
-     * Returns a bitmap image from a generated profile pic stored in Base64 on Firebase
-     * @param generatedProfilePicBase64
-     * @return bitmap of generated profile pic
-     */
-    private Bitmap decodeBase64(String generatedProfilePicBase64) {
-        byte[] bytes = android.util.Base64.decode(generatedProfilePicBase64, Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(bytes,0, bytes.length);
-    }
 
     /**
      * Goes back to main event details page.
