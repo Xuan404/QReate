@@ -31,12 +31,17 @@ import com.example.qreate.R;
 import com.example.qreate.organizer.OrganizerActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.N;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A Fragment that displays notifications to the attendee. This class is responsible for
@@ -115,24 +120,41 @@ public class AttendeeNotificationsFragment extends Fragment {
     private void fetchNotificationsFromFireStore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String userId = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        db.collection("Announcements")
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
 
-                    for(QueryDocumentSnapshot documentSnapshot : querySnapshot){
-                        String notificationDescription = documentSnapshot.getString("description");
-                        String notifTitle = documentSnapshot.getString("title");
+        //get attendee doc to get list of signed up events
+        db.collection("Attendees").whereEqualTo("device_id", userId).limit(1).get()
+                .addOnSuccessListener(queryDocumentSnapshot -> {
+                    if(!queryDocumentSnapshot.isEmpty()){
+                        DocumentSnapshot attendeeDoc = queryDocumentSnapshot.getDocuments().get(0);
+                        List<DocumentReference> signedUpEvent = (List<DocumentReference>) attendeeDoc.get("signup_event_list");
 
-                        Notif notification = new Notif(notificationDescription, notifTitle);
-                        notificationsArrayList.add(notification);
+
+                        if(signedUpEvent!= null && !signedUpEvent.isEmpty()) {
+                            List<String> signedUpEventIds = signedUpEvent.stream().map(DocumentReference::getId).collect(Collectors.toList());
+
+                            //fetch notifs for these events
+                            db.collection("Announcements")
+                                    .whereIn("event_doc_id",signedUpEventIds)
+                                    .get()
+                                    .addOnSuccessListener(announcementQuerySnapshot -> {
+                                        notificationsArrayList.clear();
+
+                                        for(QueryDocumentSnapshot announcementsDoc : announcementQuerySnapshot){
+                                            String notifDescription = announcementsDoc.getString("description");
+                                            String notifTitle = announcementsDoc.getString("title");
+
+                                            Notif notif = new Notif(notifDescription, notifTitle);
+                                            notificationsArrayList.add(notif);
+                                        }
+                                        notifArrayAdapter.notifyDataSetChanged();
+                                    })
+                                    .addOnFailureListener(e-> Log.e("Firestore", "error fetching notifications", e));
+
+                        }
                     }
-                    notifArrayAdapter.notifyDataSetChanged();
                 })
+                .addOnFailureListener(e-> Log.e("Firestore", "Error fetching attendee info ", e));
 
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Error fetching notifications", e);
-                    Toast.makeText(getContext(), "failed to fetch notifications. Try again later.", Toast.LENGTH_SHORT).show();
-                });
     }
 
     private void initializePicViewModel(View view){
