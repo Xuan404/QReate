@@ -10,14 +10,21 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+/**
+ * fetches user profile pic from firebase and decodes it form Base64 into bitmap
+ */
+
 public class UserProfilePicManager {
     public interface OnProfileImageFetchListener {
+
         void onImageFetched(Bitmap image);
     }
 
     
     /**
-     * Fetch info about user information specifically their profile pic stored on firebase.
+     * Fetch info about user information specifically their profile pic
+     * stored on firebase.
+     *
      * @param context
      * @param device_id
      * @param listener
