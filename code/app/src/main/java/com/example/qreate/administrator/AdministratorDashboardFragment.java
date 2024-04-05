@@ -106,9 +106,8 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                 List<AdministratorEvent> eventsList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String eventName = document.getString("name");
-                    String eventOrganizer = document.getString("organizer");
                     String eventId = document.getId();
-                    eventsList.add(new AdministratorEvent(eventName, eventOrganizer, eventId));
+                    eventsList.add(new AdministratorEvent(eventName,eventId));
                 }
                 // Update the adapter with the new list
                 eventArrayAdapter.clear();

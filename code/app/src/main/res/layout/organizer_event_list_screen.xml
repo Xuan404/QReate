@@ -46,7 +46,7 @@
         android:layout_marginTop="20dp"
         android:src="@drawable/qrgeneratorart" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <ListView
         android:id="@+id/event_list_screen_eventlist"
         android:layout_width="300dp"
         android:layout_height="wrap_content"

@@ -60,11 +60,9 @@ public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
 
         AdministratorEvent event = getItem(position);
         TextView event_name = view.findViewById(R.id.event_name_text);
-        TextView event_organizer = view.findViewById(R.id.event_subtitle_text);
         RadioButton radioButton = view.findViewById(R.id.choose_event_radio_button);
 
         event_name.setText(event.getEventName());
-        event_organizer.setText(event.getEventOrganizer());
         radioButton.setChecked(position == selectedPosition);
 
         // Handle radio button clicks

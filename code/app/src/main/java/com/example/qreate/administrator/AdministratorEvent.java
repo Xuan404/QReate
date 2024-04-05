@@ -5,17 +5,14 @@ package com.example.qreate.administrator;
  */
 public class AdministratorEvent {
     private String eventName;
-    private String eventOrganizer;
     private String id;
 
     /**
      * This is a constructor for the AdministratorEvent class
      * @param eventName the name of the event
-     * @param eventOrganizer the name of the event organizer
      */
-    public AdministratorEvent(String eventName, String eventOrganizer, String id) {
+    public AdministratorEvent(String eventName, String id) {
         this.eventName = eventName;
-        this.eventOrganizer = eventOrganizer;
         this.id = id;
     }
 
@@ -31,9 +28,6 @@ public class AdministratorEvent {
      * This method returns the name of the event organizer
      * @return the name of the event organizer
      */
-    public String getEventOrganizer() {
-        return eventOrganizer;
-    }
 
     public String getId() {
         return id;
