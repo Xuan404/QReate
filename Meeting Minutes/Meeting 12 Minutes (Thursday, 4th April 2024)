@@ -1,0 +1,28 @@
+- harshita & git:
+1. profile pic uploading & deletion (US 02.02.01, US 02.02.02)
+2. browsing & deleting images in admin dashboard (US 04.06.01, US 04.03.01)
+note: image dashboard should be restricited to only events and profiles that have uploaded images, 
+      not deterministicaly generated profile or event without poster. 
+      deleting a pfp should revert back to deterministically generated pic. 
+3. admin password
+4. event list + view details & deletion for organizer (edit event deets if time permits)
+5. date and location for creation of events in organizer
+6. when a profile is deleted, all events created by that profile/signed up by that profile must be deleted as well.
+
+- dennis:
+1. intent tests & unit tests for everything
+2. make changes to figma ui mockups & storyboard as neccessary
+
+
+- ryan:
+1. intent tests & unit tests for everything
+2. make changes to figma ui mockups & storyboard as neccessary
+
+
+- sharddha:
+1. make changes to figma ui mockups & storyboard as neccessary
+
+
+- akib:
+1. make changes to figma ui mockups & storyboard as neccessary
+
