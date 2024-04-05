@@ -8,21 +8,31 @@ note: image dashboard should be restricited to only events and profiles that hav
 4. event list + view details & deletion for organizer (edit event deets if time permits)
 5. date and location for creation of events in organizer
 6. when a profile is deleted, all events created by that profile/signed up by that profile must be deleted as well.
+7. write java docs
+8. make uml boxes for everyone and do admin uml
 
 - dennis:
 1. intent tests & unit tests for everything
 2. make changes to figma ui mockups & storyboard as neccessary
+3. write java docs
+4. organizer uml
 
 
 - ryan:
 1. intent tests & unit tests for everything
 2. make changes to figma ui mockups & storyboard as neccessary
+3. write java docs 
+4. attendee uml
 
 
 - sharddha:
 1. make changes to figma ui mockups & storyboard as neccessary
+2. write java docs
+3. attendee uml
 
 
 - akib:
 1. make changes to figma ui mockups & storyboard as neccessary
+2. write java docs
+3. organizer uml
 
