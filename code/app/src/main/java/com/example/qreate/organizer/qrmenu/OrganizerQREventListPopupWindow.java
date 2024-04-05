@@ -62,6 +62,7 @@ public class OrganizerQREventListPopupWindow {
     private DatePickerDialog datePickerDialog;
     private Button dateButton;
     private Button uploadPosterButton;
+    private EventCreationListener eventCreationListener;
 
     private Date selectedDate;
     private Uri selectedImageUri;
@@ -128,6 +129,16 @@ public class OrganizerQREventListPopupWindow {
         });
 
     }
+
+    public interface EventCreationListener {
+        void onEventCreated();
+    }
+
+    public void setEventCreationListener(EventCreationListener listener) {
+        this.eventCreationListener = listener;
+    }
+
+
 
     private void openImageSelector() {
         Activity activity = (Activity) context;
@@ -230,6 +241,9 @@ public class OrganizerQREventListPopupWindow {
                     public void onSuccess(DocumentReference documentReference) {
                         addEventToOrganizer(documentReference);
                         Log.w("EventFirestore", "Yayy");
+                        if (eventCreationListener != null) {
+                            eventCreationListener.onEventCreated();
+                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

@@ -226,9 +226,8 @@ public class UpcomingEventsFragment extends Fragment implements EventArrayAdapte
                 Date eventDate = document.getDate("date");
                 if (eventDate != null && eventDate.after(today)) {
                     String eventName = document.getString("name");
-                    String eventOrganizer = document.getString("organizer");
                     String eventId = document.getId();
-                    events.add(new AdministratorEvent(eventName, eventOrganizer, eventId));
+                    events.add(new AdministratorEvent(eventName, eventId));
                 }
             }
             // Update the ListView

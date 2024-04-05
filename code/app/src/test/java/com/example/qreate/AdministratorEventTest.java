@@ -12,29 +12,13 @@ public class AdministratorEventTest {
     void testGetEventName() {
         // Setting up a mock event
         String expectedEventName = "Tech Conference 2024";
-        String eventOrganizer = "Tech Innovators";
         String eventId = "123";
-        AdministratorEvent event = new AdministratorEvent(expectedEventName, eventOrganizer, eventId);
+        AdministratorEvent event = new AdministratorEvent(expectedEventName, eventId);
 
         // Invoking the getEventName() method
         String actualEventName = event.getEventName();
 
         // Assert
         assertEquals(expectedEventName, actualEventName);
-    }
-
-    @Test
-    void testGetEventOrganizer() {
-        // Setting up a mock event
-        String eventName = "Tech Conference 2024";
-        String expectedEventOrganizer = "Tech Innovators";
-        String eventId = "123";
-        AdministratorEvent event = new AdministratorEvent(eventName, expectedEventOrganizer, eventId);
-
-        // Invoking the getEventOrganizer() method
-        String actualEventOrganizer = event.getEventOrganizer();
-
-        // Assert
-        assertEquals(expectedEventOrganizer, actualEventOrganizer);
     }
 }

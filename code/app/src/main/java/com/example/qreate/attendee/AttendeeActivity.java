@@ -304,8 +304,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                                         DocumentSnapshot attendeeDocument = querySnapshot.getDocuments().get(0);
                                         String attendeeId = attendeeDocument.getId(); // This is the attendeeId you need
 
-                                        // Now that you have the attendeeId, call the method to remove the event from the attendee
-                                        // and subsequently remove the attendee from the event
                                         removeEventFromAttendee(selectedEventId, attendeeId);
                                     } else {
                                         Log.d("FetchAttendee", "No attendee found with the given device ID");
