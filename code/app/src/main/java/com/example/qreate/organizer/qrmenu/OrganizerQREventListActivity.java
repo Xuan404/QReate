@@ -21,8 +21,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.qreate.R;
+import com.example.qreate.administrator.AdministratorActivity;
 import com.example.qreate.administrator.AdministratorEvent;
 import com.example.qreate.administrator.EventArrayAdapter;
+import com.example.qreate.organizer.OrganizerActivity;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -33,13 +35,13 @@ import java.util.List;
 /**
  * Show the User a list of Events that he has created
  */
-public class OrganizerQREventListActivity extends AppCompatActivity implements EventArrayAdapter.OnEventSelectedListener, OrganizerQREventListPopupWindow.EventCreationListener{
+public class OrganizerQREventListActivity extends AppCompatActivity implements OrganizerQREventListPopupWindow.EventCreationListener{
     private OrganizerQREventListPopupWindow popupWindow;
     private ListView list;
     private FirebaseFirestore db;
     private String device_id;
 
-    EventArrayAdapter eventArrayAdapter;
+    OrganizerEventArrayAdapter eventArrayAdapter;
     private Context context;
 
     @Override
@@ -80,12 +82,13 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements E
 
     @Override
     public void onEventCreated() {
-        loadEvents(); // Refresh events list
+        // Refresh events list
+        loadEvents();
     }
 
     public void loadEvents(){
         ArrayList<AdministratorEvent> events = new ArrayList<>();
-        eventArrayAdapter = new EventArrayAdapter(this, events, this); // Use class field here
+        eventArrayAdapter = new OrganizerEventArrayAdapter(this,events);
         list.setAdapter(eventArrayAdapter);
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         db.collection("Events")
@@ -108,11 +111,6 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements E
                     }
 
                 });
-    }
-
-    @Override
-    public void onEventSelected() {
-
     }
 
     // Handle the result from the poster selection when creating an event

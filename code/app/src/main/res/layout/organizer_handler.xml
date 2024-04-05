@@ -28,5 +28,5 @@
         android:elevation="2dp"
         app:itemIconSize="35dp"
         app:menu="@menu/bottom_menu"/>
-    
+
 </RelativeLayout>
