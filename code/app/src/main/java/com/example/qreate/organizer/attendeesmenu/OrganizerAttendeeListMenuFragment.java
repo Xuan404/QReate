@@ -1,15 +1,12 @@
 package com.example.qreate.organizer.attendeesmenu;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Base64;
 import android.util.Log;
 
 import android.view.LayoutInflater;
@@ -34,12 +31,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
-import com.example.qreate.attendee.profilePicViewModel;
 import com.example.qreate.organizer.OrganizerActivity;
-import com.example.qreate.organizer.qrmenu.OrganizerEvent;
-import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
-import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
-import com.example.qreate.organizer.qrmenu.OrganizerQRReuseExistingActivity;
+import com.example.qreate.organizer.OrganizerEvent;
+import com.example.qreate.organizer.OrganizerEventSpinnerArrayAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;

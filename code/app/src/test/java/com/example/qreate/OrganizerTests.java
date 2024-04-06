@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import android.graphics.Bitmap;
 
-import com.example.qreate.organizer.qrmenu.OrganizerEvent;
 import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;

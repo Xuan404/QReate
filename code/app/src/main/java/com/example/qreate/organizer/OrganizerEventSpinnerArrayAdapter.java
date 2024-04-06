@@ -1,4 +1,4 @@
-package com.example.qreate.organizer.qrmenu;
+package com.example.qreate.organizer;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.qreate.R;
-import com.example.qreate.organizer.qrmenu.OrganizerEvent;
+import com.example.qreate.organizer.OrganizerEvent;
 
 import java.util.ArrayList;
 import java.util.Objects;
