@@ -19,6 +19,8 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 
 import android.content.DialogInterface;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 
 
@@ -34,6 +36,7 @@ import com.example.qreate.R;
 import com.example.qreate.organizer.OrganizerActivity;
 import com.example.qreate.organizer.OrganizerEvent;
 import com.example.qreate.organizer.OrganizerEventSpinnerArrayAdapter;
+import com.example.qreate.organizer.geolocationmenu.OrganizerGeolocationMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -46,6 +49,7 @@ import java.util.List;
 
 public class OrganizerAttendeeListMenuFragment extends Fragment {
     private com.example.qreate.attendee.profilePicViewModel profilePicViewModel;
+    private String documentId;
     ArrayList<OrganizerEvent> events;
     private OrganizerEvent selectedEvent;
     private FirebaseFirestore db;
@@ -98,14 +102,26 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
         attendeeCheckinListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (documentId == null) {
+                    Toast.makeText(getContext(), "Please select an event", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Intent intent = new Intent(getActivity(), OrganizerAttendeeCheckinListActivity.class);
+                intent.putExtra("eventDocId", documentId);
                 startActivity(intent);
             }
         });
         attendeeSignupListButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (documentId == null) {
+                    Toast.makeText(getContext(), "Please select an event", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Intent intent = new Intent(getActivity(), OrganizerAttendeeSignupListActivity.class);
+                intent.putExtra("eventDocId", documentId);
                 startActivity(intent);
             }
         });
@@ -134,6 +150,7 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 testButton.setText(items[which]);
                 selectedEvent = events.get(which);
+                documentId = selectedEvent.getDocumentID();
             }
         });
         builder.setNegativeButton("Cancel", null);
