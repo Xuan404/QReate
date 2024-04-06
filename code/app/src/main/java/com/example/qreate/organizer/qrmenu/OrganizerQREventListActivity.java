@@ -144,7 +144,4 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
         }
     }
 
-
-
-
 }
