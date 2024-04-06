@@ -44,6 +44,7 @@ public class OrganizerEventDetailsFragment extends Fragment {
     private Button backButton;
     private Button deleteButton;
     private FirebaseFirestore db;
+    private EventDeletionListener eventDeletionListener;
 
 
     @Nullable
@@ -65,6 +66,16 @@ public class OrganizerEventDetailsFragment extends Fragment {
         Button signUpButton = view.findViewById(R.id.event_details_signup_button);
         signUpButton.setVisibility(View.INVISIBLE);
 
+        // Retrieve the event ID passed from the previous fragment
+        Bundle args = getArguments();
+        String eventId;
+        if (args != null) {
+            eventId = args.getString("eventId");
+        } else {
+            eventId = null;
+        }
+
+        displayEventDetails(eventId);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,30 +87,33 @@ public class OrganizerEventDetailsFragment extends Fragment {
             }
         });
 
-        // Retrieve the event ID passed from the previous fragment
-        Bundle args = getArguments();
-        String eventId;
-        if (args != null) {
-            eventId = args.getString("eventId");
-        } else {
-            eventId = null;
-        }
-
-
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // delete event reference from each attendee's signup_event_list, delete event reference from organizer's event_list & delete event document from event collection
                 deleteEvent(eventId);
+                notifyEventDeletion();
 
                 // pop back fragment
                 if (getParentFragmentManager().getBackStackEntryCount() > 0) {
                     getParentFragmentManager().popBackStack();
                 }
-
             }
         });
 
+        return view;
+    }
+
+
+    public static OrganizerEventDetailsFragment newInstance(String eventId) {
+        OrganizerEventDetailsFragment fragment = new OrganizerEventDetailsFragment();
+        Bundle args = new Bundle();
+        args.putString("eventId", eventId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private void displayEventDetails(String eventId) {
         if (eventId != null) {
             db.collection("Events").document(eventId)
                     .get().addOnCompleteListener(task -> {
@@ -139,17 +153,6 @@ public class OrganizerEventDetailsFragment extends Fragment {
                         }
                     });
         }
-
-        return view;
-    }
-
-
-    public static OrganizerEventDetailsFragment newInstance(String eventId) {
-        OrganizerEventDetailsFragment fragment = new OrganizerEventDetailsFragment();
-        Bundle args = new Bundle();
-        args.putString("eventId", eventId);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     private void deleteEvent(String eventId) {
@@ -270,7 +273,21 @@ public class OrganizerEventDetailsFragment extends Fragment {
                 });
     }
 
+    // Interface for callback
+    public interface EventDeletionListener {
+        void onEventDeleted();
+    }
 
+    // Method to set the listener
+    public void setEventDeletionListener(EventDeletionListener eventDeletionListener) {
+        this.eventDeletionListener = eventDeletionListener;
+    }
 
+    // Invoke this method when the event is successfully deleted
+    private void notifyEventDeletion() {
+        if (eventDeletionListener != null) {
+            eventDeletionListener.onEventDeleted();
+        }
+    }
 
 }
