@@ -57,6 +57,11 @@
         android:layout_above="@id/event_list_screen_confirmbutton"
         android:layout_centerHorizontal="true" />
 
+    <FrameLayout
+        android:id="@+id/event_list_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/event_list_screen_confirmbutton"
         android:layout_width="220dp"

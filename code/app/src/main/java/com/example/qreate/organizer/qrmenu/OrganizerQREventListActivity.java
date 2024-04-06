@@ -35,11 +35,12 @@ import java.util.List;
 /**
  * Show the User a list of Events that he has created
  */
-public class OrganizerQREventListActivity extends AppCompatActivity implements OrganizerQREventListPopupWindow.EventCreationListener{
+public class OrganizerQREventListActivity extends AppCompatActivity implements OrganizerQREventListPopupWindow.EventCreationListener, OrganizerEventArrayAdapter.EventSelectionListener{
     private OrganizerQREventListPopupWindow popupWindow;
     private ListView list;
     private FirebaseFirestore db;
     private String device_id;
+    private Button createEventButton;
 
     OrganizerEventArrayAdapter eventArrayAdapter;
     private Context context;
@@ -49,9 +50,15 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.organizer_event_list_screen);
 
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                // No more fragments on the stack, make the button visible
+                createEventButton.setVisibility(View.VISIBLE);
+            }
+        });
 
         //Create Event Button
-        Button createEventButton = findViewById(R.id.event_list_screen_confirmbutton);
+        createEventButton = findViewById(R.id.event_list_screen_confirmbutton);
         list = findViewById(R.id.event_list_screen_eventlist);
         db = FirebaseFirestore.getInstance();
 
@@ -80,15 +87,27 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
         });
     }
 
+
     @Override
     public void onEventCreated() {
         // Refresh events list
         loadEvents();
     }
 
+    public void onEventSelected(String eventId){
+        createEventButton.setVisibility(View.INVISIBLE);
+        OrganizerEventDetailsFragment detailsFragment = OrganizerEventDetailsFragment.newInstance(eventId);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.event_list_fragment_container, detailsFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+
     public void loadEvents(){
         ArrayList<AdministratorEvent> events = new ArrayList<>();
         eventArrayAdapter = new OrganizerEventArrayAdapter(this,events);
+        eventArrayAdapter.setEventSelectionListener(this);
         list.setAdapter(eventArrayAdapter);
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         db.collection("Events")

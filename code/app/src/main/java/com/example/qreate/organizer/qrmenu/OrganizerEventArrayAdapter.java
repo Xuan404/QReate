@@ -10,15 +10,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.qreate.R;
 import com.example.qreate.administrator.AdministratorEvent;
 import com.example.qreate.administrator.EventArrayAdapter;
+import com.example.qreate.attendee.AttendeeSignedUpEventsDetailsFragment;
 
 import java.util.ArrayList;
 
 public class OrganizerEventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
     private int selectedPosition = -1; // Track the selected position
+    private EventSelectionListener listener;
 
     public OrganizerEventArrayAdapter(Context context, ArrayList<AdministratorEvent> events) {
         super(context, 0, events);
@@ -47,8 +50,22 @@ public class OrganizerEventArrayAdapter extends ArrayAdapter<AdministratorEvent>
             public void onClick(View v) {
                 String selectedEventId = getItem(position).getId();
                 notifyDataSetChanged(); // Notify the adapter to update the radio buttons
+                if (listener != null) {
+                    listener.onEventSelected(selectedEventId);
+                }
             }
         });
         return view;
     }
+
+    public void setEventSelectionListener(EventSelectionListener listener) {
+        this.listener = listener;
+    }
+
+    public interface EventSelectionListener {
+        void onEventSelected(String eventId);
+    }
+
+
+
 }

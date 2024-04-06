@@ -224,7 +224,7 @@ public class UpcomingEventsFragment extends Fragment implements EventArrayAdapte
             ArrayList<AdministratorEvent> events = new ArrayList<>();
             for (DocumentSnapshot document : documentSnapshots) {
                 Date eventDate = document.getDate("date");
-                if (eventDate != null && eventDate.after(today)) {
+                if (eventDate != null && eventDate.after(tomorrow)) {
                     String eventName = document.getString("name");
                     String eventId = document.getId();
                     events.add(new AdministratorEvent(eventName, eventId));

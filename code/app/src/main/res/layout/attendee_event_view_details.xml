@@ -6,9 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/rounded_dark_blue"
-    android:layout_marginTop="0dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp">
+    android:layout_marginTop="0dp">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -44,7 +42,6 @@
             android:fontFamily="@font/poppins_bold"
             android:paddingStart="16dp"
             android:paddingTop="10dp"
-            android:text="Event Organizer"
             android:textColor="#D9D9D9"
             android:textSize="18sp" />
 
@@ -114,6 +111,17 @@
             android:text="Back"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/event_details_delete_button"
+            android:layout_width="254dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/yellow"
+            android:text="Delete"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:visibility="invisible"/>
 
     </LinearLayout>
 
