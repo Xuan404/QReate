@@ -1,14 +1,12 @@
 package com.example.qreate.organizer.attendeesmenu;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Base64;
 import android.util.Log;
 
 import android.view.LayoutInflater;
@@ -21,6 +19,8 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 
 import android.content.DialogInterface;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 
 
@@ -33,10 +33,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
-import com.example.qreate.attendee.profilePicViewModel;
 import com.example.qreate.organizer.OrganizerActivity;
-import com.example.qreate.organizer.qrmenu.OrganizerEvent;
-import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
+import com.example.qreate.organizer.OrganizerEvent;
+import com.example.qreate.organizer.OrganizerEventSpinnerArrayAdapter;
+import com.example.qreate.organizer.geolocationmenu.OrganizerGeolocationMap;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -49,6 +49,7 @@ import java.util.List;
 
 public class OrganizerAttendeeListMenuFragment extends Fragment {
     private com.example.qreate.attendee.profilePicViewModel profilePicViewModel;
+    private String documentId;
     ArrayList<OrganizerEvent> events;
     private OrganizerEvent selectedEvent;
     private FirebaseFirestore db;
@@ -95,6 +96,44 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
             }
         });
 
+        Button attendeeCheckinListButton = view.findViewById(R.id.attendee_list_menu_screen_attendee_checkins);
+        Button attendeeSignupListButton = view.findViewById(R.id.attendee_list_menu_screen_attendee_signups);
+
+        attendeeCheckinListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (documentId == null) {
+                    Toast.makeText(getContext(), "Please select an event", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent intent = new Intent(getActivity(), OrganizerAttendeeCheckinListActivity.class);
+                intent.putExtra("eventDocId", documentId);
+                startActivity(intent);
+            }
+        });
+        attendeeSignupListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (documentId == null) {
+                    Toast.makeText(getContext(), "Please select an event", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent intent = new Intent(getActivity(), OrganizerAttendeeSignupListActivity.class);
+                intent.putExtra("eventDocId", documentId);
+                startActivity(intent);
+            }
+        });
+
+
+
+
+
+
+
+
+
         return view;
     }
 
@@ -111,6 +150,7 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 testButton.setText(items[which]);
                 selectedEvent = events.get(which);
+                documentId = selectedEvent.getDocumentID();
             }
         });
         builder.setNegativeButton("Cancel", null);
@@ -129,11 +169,6 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
 
         dialog.show();
     }
-
-
-
-
-
 
 
 
@@ -197,16 +232,6 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
                     }
                 });
     }
-
-
-
-
-
-
-
-
-
-
 
 
 

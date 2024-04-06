@@ -40,6 +40,9 @@
         <activity android:name=".organizer.qrmenu.OrganizerQRShareActivity"/>
         <activity android:name=".organizer.notificationsmenu.OrganizerNotificationsSendActivity"/>
         <activity android:name=".organizer.geolocationmenu.OrganizerGeolocationMap"/>
+        <activity android:name=".organizer.attendeesmenu.OrganizerAttendeeCheckinListActivity"/>
+        <activity android:name=".organizer.attendeesmenu.OrganizerAttendeeSignupListActivity"/>
+
 
 
         <activity android:name=".administrator.AdministratorActivity"/>

@@ -1,4 +1,4 @@
-package com.example.qreate.organizer.qrmenu;
+package com.example.qreate.organizer;
 
 import android.provider.Settings;
 import android.util.Log;

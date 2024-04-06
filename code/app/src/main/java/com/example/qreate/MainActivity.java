@@ -26,7 +26,6 @@ import com.google.firebase.auth.FirebaseUser;
  * @author Akib Zaman Choudhury
  */
 public class MainActivity extends AppCompatActivity {
-    FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     /**
      * Creates and Inflates the view
@@ -39,12 +38,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            // do your stuff
-        } else {
-            signInAnonymously();
-        }
 
         // Change this to the appropriate layout after Ryan and Shradha have created the xml file
         setContentView(R.layout.activity_main);
@@ -91,20 +84,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    private void signInAnonymously() {
-        mAuth.signInAnonymously().addOnSuccessListener(this, new  OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        // do your stuff
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
 
-                    }
-                });
-    }
 
 
 }

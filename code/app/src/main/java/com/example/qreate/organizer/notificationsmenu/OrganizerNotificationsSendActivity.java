@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,9 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.example.qreate.R;
-import com.example.qreate.organizer.qrmenu.OrganizerEvent;
-import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
-import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
+import com.example.qreate.organizer.OrganizerEvent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -41,7 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
