@@ -1,4 +1,4 @@
-package com.example.qreate.attendee;
+package com.example.qreate.organizer.qrmenu;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
+import com.example.qreate.attendee.AttendeeSignedUpEventsDetailsFragment;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,7 +23,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
+public class OrganizerEventDetailsFragment extends Fragment {
     private ImageView poster;
     private TextView eventName;
     private TextView eventOrganizer;
@@ -30,12 +31,14 @@ public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
     private TextView eventDate;
     private TextView eventTime;
     private TextView eventLocation;
+    private Button backButton;
+    private Button deleteButton;
     private FirebaseFirestore db;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.attendee_event_view_details, container, false);
         db = FirebaseFirestore.getInstance();
         poster = view.findViewById(R.id.event_details_poster);
@@ -46,10 +49,22 @@ public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
         eventTime = view.findViewById(R.id.event_details_time);
         eventLocation = view.findViewById(R.id.event_details_location);
 
-        Button backButton = view.findViewById(R.id.event_details_back_button);
-        backButton.setVisibility(View.INVISIBLE);
+        backButton = view.findViewById(R.id.event_details_back_button);
+        deleteButton = view.findViewById(R.id.event_details_delete_button);
+        deleteButton.setVisibility(View.VISIBLE);
         Button signUpButton = view.findViewById(R.id.event_details_signup_button);
         signUpButton.setVisibility(View.INVISIBLE);
+
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Pop the current fragment off the stack to return to the previous one
+                if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                    getParentFragmentManager().popBackStack();
+                }
+            }
+        });
 
         // Retrieve the event ID passed from the previous fragment
         Bundle args = getArguments();
@@ -101,11 +116,11 @@ public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
         }
 
         return view;
-
     }
 
-    public static AttendeeSignedUpEventsDetailsFragment newInstance(String eventId) {
-        AttendeeSignedUpEventsDetailsFragment fragment = new AttendeeSignedUpEventsDetailsFragment();
+
+    public static OrganizerEventDetailsFragment newInstance(String eventId) {
+        OrganizerEventDetailsFragment fragment = new OrganizerEventDetailsFragment();
         Bundle args = new Bundle();
         args.putString("eventId", eventId);
         fragment.setArguments(args);
