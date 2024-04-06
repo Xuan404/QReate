@@ -1,5 +1,6 @@
 package com.example.qreate.organizer.attendeesmenu;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -37,6 +38,8 @@ import com.example.qreate.attendee.profilePicViewModel;
 import com.example.qreate.organizer.OrganizerActivity;
 import com.example.qreate.organizer.qrmenu.OrganizerEvent;
 import com.example.qreate.organizer.qrmenu.OrganizerEventSpinnerArrayAdapter;
+import com.example.qreate.organizer.qrmenu.OrganizerQRGeneratorActivity;
+import com.example.qreate.organizer.qrmenu.OrganizerQRReuseExistingActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -95,6 +98,32 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
             }
         });
 
+        Button attendeeCheckinListButton = view.findViewById(R.id.attendee_list_menu_screen_attendee_checkins);
+        Button attendeeSignupListButton = view.findViewById(R.id.attendee_list_menu_screen_attendee_signups);
+
+        attendeeCheckinListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), OrganizerAttendeeCheckinListActivity.class);
+                startActivity(intent);
+            }
+        });
+        attendeeSignupListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), OrganizerAttendeeSignupListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
+
+
+
+
+
+
         return view;
     }
 
@@ -129,11 +158,6 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
 
         dialog.show();
     }
-
-
-
-
-
 
 
 
@@ -197,16 +221,6 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
                     }
                 });
     }
-
-
-
-
-
-
-
-
-
-
 
 
 
