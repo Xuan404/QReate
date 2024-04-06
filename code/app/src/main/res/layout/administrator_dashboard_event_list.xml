@@ -18,7 +18,7 @@
             android:layout_height="25dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="4dp"
-            android:fontFamily="@font/poppins_bold"
+            android:fontFamily="@font/poppins_light"
             android:text="Event 1"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
