@@ -1,6 +1,9 @@
 package com.example.qreate.administrator;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.CompoundButtonCompat;
 
 import com.example.qreate.R;
 
@@ -64,6 +68,8 @@ public class ImageArrayAdapter extends ArrayAdapter<AdministratorImage> {
         ImageView image = view.findViewById(R.id.image);
         RadioButton radioButton = view.findViewById(R.id.choose_image_radio_button);
 
+        changeRadioColor(view);
+
         image_name.setText(images.getImageName());
         //image.setImageResource(R.drawable.profile);
         radioButton.setChecked(position == selectedPosition);
@@ -107,5 +113,31 @@ public class ImageArrayAdapter extends ArrayAdapter<AdministratorImage> {
             }
         }
         return null;
+    }
+
+    private void changeRadioColor(View view) {
+
+        RadioButton radioButton = view.findViewById(R.id.choose_image_radio_button);
+
+        // Define the color state list for checked and unchecked states
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{-android.R.attr.state_checked}, // unchecked state
+                        new int[]{android.R.attr.state_checked} // checked state
+                },
+                new int[]{
+                        Color.parseColor("#CCCCCC"), // gray color for unchecked state in hex
+                        Color.parseColor("#FCA311") // red color for checked state in hex
+                }
+        );
+
+
+        // Apply the color state list to the RadioButton
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            radioButton.setButtonTintList(colorStateList);
+        } else {
+            CompoundButtonCompat.setButtonTintList(radioButton, colorStateList); // Support library for pre-Lollipop
+        }
+
     }
 }
