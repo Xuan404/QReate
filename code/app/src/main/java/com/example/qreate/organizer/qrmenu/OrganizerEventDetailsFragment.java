@@ -15,6 +15,11 @@ import androidx.fragment.app.Fragment;
 
 import com.example.qreate.R;
 import com.example.qreate.attendee.AttendeeSignedUpEventsDetailsFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -23,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -79,17 +85,17 @@ public class OrganizerEventDetailsFragment extends Fragment {
             eventId = null;
         }
 
+
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // delete event reference from each attendee's signup_event_list, delete event reference from organizer's event_list & delete event document from event collection
+                deleteEvent(eventId);
 
-                // delete event reference from each attendee's signup_event_list
-                removeEventFromAttendee(eventId);
-
-                // delete event reference from organizer's event_list
-
-
-                // delete event document from event collection
+                // pop back fragment
+                if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                    getParentFragmentManager().popBackStack();
+                }
 
             }
         });
@@ -146,28 +152,125 @@ public class OrganizerEventDetailsFragment extends Fragment {
         return fragment;
     }
 
-    private void removeEventFromAttendee(String eventId) {
+    private void deleteEvent(String eventId) {
+        // delete event reference from each attendee's signup_event_list
+        removeEventFromAttendee(eventId, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                // after removing from attendees, delete event reference from organizer's event_list
+                removeEventFromOrganizer(eventId, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // after removing from attendee & organizer, delete event document from event collection
+                        removeEvent(eventId);
+                    }
+                });
+            }
+        });
+    }
+
+    private void removeEventFromAttendee(String eventId, OnCompleteListener<Void> completionListener) {
         DocumentReference eventRef = db.collection("Events").document(eventId);
         db.collection("Attendees")
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        // Create a list to hold all the update tasks
+                        List<Task<Void>> updateTasks = new ArrayList<>();
+
                         for (DocumentSnapshot document : task.getResult()) {
                             List<DocumentReference> signUpEventList = (List <DocumentReference>) document.get("signup_event_list");
                             if (signUpEventList != null && signUpEventList.contains(eventRef)) {
-                                db.collection("Attendees")
+                                // Add each update operation's Task to the list
+                                Task<Void> updateTask = db.collection("Attendees")
                                         .document(document.getId())
-                                        .update("signup_event_list", eventRef)
-                                        .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event reference successfully removed from signup_event_list"))
-                                        .addOnFailureListener(e -> Log.w("Firestore", "Error removing event reference from signup_event_list", e));
+                                        .update("signup_event_list", FieldValue.arrayRemove(eventRef));
+                                updateTasks.add(updateTask);
                             }
                         }
+                        // Wait for all update tasks to complete
+                        Tasks.whenAllComplete(updateTasks)
+                                .addOnCompleteListener(tasks -> {
+                                    // All update operations are complete at this point
+                                    Task<Void> completionTask = Tasks.forResult(null);
+                                    completionListener.onComplete(completionTask);
+                                });
+
                     } else {
                         Log.w("Firestore", "Error querying documents: ", task.getException());
+                        // Signal completion with failure if the initial query failed
+                        Task<Void> failureTask = Tasks.forException(task.getException());
+                        completionListener.onComplete(failureTask);
                     }
-
                 });
     }
+
+    private void removeEventFromOrganizer(String eventId, OnCompleteListener<Void> completionListener) {
+        DocumentReference eventRef = db.collection("Events").document(eventId);
+       eventRef
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // retrieving the device_id of the organizer
+                        String org_device_id = documentSnapshot.getString("org_device_id");
+                        Log.d("Firestore", "Organizer Device ID: " + org_device_id);
+
+                        // finding the event organizer of the event using the device_id and deleting the event from their event_list
+                        db.collection("Organizers")
+                                .whereEqualTo("device_id", org_device_id)
+                                .limit(1)
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    if (!queryDocumentSnapshots.isEmpty()) {
+                                        DocumentSnapshot organizerSnapshot = queryDocumentSnapshots.getDocuments().get(0);
+                                        DocumentReference organizerRef = organizerSnapshot.getReference();
+                                        Task<Void> updateTask = organizerRef.update("events_list", FieldValue.arrayRemove(eventRef));
+                                        updateTask.addOnSuccessListener(aVoid -> {
+                                            Log.d("Firestore", "Event successfully removed from organizer's event_list");
+                                            // Notify the completion listener only after the update is successful
+                                            completionListener.onComplete(null);
+                                        }).addOnFailureListener(e -> {
+                                            Log.w("Firestore", "Error updating organizer", e);
+                                            // Notify the completion listener in case of failure as well
+                                            completionListener.onComplete(null);
+                                        });
+
+                                    } else {
+                                        Log.d("Firestore", "Organizer with given device ID not found");
+                                        // If no organizer is found, consider it as operation completed
+                                        completionListener.onComplete(null);
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.w("Firestore", "Error finding organizer", e);
+                                    // If there's an error fetching the organizer, notify completion listener
+                                    completionListener.onComplete(null);
+                                });
+                    } else {
+                        Log.d("Firestore", "Event document does not exist");
+                        // If the event document does not exist, consider it as operation completed
+                        completionListener.onComplete(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error getting document", e);
+                    // If there's an error fetching the event document, notify completion listener
+                    completionListener.onComplete(null);
+                });
+    }
+
+    private void removeEvent(String eventId) {
+        db.collection("Events").document(eventId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("Firestore","DocumentSnapshot successfully deleted!");
+                    }
+                });
+    }
+
+
 
 
 }
