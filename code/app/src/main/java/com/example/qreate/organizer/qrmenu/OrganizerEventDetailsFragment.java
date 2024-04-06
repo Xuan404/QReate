@@ -16,11 +16,15 @@ import androidx.fragment.app.Fragment;
 import com.example.qreate.R;
 import com.example.qreate.attendee.AttendeeSignedUpEventsDetailsFragment;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 public class OrganizerEventDetailsFragment extends Fragment {
@@ -75,6 +79,21 @@ public class OrganizerEventDetailsFragment extends Fragment {
             eventId = null;
         }
 
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // delete event reference from each attendee's signup_event_list
+                removeEventFromAttendee(eventId);
+
+                // delete event reference from organizer's event_list
+
+
+                // delete event document from event collection
+
+            }
+        });
+
         if (eventId != null) {
             db.collection("Events").document(eventId)
                     .get().addOnCompleteListener(task -> {
@@ -126,4 +145,29 @@ public class OrganizerEventDetailsFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    private void removeEventFromAttendee(String eventId) {
+        DocumentReference eventRef = db.collection("Events").document(eventId);
+        db.collection("Attendees")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            List<DocumentReference> signUpEventList = (List <DocumentReference>) document.get("signup_event_list");
+                            if (signUpEventList != null && signUpEventList.contains(eventRef)) {
+                                db.collection("Attendees")
+                                        .document(document.getId())
+                                        .update("signup_event_list", eventRef)
+                                        .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event reference successfully removed from signup_event_list"))
+                                        .addOnFailureListener(e -> Log.w("Firestore", "Error removing event reference from signup_event_list", e));
+                            }
+                        }
+                    } else {
+                        Log.w("Firestore", "Error querying documents: ", task.getException());
+                    }
+
+                });
+    }
+
+
 }
