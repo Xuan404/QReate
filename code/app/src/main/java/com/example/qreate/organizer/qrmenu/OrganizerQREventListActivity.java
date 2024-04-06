@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Show the User a list of Events that he has created
  */
-public class OrganizerQREventListActivity extends AppCompatActivity implements OrganizerQREventListPopupWindow.EventCreationListener, OrganizerEventArrayAdapter.EventSelectionListener{
+public class OrganizerQREventListActivity extends AppCompatActivity implements OrganizerQREventListPopupWindow.EventCreationListener, OrganizerEventArrayAdapter.EventSelectionListener, OrganizerEventDetailsFragment.EventDeletionListener{
     private OrganizerQREventListPopupWindow popupWindow;
     private ListView list;
     private FirebaseFirestore db;
@@ -44,6 +44,7 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
 
     OrganizerEventArrayAdapter eventArrayAdapter;
     private Context context;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +98,17 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
     public void onEventSelected(String eventId){
         createEventButton.setVisibility(View.INVISIBLE);
         OrganizerEventDetailsFragment detailsFragment = OrganizerEventDetailsFragment.newInstance(eventId);
+        detailsFragment.setEventDeletionListener(this);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.event_list_fragment_container, detailsFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onEventDeleted() {
+        // Reload your events from Firestore and update the ListView
+        loadEvents();
     }
 
 
@@ -131,6 +139,7 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
 
                 });
     }
+
 
     // Handle the result from the poster selection when creating an event
     @Override
