@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.util.Log;
@@ -29,7 +28,6 @@ import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
 
 import com.example.qreate.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,13 +38,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -102,6 +97,7 @@ public class OrganizerQREventListPopupWindow {
         });
 
         timeButton = popupView.findViewById(R.id.timeselector);
+        timeButton.setHint(CurrentTime());
         timeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -341,6 +337,26 @@ public class OrganizerQREventListPopupWindow {
 
         return makeDateString(day, month, year);
     }
+
+    //get the current time as a hint when selecting a time
+    private String CurrentTime(){
+        Calendar cal = Calendar.getInstance();
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+        int minute = cal.get(Calendar.MINUTE);
+        String timePeriod;
+        if(hour < 12){
+            timePeriod = "AM";
+        }
+        else {
+            timePeriod = "PM";
+            hour -= 12; // 12-hour format
+        }
+        timePeriod= String.format("%02d:%02d %s", hour, minute, timePeriod);
+        return timePeriod;
+
+    }
+
+
 
     //method for time picker, selecting time of event
     private void initTimePicker(){
