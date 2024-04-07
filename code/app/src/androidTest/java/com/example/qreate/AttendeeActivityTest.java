@@ -15,6 +15,8 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import static com.example.qreate.R.id.qr_menu_screen_image;
+
 import com.example.qreate.attendee.AttendeeActivity;
 
 /**
@@ -30,9 +32,9 @@ public class AttendeeActivityTest {
 
     @Test
     public void navigateToNotificationsPage() {
-        // Click the "Events" icon in the navigation bar
+        // Click the "Notifications" icon in the navigation bar
         onView(withId(R.id.notifications_icon)).perform(click());
-        // Check that the Events page is displayed
+        // Check that the Notifications page is displayed
         onView(withId(R.id.notif_list_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
 
@@ -46,9 +48,9 @@ public class AttendeeActivityTest {
 
     @Test
     public void navigateToEventsPage() {
-        // Click the "Notifications" icon in the navigation bar
+        // Click the "Events" icon in the navigation bar
         onView(withId(R.id.events_icon_nav)).perform(click());
-        // Check that the Notifications page is displayed
-        onView(withId(R.id.qr_menu_screen_image)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+        // Check that the Events page is displayed
+        onView(withId(qr_menu_screen_image)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
 }
