@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -116,6 +117,18 @@ public class EditProfileScreenFragment extends Fragment {
             }
         });
 
+        ImageButton plusButton = view.findViewById(R.id.add_photo_button); // Assume your plus button ID is plus_button
+        plusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment updateProfilePicFragment = new UpdateProfilePicFragment();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.profile_handler, updateProfilePicFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
         return view;
     }

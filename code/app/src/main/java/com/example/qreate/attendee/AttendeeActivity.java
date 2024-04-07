@@ -1,6 +1,7 @@
 package com.example.qreate.attendee;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -12,9 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.EditProfileScreenFragment;
 import com.example.qreate.HomeScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.UpdateProfilePicFragment;
 import com.example.qreate.WelcomeScreenFragment;
 import com.example.qreate.administrator.AdministratorDashboardFragment;
 import com.example.qreate.administrator.AdministratorEvent;
@@ -549,7 +552,5 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     }
 
 //////////////////////////////////////////////// END //////////////////////////////////////////////////
-
-
 
 }

@@ -1,6 +1,7 @@
 package com.example.qreate;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -76,7 +78,26 @@ public class AccountProfileScreenFragment extends Fragment {
             }
         });
 
+        ImageButton plusButton = view.findViewById(R.id.add_photo_button); // Assume your plus button ID is plus_button
+        plusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment updateProfilePicFragment = new UpdateProfilePicFragment();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.profile_handler, updateProfilePicFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+
         return view;
+    }
+
+    public void displaySelectedImage(Uri imageUri) {
+        ImageView imageView = getView().findViewById(R.id.empty_profile_pic);
+        imageView.setImageURI(imageUri);
     }
 
     /**
