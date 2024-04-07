@@ -50,7 +50,7 @@ import java.util.UUID;
  */
 public class OrganizerQRGeneratorActivity extends AppCompatActivity {
 
-    String documentId ; // Dummy variable containing event doc id, should be the spinner value
+    String documentId ;
     private FirebaseFirestore db;
     private OrganizerEvent selectedEvent;
     ArrayList<OrganizerEvent> events;
@@ -58,6 +58,13 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
     private int selectedId;
     String randomString;
 
+    /**
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,14 +159,21 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Interface for document callback
+     */
     interface QRCodeExistsCallback {
         void onResult(boolean exists);
 
         void onError(Exception e);
     }
 
-    // Method to check if QR code path exists
+    /**
+     * Method to check if QR code path exists
+     * @param field
+     * @param documentId
+     * @param callback
+     */
     public void checkIfQRCodePathExists(String field, String documentId, QRCodeExistsCallback callback) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Events").document(documentId).get()
@@ -184,8 +198,12 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
                 });
     }
 
-
-    // Generates the qr code
+    /**
+     * Generates the qr code
+     * @param text
+     * @return
+     * @throws WriterException
+     */
     public Bitmap generateQRCode(String text) throws WriterException {
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, 512, 512);
@@ -199,7 +217,11 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
         return bitmap;
     }
 
-    // Uploads the image to storage
+    /**
+     * Uploads the image to storage
+     * @param bitmap
+     * @param imageName
+     */
     private void uploadQRCode(Bitmap bitmap, final String imageName) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -229,6 +251,12 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Saves image path to firestore
+     * @param storagePath
+     * @param documentId
+     * @param QRtype
+     */
     private void saveImagePathToFirestore(String storagePath, String documentId, String QRtype) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -249,8 +277,9 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
                 });
     }
 
-
-    // Change radio Group color
+    /**
+     * Change radio Group color
+     */
     private void changeRadioColor() {
 
         RadioGroup radioGroup = findViewById(R.id.generate_qr_code_radio_group);
@@ -285,6 +314,10 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
         }
 
     }
+
+    /**
+     *  Shows the dialog box options for choosing event
+     */
     private void showOptionsDialog() {
         final String[] items = new String[events.size()];
         for (int i = 0; i < events.size(); i++) {
@@ -318,7 +351,9 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Adds events to the dialog box
+     */
     private void addEventsInit(){
         // TODO THIS CODE CRASHES IF THERES NO DETAIL OR DATE SO I COMMENTED IT OUT UNCOMMENT WHEN DATA IS FIXED
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);

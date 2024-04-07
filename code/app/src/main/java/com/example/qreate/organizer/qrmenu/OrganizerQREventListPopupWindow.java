@@ -51,8 +51,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-// https://www.youtube.com/watch?v=qCoidM98zNk
 
+/**
+ * A Pup up window that allows the user to create an aevent
+ * Reference https://www.youtube.com/watch?v=qCoidM98zNk
+ * @author Akib Zaman Choudhury
+ */
 public class OrganizerQREventListPopupWindow {
 
     private Context context;
@@ -75,6 +79,10 @@ public class OrganizerQREventListPopupWindow {
     private static final int PICK_IMAGE_REQUEST = 1;
     public static final int IMAGE_PICK_CODE = 1000;
 
+    /**
+     * Initializer class
+     * @param context
+     */
     public OrganizerQREventListPopupWindow(Context context) {
 
         this.context = context;
@@ -141,16 +149,25 @@ public class OrganizerQREventListPopupWindow {
 
     }
 
+    /**
+     * Listener inerface for event creation
+     */
     public interface EventCreationListener {
         void onEventCreated();
     }
 
+    /**
+     * Function that implements the EventCreationListener inerface
+     * @param listener
+     */
     public void setEventCreationListener(EventCreationListener listener) {
         this.eventCreationListener = listener;
     }
 
 
-
+    /**
+     * Opens up gallery for image selection
+     */
     private void openImageSelector() {
         Activity activity = (Activity) context;
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -158,17 +175,31 @@ public class OrganizerQREventListPopupWindow {
         activity.startActivityForResult(intent, IMAGE_PICK_CODE);
     }
 
+    /**
+     * Sets the image Uri
+     * @param imageUri
+     */
     public void setImageUri(Uri imageUri) {
         this.selectedImageUri = imageUri;
         Log.w("UriImage", String.valueOf(selectedImageUri));
     }
+
+    /**
+     * Sets image name
+     * @param imageName
+     */
     public void setImageName(String imageName) {
         this.imageName = imageName;
         uploadPosterButton.setText(imageName);
         Log.w("UriImage", String.valueOf(imageName));
     }
 
-
+    /**
+     * Retrieves the file name from the Uri
+     * @param context
+     * @param uri
+     * @return
+     */
     public String getFileNameByUri(Context context, Uri uri) {
         String fileName = "unknown"; // Default to "unknown" if the file name can't be found
         Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
@@ -193,7 +224,10 @@ public class OrganizerQREventListPopupWindow {
         return fileName;
     }
 
-
+    /**
+     * Uploads the image selected to firebase
+     * @param fileUri
+     */
     private void uploadImageToFirebaseStorage(Uri fileUri) {
         StorageReference storageRef = FirebaseStorage.getInstance().getReference("posters/" + UUID.randomUUID().toString());
         storageRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -207,7 +241,10 @@ public class OrganizerQREventListPopupWindow {
         });
     }
 
-
+    /**
+     * Sets up rest of the document field
+     * @param view
+     */
     private void setInfoUp(View view) {
 
         EditText editTextName = view.findViewById(R.id.editTextEventName);
@@ -225,7 +262,10 @@ public class OrganizerQREventListPopupWindow {
     }
 
 
-
+    /**
+     * Creates the document field for event
+     * @param view
+     */
     private void createEvent(View view){
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -269,8 +309,10 @@ public class OrganizerQREventListPopupWindow {
     }
 
 
-
-
+    /**
+     * Adds the Event doc reference to the Organizer document
+     * @param eventRef
+     */
     private void addEventToOrganizer(DocumentReference eventRef){
 
 
@@ -314,9 +356,9 @@ public class OrganizerQREventListPopupWindow {
     }
 
 
-
-
-
+    /**
+     * Initializes the pop up menu
+     */
     private void initializePopupWindow() {
 
         // Create PopupWindow
@@ -328,6 +370,10 @@ public class OrganizerQREventListPopupWindow {
 
     }
 
+    /**
+     * Retrieves Today's date
+     * @return
+     */
     private String getTodaysDate()
     {
         Calendar cal = Calendar.getInstance();
@@ -339,7 +385,10 @@ public class OrganizerQREventListPopupWindow {
         return makeDateString(day, month, year);
     }
 
-    //get the current time as a hint when selecting a time
+    /**
+     * Retrieves current time
+     * @return
+     */
     private String CurrentTime(){
         Calendar cal = Calendar.getInstance();
         int hour = cal.get(Calendar.HOUR_OF_DAY);
@@ -358,8 +407,9 @@ public class OrganizerQREventListPopupWindow {
     }
 
 
-
-    //method for time picker, selecting time of event
+    /**
+     * Method for time picker, selecting time of event
+     */
     private void initTimePicker(){
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -378,6 +428,11 @@ public class OrganizerQREventListPopupWindow {
 
     }
 
+    /**
+     * Sets time format
+     * @param hour
+     * @param minute
+     */
     private void updateTime(int hour, int minute){
         String timePeriod = (hour >= 12) ? "PM": "AM";
         if(hour > 12){
@@ -390,6 +445,9 @@ public class OrganizerQREventListPopupWindow {
         timeButton.setText(selectedTime);
     }
 
+    /**
+     * Function used to set Event date
+     */
     private void initDatePicker() {
 
         Calendar cal = Calendar.getInstance();
@@ -420,11 +478,23 @@ public class OrganizerQREventListPopupWindow {
 
     }
 
+    /**
+     * Function used for outputting the selected date to the screen
+     * @param day
+     * @param month
+     * @param year
+     * @return
+     */
     private String makeDateString(int day, int month, int year)
     {
         return getMonthFormat(month) + " " + day + " " + year;
     }
 
+    /**
+     * Function used to format the selected date
+     * @param month
+     * @return
+     */
     private String getMonthFormat(int month)
     {
         if(month == 0)
@@ -456,6 +526,9 @@ public class OrganizerQREventListPopupWindow {
         return "JAN";
     }
 
+    /**
+     * Shows the pop up menu in the middle of the screen
+     */
     public void showPopupWindow() {
         // Show the popup window
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);

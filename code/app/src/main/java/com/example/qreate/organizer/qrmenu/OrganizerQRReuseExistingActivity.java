@@ -86,8 +86,13 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_READ_STORAGE = 101;
 
 
-
-
+    /**
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,15 +156,9 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
-
-
+    /**
+     * Checks User Permission
+     */
     private void openGallery() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_GALLERY);
@@ -169,26 +168,26 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Starts up the gallery
+     */
     private void startGalleryIntent() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_GALLERY);
     }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == REQUEST_GALLERY) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                startGalleryIntent();
-//            } else {
-//                // Permission denied.
-//                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
 
-
-
+    /**
+     * Requests User for gallery access
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -205,14 +204,11 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Decodes the scanned QRcode
+     * @param bitmap
+     */
     private void decodeQRCode(Bitmap bitmap) {
-//        int[] intArray = new int[bitmap.getWidth() * bitmap.getHeight()];
-//        //copy pixel data from the Bitmap into the 'intArray' array
-//        bitmap.getPixels(intArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-//
-//        LuminanceSource source = new RGBLuminanceSource(bitmap.getWidth(), bitmap.getHeight(), intArray);
-//        BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
 
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
@@ -240,21 +236,12 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Generates the qr code
+    /**
+     * Generates the QRcode
+     * @param text
+     * @return
+     * @throws WriterException
+     */
     private Bitmap generateQRCode(String text) throws WriterException {
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, 512, 512);
@@ -268,7 +255,11 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
         return bitmap;
     }
 
-    // Sets everything up for upload
+    /**
+     * Helper function to help set everything up for image upload
+     * @param bitmap
+     * @param imageName
+     */
     private void uploadQRCode(Bitmap bitmap, final String imageName) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -291,7 +282,10 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
                 });
     }
 
-    // Saves image onto firebase storage
+    /**
+     * Saves image to firebase
+     * @param storagePath
+     */
     private void saveImagePathToFirestore(String storagePath) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -316,22 +310,9 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     *  Shows the dialog box options for choosing event
+     */
     private void showOptionsDialog() {
         final String[] items = new String[events.size()];
         for (int i = 0; i < events.size(); i++) {
@@ -364,7 +345,9 @@ public class OrganizerQRReuseExistingActivity extends AppCompatActivity {
         dialog.show();
     }
 
-
+    /**
+     * Adds events to the dialog box
+     */
     private void addEventsInit(){
         // TODO THIS CODE CRASHES IF THERES NO DETAIL OR DATE SO I COMMENTED IT OUT UNCOMMENT WHEN DATA IS FIXED
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
