@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 
 import android.content.DialogInterface;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -55,6 +56,8 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
     private FirebaseFirestore db;
     private Button testButton;
 
+    private View view;
+
     OrganizerEventSpinnerArrayAdapter eventSpinnerArrayAdapter;
 
     /**
@@ -76,7 +79,7 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
 
 
         db = FirebaseFirestore.getInstance();
-        View view = inflater.inflate(R.layout.organizer_attendee_list_menu_screen, container, false);
+        view = inflater.inflate(R.layout.organizer_attendee_list_menu_screen, container, false);
         ImageButton profileButton = view.findViewById(R.id.attendee_list_menu_screen_profile_button);
         testButton = view.findViewById(R.id.attendee_list_menu_screen_spinner);
         events = new ArrayList<OrganizerEvent>();
@@ -127,14 +130,39 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
         });
 
 
-
-
-
-
-
-
-
         return view;
+    }
+
+    private void updateStats() {
+
+        DocumentReference eventDocRef = db.collection("Events").document(documentId);
+
+        eventDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                // Retrieve and store the checkin_count value
+                Number checkinCount = documentSnapshot.getLong("checkin_count");
+                // Retrieve and store the signup_count value
+                Number signupCount = documentSnapshot.getLong("signup_count");
+
+                TextView checkinTextView = view.findViewById(R.id.attendee_list_menu_screen_checkedin_text);
+                TextView totalTextView = view.findViewById(R.id.attendee_list_menu_screen_total_text);
+                String checkinText = "Checked in:  " + checkinCount;
+                String totalText = "Total:  " + signupCount;
+                checkinTextView.setText(checkinText);
+                totalTextView.setText(totalText);
+
+
+
+            } else {
+                // Handle case where document does not exist
+            }
+        }).addOnFailureListener(e -> {
+            // Handle any errors
+        });
+
+
+
+
     }
 
 
@@ -151,6 +179,7 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
                 testButton.setText(items[which]);
                 selectedEvent = events.get(which);
                 documentId = selectedEvent.getDocumentID();
+                updateStats();
             }
         });
         builder.setNegativeButton("Cancel", null);
