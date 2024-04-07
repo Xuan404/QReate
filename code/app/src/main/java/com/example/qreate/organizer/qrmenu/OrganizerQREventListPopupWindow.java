@@ -97,7 +97,8 @@ public class OrganizerQREventListPopupWindow {
         });
 
         timeButton = popupView.findViewById(R.id.timeselector);
-        timeButton.setHint(CurrentTime());
+        selectedTime = CurrentTime();
+        timeButton.setText(selectedTime);
         timeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -343,14 +344,14 @@ public class OrganizerQREventListPopupWindow {
         Calendar cal = Calendar.getInstance();
         int hour = cal.get(Calendar.HOUR_OF_DAY);
         int minute = cal.get(Calendar.MINUTE);
-        String timePeriod;
-        if(hour < 12){
-            timePeriod = "AM";
+        String timePeriod = (hour < 12) ? "AM":"PM";
+        if( hour > 12){
+            hour -= 12;
+        } else if (hour == 0){
+            hour = 12;
         }
-        else {
-            timePeriod = "PM";
-            hour -= 12; // 12-hour format
-        }
+
+
         timePeriod= String.format("%02d:%02d %s", hour, minute, timePeriod);
         return timePeriod;
 
@@ -378,14 +379,13 @@ public class OrganizerQREventListPopupWindow {
     }
 
     private void updateTime(int hour, int minute){
-        String timePeriod;
-        if(hour < 12){
-            timePeriod = "AM";
+        String timePeriod = (hour >= 12) ? "PM": "AM";
+        if(hour > 12){
+            hour -= 12;
+        } else if(hour ==0){
+            hour = 12;
         }
-        else {
-            timePeriod = "PM";
-            hour -= 12; // 12-hour format
-        }
+
         selectedTime = String.format("%02d:%02d %s", hour, minute, timePeriod);
         timeButton.setText(selectedTime);
     }
