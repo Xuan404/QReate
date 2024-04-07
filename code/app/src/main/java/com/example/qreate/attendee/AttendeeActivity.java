@@ -267,6 +267,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                             if(selectedNotifId != null) {
                                 navigateToNotifDetails(selectedNotifId);
                             }
+                            showDeleteNavigationBar();
                         }
                     } else if (navBarItemId==R.id.events_icon_nav) {
                         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.attendee_handler_frame);
@@ -298,6 +299,8 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     public void setupDeleteNavigationBar(){
         BottomNavigationView deleteNavBar = findViewById(R.id.attendee_delete_navigation_bar);
+        BottomNavigationView navBar = findViewById(R.id.attendee_navigation_bar);
+        int navBarItemId = navBar.getSelectedItemId();
         deleteNavBar.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
@@ -309,26 +312,36 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                 } else if (itemId == R.id.delete_icon) {
                     String device_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    db.collection("Attendees")
-                            .whereEqualTo("device_id", device_id)
-                            .limit(1)
-                            .get()
-                            .addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    QuerySnapshot querySnapshot = task.getResult();
-                                    if (!querySnapshot.isEmpty()) {
-                                        DocumentSnapshot attendeeDocument = querySnapshot.getDocuments().get(0);
-                                        String attendeeId = attendeeDocument.getId();
+                    if (navBarItemId==R.id.notifications_icon && selectedNotifId != null) {
+                        if (notifArrayAdapter != null) {
+                            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.attendee_handler_frame);
+                            if (currentFragment instanceof AttendeeNotificationsFragment) {
+                                String selectedNotifId = ((AttendeeNotificationsFragment) currentFragment).getSelectedNotifId();
+                                ((AttendeeNotificationsFragment) currentFragment).deleteNotification(selectedNotifId);
+                            }
+                        }
+                    } else if (navBarItemId==R.id.events_icon_nav) {
+                        db.collection("Attendees")
+                                .whereEqualTo("device_id", device_id)
+                                .limit(1)
+                                .get()
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        QuerySnapshot querySnapshot = task.getResult();
+                                        if (!querySnapshot.isEmpty()) {
+                                            DocumentSnapshot attendeeDocument = querySnapshot.getDocuments().get(0);
+                                            String attendeeId = attendeeDocument.getId();
 
-                                        removeEventFromAttendee(selectedEventId, attendeeId);
+                                            removeEventFromAttendee(selectedEventId, attendeeId);
+                                        } else {
+                                            Log.d("FetchAttendee", "No attendee found with the given device ID");
+                                        }
                                     } else {
-                                        Log.d("FetchAttendee", "No attendee found with the given device ID");
+                                        Log.e("FetchAttendee", "Error fetching attendee document", task.getException());
                                     }
-                                } else {
-                                    Log.e("FetchAttendee", "Error fetching attendee document", task.getException());
-                                }
-                            });
-                    incrementSignupCount(selectedEventId);
+                                });
+                        incrementSignupCount(selectedEventId);
+                    }
                     hideDeleteNavigationBar();
                     showBottomNavigationBar();
                     getSupportFragmentManager().popBackStackImmediate();
