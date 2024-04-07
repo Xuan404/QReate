@@ -186,7 +186,7 @@ public class OrganizerQRGeneratorActivity extends AppCompatActivity {
 
 
     // Generates the qr code
-    private Bitmap generateQRCode(String text) throws WriterException {
+    public Bitmap generateQRCode(String text) throws WriterException {
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, 512, 512);
         Bitmap bitmap = Bitmap.createBitmap(512, 512, Bitmap.Config.RGB_565);
