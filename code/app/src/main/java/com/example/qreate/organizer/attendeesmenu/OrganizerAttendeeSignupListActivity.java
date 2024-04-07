@@ -56,47 +56,36 @@ public class OrganizerAttendeeSignupListActivity extends AppCompatActivity {
         ArrayList<OrganizerAttendeeSignup> attendees = new ArrayList<>();
         attendeeArrayAdapter = new OrganizerAttendeeSignupArrayAdapter(this, attendees);
         list.setAdapter(attendeeArrayAdapter);
+
         DocumentReference eventDocRef = db.collection("Events").document(eventDocId);
 
         eventDocRef.get().addOnSuccessListener(eventDocument -> {
-
             if (eventDocument.exists()) {
+                List<DocumentReference> checkedInAttendees = (List<DocumentReference>) eventDocument.get("checkedin_attendees");
+                if (checkedInAttendees != null) {
 
-                // Extract the signedup_attendees list, which contains Maps
-                List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) eventDocument.get("signedup_attendees");
-                if (signedUpAttendees != null) {
-
-                    for (Map<String, Object> attendeeInfo : signedUpAttendees) {
-                        // Extract the attendeeRef which is a DocumentReference
-                        DocumentReference attendeeRef = (DocumentReference) attendeeInfo.get("attendeeRef");
-
-                        // Retrieve the user_document_id from the Attendee document
+                    for (DocumentReference attendeeRef : checkedInAttendees) {
+                        // Now retrieve each Attendee document to get the User document reference
                         attendeeRef.get().addOnSuccessListener(attendeeDocument -> {
                             if (attendeeDocument.exists()) {
-                                DocumentReference userRef = (DocumentReference) attendeeDocument.get("user_document_id");
-
-                                // Retrieve the User document and extract the name field
-                                userRef.get().addOnSuccessListener(userDocument -> {
+                                DocumentReference userDocRef = attendeeDocument.getDocumentReference("user_document_id");
+                                // Finally, retrieve each User document to get the name
+                                userDocRef.get().addOnSuccessListener(userDocument -> {
                                     if (userDocument.exists()) {
                                         String name = userDocument.getString("name");
                                         String eventId = userDocument.getId();
                                         attendeeArrayAdapter.add(new OrganizerAttendeeSignup(name, eventId));
                                         attendeeArrayAdapter.notifyDataSetChanged();
+
                                     }
-                                }).addOnFailureListener(e -> {
-                                    // Handle failure in retrieving the User document
                                 });
                             }
-                        }).addOnFailureListener(e -> {
-                            // Handle failure in retrieving the Attendee document
                         });
                     }
-
-
                 }
             }
         }).addOnFailureListener(e -> {
-            // Handle failure in retrieving the Event document
+            // Handle any errors in fetching the Event document
         });
 
 

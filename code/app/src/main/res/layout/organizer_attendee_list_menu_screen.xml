@@ -103,7 +103,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:background="@drawable/rounded_dark_blue"
-        android:text="Attendee Checkin tracker"
+        android:text="Attendee List"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:textStyle="bold" />
@@ -116,7 +116,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:background="@drawable/rounded_dark_blue"
-        android:text="Attendee Signup List"
+        android:text="Real Time attendence"
         android:textAllCaps="false"
         android:textColor="#FFFFFF"
         android:textStyle="bold" />
