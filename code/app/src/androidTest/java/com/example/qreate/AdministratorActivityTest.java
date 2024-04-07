@@ -15,6 +15,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 
 import com.example.qreate.administrator.AdministratorActivity;
 import com.example.qreate.organizer.OrganizerActivity;
+import com.google.common.base.Verify;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,11 +37,11 @@ public class AdministratorActivityTest {
     @Test
     public void testFragmentChangeToDashboard(){
 
-        // Perform a click on the dashboard button
-        //onView(withId(R.id.dashboard_icon)).perform(click());
+         //Perform a click on the dashboard button
+//        onView(withId(R.id.dashboard_icon)).perform(click());
 
-        // Verify that Dashboard Fragment is launched by checking for a view that is unique to it
-        //onView(withId(R.id.admin_top_bar)).check(matches(isDisplayed()));
+         //Verify that Dashboard Fragment is launched by checking for a view that is unique to it
+//        onView(withId(R.id.admin_top_bar)).check(matches(isDisplayed()));
     }
 
 }
