@@ -28,6 +28,7 @@
         android:layout_below="@+id/edit_profile_text"
         android:layout_centerHorizontal="true"
         android:contentDescription="empty profile pic"
+        android:scaleType="centerCrop"
         android:src="@drawable/empty_profile_pic" />
 
     <TextView
