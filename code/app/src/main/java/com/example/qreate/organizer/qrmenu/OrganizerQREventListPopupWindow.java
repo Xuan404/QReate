@@ -3,6 +3,7 @@ package com.example.qreate.organizer.qrmenu;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -23,6 +24,7 @@ import android.widget.PopupWindow;
 
 
 import android.view.ViewGroup.LayoutParams;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 
@@ -44,6 +46,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.checkerframework.checker.units.qual.C;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,6 +65,7 @@ public class OrganizerQREventListPopupWindow {
     private View popupView;
     private DatePickerDialog datePickerDialog;
     private Button dateButton;
+    private Button timeButton;
     private Button uploadPosterButton;
 
     private Date selectedDate;
@@ -70,6 +75,7 @@ public class OrganizerQREventListPopupWindow {
     private String name;
     private String description;
     private String signupLimit;
+    private String selectedTime;
     private static final int PICK_IMAGE_REQUEST = 1;
     public static final int IMAGE_PICK_CODE = 1000;
 
@@ -91,6 +97,14 @@ public class OrganizerQREventListPopupWindow {
             public void onClick(View view) {
                 //showDatePickerDialog();
                 initDatePicker();
+            }
+        });
+
+        timeButton = popupView.findViewById(R.id.timeselector);
+        timeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initTimePicker();
             }
         });
 
@@ -185,7 +199,7 @@ public class OrganizerQREventListPopupWindow {
         });
     }
 
-    
+
     private void setInfoUp(View view) {
 
         EditText editTextName = view.findViewById(R.id.editTextEventName);
@@ -217,6 +231,7 @@ public class OrganizerQREventListPopupWindow {
         device.put("name", name);
         device.put("description", description);
         device.put("date", selectedDate);
+        device.put("timeOfEvent", selectedTime);
         device.put("poster", imagePath);
         device.put("signup_limit", signupLimit);
         device.put("signup_count", 0);
@@ -313,7 +328,37 @@ public class OrganizerQREventListPopupWindow {
         return makeDateString(day, month, year);
     }
 
+    //method for time picker, selecting time of event
+    private void initTimePicker(){
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int min = calendar.get(Calendar.MINUTE);
 
+        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hour, int minute) {
+                updateTime(hour,minute);
+            }
+        };
+
+        //show dialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(context, timeSetListener, hour, min, false);
+        timePickerDialog.show();
+
+    }
+
+    private void updateTime(int hour, int minute){
+        String timePeriod;
+        if(hour < 12){
+            timePeriod = "AM";
+        }
+        else {
+            timePeriod = "PM";
+            hour -= 12; // 12-hour format
+        }
+        selectedTime = String.format("%02d:%02d %s", hour, minute, timePeriod);
+        timeButton.setText(selectedTime);
+    }
 
     private void initDatePicker() {
 

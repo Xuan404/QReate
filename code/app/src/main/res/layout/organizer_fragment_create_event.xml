@@ -69,17 +69,42 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/timeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextEventDescription"
+        android:layout_alignRight="@+id/dateText"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="-180dp"
+        android:text="Select Time: "
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/timeselector"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
+        android:layout_width="169dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dateText"
+        android:layout_toRightOf="@+id/dateselector"
+        android:layout_marginTop="10dp"
+        android:hint="01:00"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
     <Button
         android:id="@+id/dateselector"
-        android:layout_width="200dp"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
+        android:layout_width="169dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="12dp"
         android:layout_below="@id/dateText"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="10dp"
         android:hint="Jan 01 2024"
-        android:textSize="16sp"
         android:textColor="@color/black"
-        style="@style/Widget.AppCompat.Spinner.Underlined"/>
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/uploadPosterText"
