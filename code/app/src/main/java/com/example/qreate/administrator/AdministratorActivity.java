@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,7 +29,9 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * The following class is responsible for all activities related to the Administrator
@@ -168,26 +171,27 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                     if ((navBarItemId==R.id.images_icon) && (selectedImageId != null)) {
                         deleteImage(selectedImageId);
                     }
-                    hideDeleteNavigationBar();
-                    showMainBottomNavigationBar();
-                    getSupportFragmentManager().popBackStackImmediate();
-
-                    if ((navBarItemId == R.id.events_icon) || (navBarItemId == R.id.profiles_icon) || (navBarItemId == R.id.images_icon)) {
-                        selectedFragment = new AdministratorDashboardFragment();
-                    }
-                    if (selectedFragment != null) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
-
-                        if (selectedFragment instanceof AdministratorDashboardFragment) {
-                            if (navBarItemId == R.id.events_icon) {
-                                selectedFragment.loadEvents();
-                            } else if (navBarItemId == R.id.profiles_icon) {
-                                selectedFragment.loadProfiles();
-                            } else if (navBarItemId == R.id.images_icon) {
-                                selectedFragment.loadImages();
-                            }
-                        }
-                    }
+                    // DO NOT UNCOMMENT THIS. DELETION OF PROFILES AND IMAGES WONT WORK TEMPORARILY BUT NEED TO CREATE NEW FUNCTIONS FOR IT SO DONT TRY THAT
+//                    hideDeleteNavigationBar();
+//                    showMainBottomNavigationBar();
+//                    getSupportFragmentManager().popBackStackImmediate();
+//
+//                    if ((navBarItemId == R.id.events_icon) || (navBarItemId == R.id.profiles_icon) || (navBarItemId == R.id.images_icon)) {
+//                        selectedFragment = new AdministratorDashboardFragment();
+//                    }
+//                    if (selectedFragment != null) {
+//                        getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
+//
+//                        if (selectedFragment instanceof AdministratorDashboardFragment) {
+//                            if (navBarItemId == R.id.events_icon) {
+//                                selectedFragment.loadEvents();
+//                            } else if (navBarItemId == R.id.profiles_icon) {
+//                                selectedFragment.loadProfiles();
+//                            } else if (navBarItemId == R.id.images_icon) {
+//                                selectedFragment.loadImages();
+//                            }
+//                        }
+//                    }
 
 
 
@@ -198,11 +202,137 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
 
     }
 
+
     private void deleteEvent(String eventId) {
+        removeEventFromAttendee(eventId, new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                // after removing from attendees, delete event reference from organizer's event_list
+                removeEventFromOrganizer(eventId, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // after removing from attendee & organizer, delete event document from event collection
+                        removeEvent(eventId, new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                //now that all deletion steps are complete, switch back to listview
+                                hideDeleteNavigationBar();
+                                showMainBottomNavigationBar();
+                                getSupportFragmentManager().popBackStackImmediate();
+                                AdministratorDashboardFragment selectedFragment = new AdministratorDashboardFragment();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
+                                selectedFragment.loadEvents();
+
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    private void removeEventFromAttendee(String eventId, OnCompleteListener<Void> completionListener) {
+        DocumentReference eventRef = db.collection("Events").document(eventId);
+        db.collection("Attendees")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Create a list to hold all the update tasks
+                        List<Task<Void>> updateTasks = new ArrayList<>();
+
+                        for (DocumentSnapshot document : task.getResult()) {
+                            List<DocumentReference> signUpEventList = (List <DocumentReference>) document.get("signup_event_list");
+                            if (signUpEventList != null && signUpEventList.contains(eventRef)) {
+                                // Add each update operation's Task to the list
+                                Task<Void> updateTask = db.collection("Attendees")
+                                        .document(document.getId())
+                                        .update("signup_event_list", FieldValue.arrayRemove(eventRef));
+                                updateTasks.add(updateTask);
+                            }
+                        }
+                        // Wait for all update tasks to complete
+                        Tasks.whenAllComplete(updateTasks)
+                                .addOnCompleteListener(tasks -> {
+                                    // All update operations are complete at this point
+                                    Task<Void> completionTask = Tasks.forResult(null);
+                                    completionListener.onComplete(completionTask);
+                                });
+
+                    } else {
+                        Log.w("Firestore", "Error querying documents: ", task.getException());
+                        // Signal completion with failure if the initial query failed
+                        Task<Void> failureTask = Tasks.forException(task.getException());
+                        completionListener.onComplete(failureTask);
+                    }
+                });
+    }
+
+    private void removeEventFromOrganizer(String eventId, OnCompleteListener<Void> completionListener) {
+        DocumentReference eventRef = db.collection("Events").document(eventId);
+        eventRef
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // retrieving the device_id of the organizer
+                        String org_device_id = documentSnapshot.getString("org_device_id");
+                        Log.d("Firestore", "Organizer Device ID: " + org_device_id);
+
+                        // finding the event organizer of the event using the device_id and deleting the event from their event_list
+                        db.collection("Organizers")
+                                .whereEqualTo("device_id", org_device_id)
+                                .limit(1)
+                                .get()
+                                .addOnSuccessListener(queryDocumentSnapshots -> {
+                                    if (!queryDocumentSnapshots.isEmpty()) {
+                                        DocumentSnapshot organizerSnapshot = queryDocumentSnapshots.getDocuments().get(0);
+                                        DocumentReference organizerRef = organizerSnapshot.getReference();
+                                        Task<Void> updateTask = organizerRef.update("events_list", FieldValue.arrayRemove(eventRef));
+                                        updateTask.addOnSuccessListener(aVoid -> {
+                                            Log.d("Firestore", "Event successfully removed from organizer's event_list");
+                                            // Notify the completion listener only after the update is successful
+                                            completionListener.onComplete(null);
+                                        }).addOnFailureListener(e -> {
+                                            Log.w("Firestore", "Error updating organizer", e);
+                                            // Notify the completion listener in case of failure as well
+                                            completionListener.onComplete(null);
+                                        });
+
+                                    } else {
+                                        Log.d("Firestore", "Organizer with given device ID not found");
+                                        // If no organizer is found, consider it as operation completed
+                                        completionListener.onComplete(null);
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.w("Firestore", "Error finding organizer", e);
+                                    // If there's an error fetching the organizer, notify completion listener
+                                    completionListener.onComplete(null);
+                                });
+                    } else {
+                        Log.d("Firestore", "Event document does not exist");
+                        // If the event document does not exist, consider it as operation completed
+                        completionListener.onComplete(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error getting document", e);
+                    // If there's an error fetching the event document, notify completion listener
+                    completionListener.onComplete(null);
+                });
+    }
+
+    private void removeEvent(String eventId, OnCompleteListener<Void> completionListener) {
         db.collection("Events").document(eventId)
                 .delete()
-                .addOnSuccessListener(aVoid -> Log.d("Delete Event", "Event successfully deleted!"))
-                .addOnFailureListener(e -> Log.w("Delete Event", "Error deleting event", e));
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            // If the deletion is successful, invoke the completion listener with success
+                            completionListener.onComplete(task);
+                        }
+                    }
+                });
     }
 
     private void deleteProfile(String profileId) {
