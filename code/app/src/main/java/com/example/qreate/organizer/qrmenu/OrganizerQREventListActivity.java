@@ -41,8 +41,7 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
     private FirebaseFirestore db;
     private String device_id;
     private Button createEventButton;
-
-    OrganizerEventArrayAdapter eventArrayAdapter;
+    private OrganizerEventArrayAdapter eventArrayAdapter;
     private Context context;
 
 
@@ -99,6 +98,7 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
         createEventButton.setVisibility(View.INVISIBLE);
         OrganizerEventDetailsFragment detailsFragment = OrganizerEventDetailsFragment.newInstance(eventId);
         detailsFragment.setEventDeletionListener(this);
+        Log.d("Interface", "EventDeletionListener set to OrganizerQREventListActivity");
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.event_list_fragment_container, detailsFragment)
                 .addToBackStack(null)
@@ -109,13 +109,14 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
     public void onEventDeleted() {
         // Reload your events from Firestore and update the ListView
         loadEvents();
+        Log.d("Interface", "onEventDeleted function refreshes the listview by calling loadEvents()");
     }
 
 
     public void loadEvents(){
         ArrayList<AdministratorEvent> events = new ArrayList<>();
         eventArrayAdapter = new OrganizerEventArrayAdapter(this,events);
-        eventArrayAdapter.setEventSelectionListener(this);
+        eventArrayAdapter.setEventSelectionListener(OrganizerQREventListActivity.this);
         list.setAdapter(eventArrayAdapter);
         device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         db.collection("Events")

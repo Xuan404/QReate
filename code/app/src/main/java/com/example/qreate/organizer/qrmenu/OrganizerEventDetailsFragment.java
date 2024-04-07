@@ -93,9 +93,11 @@ public class OrganizerEventDetailsFragment extends Fragment {
                 // delete event reference from each attendee's signup_event_list, delete event reference from organizer's event_list & delete event document from event collection
                 deleteEvent(eventId);
                 notifyEventDeletion();
+                Log.d("Interface", "notifyEventDeletion function called");
 
                 // pop back fragment
                 if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+
                     getParentFragmentManager().popBackStack();
                 }
             }
@@ -165,7 +167,13 @@ public class OrganizerEventDetailsFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         // after removing from attendee & organizer, delete event document from event collection
-                        removeEvent(eventId);
+                        removeEvent(eventId, new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                //now that all deletion steps are complete, call notifyEventDeletion
+                                notifyEventDeletion();
+                            }
+                        });
                     }
                 });
             }
@@ -262,16 +270,20 @@ public class OrganizerEventDetailsFragment extends Fragment {
                 });
     }
 
-    private void removeEvent(String eventId) {
+    private void removeEvent(String eventId, OnCompleteListener<Void> completionListener) {
         db.collection("Events").document(eventId)
                 .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onSuccess(Void unused) {
-                        Log.d("Firestore","DocumentSnapshot successfully deleted!");
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            // If the deletion is successful, invoke the completion listener with success
+                            completionListener.onComplete(task);
+                        }
                     }
                 });
     }
+
 
     // Interface for callback
     public interface EventDeletionListener {
@@ -281,12 +293,14 @@ public class OrganizerEventDetailsFragment extends Fragment {
     // Method to set the listener
     public void setEventDeletionListener(EventDeletionListener eventDeletionListener) {
         this.eventDeletionListener = eventDeletionListener;
+        Log.d("Interface", "EventDeletionListener has been set in OrganizerEventDetailsFragment");
     }
 
     // Invoke this method when the event is successfully deleted
     private void notifyEventDeletion() {
         if (eventDeletionListener != null) {
             eventDeletionListener.onEventDeleted();
+            Log.d("Interface", "EventDeletionListener (Activity) calls onEventDeleted function overidden in the activity");
         }
     }
 
