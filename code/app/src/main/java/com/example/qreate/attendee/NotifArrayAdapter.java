@@ -1,16 +1,23 @@
 package com.example.qreate.attendee;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.CompoundButtonCompat;
 
 import com.example.qreate.R;
+import com.example.qreate.administrator.AdministratorEvent;
+import com.example.qreate.administrator.EventArrayAdapter;
 
 import org.w3c.dom.Text;
 
@@ -29,6 +36,8 @@ import java.util.ArrayList;
 public class NotifArrayAdapter extends ArrayAdapter<Notif> {
     private ArrayList<Notif> notifs;
     private Context mContext;
+    private int selectedPosition = -1;
+    private OnNotifSelectedListener mListener;
 
     /**
      * Constructs a new NotifArrayAdapter.
@@ -36,9 +45,9 @@ public class NotifArrayAdapter extends ArrayAdapter<Notif> {
      * @param context The current context. Used to inflate the layout file.
      * @param notifs An ArrayList of Notif objects to display in a list.
      */
-
-    public NotifArrayAdapter(Context context, ArrayList<Notif> notifs){
-        super(context,0,notifs);
+    public NotifArrayAdapter(Context context, ArrayList<Notif> notifs, NotifArrayAdapter.OnNotifSelectedListener listener) {
+        super(context, 0, notifs);
+        mListener = listener;
         this.notifs = notifs;
         this.mContext=context;
     }
@@ -66,12 +75,64 @@ public class NotifArrayAdapter extends ArrayAdapter<Notif> {
 
         TextView notifDescriptionText = viewItem.findViewById(R.id.notif_description_text);
         TextView notifTitleText = viewItem.findViewById(R.id.notif_title_text);
+        RadioButton radioButton = viewItem.findViewById(R.id.notif_radio_button);
 
         //set the text
         notifDescriptionText.setText(currentNotif.getNotificationDescription());
         notifTitleText.setText(currentNotif.getTitle());
 
+        radioButton.setChecked(position == selectedPosition);
+        changeRadioColor(viewItem);
+
+        radioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedPosition = position; // Update the selected position
+                notifyDataSetChanged(); // Notify the adapter to update the radio buttons
+                mListener.onNotifSelected();
+            }
+        });
+
         return viewItem;
+    }
+
+    private void changeRadioColor(View view) {
+
+        RadioButton radioButton = view.findViewById(R.id.notif_radio_button);
+
+        // Define the color state list for checked and unchecked states
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{-android.R.attr.state_checked}, // unchecked state
+                        new int[]{android.R.attr.state_checked} // checked state
+                },
+                new int[]{
+                        Color.parseColor("#CCCCCC"), // gray color for unchecked state in hex
+                        Color.parseColor("#FCA311") // red color for checked state in hex
+                }
+        );
+
+
+        // Apply the color state list to the RadioButton
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            radioButton.setButtonTintList(colorStateList);
+        } else {
+            CompoundButtonCompat.setButtonTintList(radioButton, colorStateList); // Support library for pre-Lollipop
+        }
+
+
+    }
+
+    public String getSelectedNotifId() {
+        if (selectedPosition != -1) {
+            Notif selectedNotif = getItem(selectedPosition);
+            return selectedNotif.getId();
+        }
+        return null;
+    }
+
+    public interface OnNotifSelectedListener {
+        void onNotifSelected();
     }
 
 }

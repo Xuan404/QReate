@@ -55,8 +55,10 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     private String retrievedDocumentId;
     private String tokenFCM;
     private String selectedEventId;
+    private String selectedNotifId;
     String device_id;
     private EventArrayAdapter eventArrayAdapter;
+    private NotifArrayAdapter notifArrayAdapter;
 
     /**
      * Called when the activity is starting. This is where most initialization should go:
@@ -245,6 +247,8 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     public void setupDetailsNavigationBar() {
         BottomNavigationView detailsNavBar = findViewById(R.id.attendee_view_details_navigation_bar);
+        BottomNavigationView navBar = findViewById(R.id.attendee_navigation_bar);
+        int navBarItemId = navBar.getSelectedItemId();
 
         detailsNavBar.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -253,27 +257,39 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                 if (itemId == R.id.cancel_icon) {
                     hideDetailsNavigationBar();
                     showBottomNavigationBar();
+
                 } else if (itemId == R.id.view_details_icon) {
                     hideDetailsNavigationBar();
-                    Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.attendee_handler_frame);
-                    if (currentFragment instanceof OtherEventsFragment) {
-                        selectedEventId = ((OtherEventsFragment) currentFragment).getSelectedEventId();
-                        if (selectedEventId != null) {
-                            navigateToOtherEventDetails(selectedEventId);
+                    if (navBarItemId==R.id.notifications_icon) {
+                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.attendee_handler_frame);
+                        if (currentFragment instanceof AttendeeNotificationsFragment) {
+                            selectedNotifId = ((AttendeeNotificationsFragment) currentFragment).getSelectedNotifId();
+                            if(selectedNotifId != null) {
+                                navigateToNotifDetails(selectedNotifId);
+                            }
                         }
-                    } else if (currentFragment instanceof CurrentEventsFragment) {
-                        selectedEventId = ((CurrentEventsFragment) currentFragment).getSelectedEventId();
-                        if (selectedEventId != null) {
-                            navigateToCurrentAndUpcomingEventDetails(selectedEventId);
+                    } else if (navBarItemId==R.id.events_icon_nav) {
+                        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.attendee_handler_frame);
+                        if (currentFragment instanceof OtherEventsFragment) {
+                            selectedEventId = ((OtherEventsFragment) currentFragment).getSelectedEventId();
+                            if (selectedEventId != null) {
+                                navigateToOtherEventDetails(selectedEventId);
+                            }
+                        } else if (currentFragment instanceof CurrentEventsFragment) {
+                            selectedEventId = ((CurrentEventsFragment) currentFragment).getSelectedEventId();
+                            if (selectedEventId != null) {
+                                navigateToCurrentAndUpcomingEventDetails(selectedEventId);
+                            }
+                            showDeleteNavigationBar();
+                        } else if (currentFragment instanceof UpcomingEventsFragment) {
+                            selectedEventId = ((UpcomingEventsFragment) currentFragment).getSelectedEventId();
+                            if (selectedEventId != null) {
+                                navigateToCurrentAndUpcomingEventDetails(selectedEventId);
+                            }
+                            showDeleteNavigationBar();
                         }
-                        showDeleteNavigationBar();
-                    } else if (currentFragment instanceof UpcomingEventsFragment) {
-                        selectedEventId = ((UpcomingEventsFragment) currentFragment).getSelectedEventId();
-                        if (selectedEventId != null) {
-                            navigateToCurrentAndUpcomingEventDetails(selectedEventId);
-                        }
-                        showDeleteNavigationBar();
                     }
+
                 }
                 return true;
             }
@@ -388,6 +404,13 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                 .addOnFailureListener(e -> Log.e("Transaction", "Transaction failure.", e));
     }
 
+    private void navigateToNotifDetails(String notifId) {
+        NotifViewDetailsFragment detailsFragment = NotifViewDetailsFragment.newInstance(notifId);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.attendee_handler_frame, detailsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
 
 ////////////// FUNCTIONS FOR HANDLING ORGANIZER COLLECTION CREATION //////////////////////////////////
