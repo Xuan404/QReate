@@ -14,16 +14,17 @@ package com.example.qreate.attendee;
 public class Notif {
     private String description;
     private String title;
-
+    private String id;
 
     /**
      * notification details
      * @param description
      * @param title
      */
-    Notif(String description, String title){
+    Notif(String description, String title, String id){
         this.description = description;
         this.title = title;
+        this.id = id;
     }
 
     /**
@@ -44,5 +45,9 @@ public class Notif {
 
     String getTitle(){
         return title;
+    }
+
+    public String getId() {
+        return id;
     }
 }
