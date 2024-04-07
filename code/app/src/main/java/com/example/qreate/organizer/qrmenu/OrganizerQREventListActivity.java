@@ -34,6 +34,7 @@ import java.util.List;
 
 /**
  * Show the User a list of Events that he has created
+ * @author Akib Zaman Choudhury
  */
 public class OrganizerQREventListActivity extends AppCompatActivity implements OrganizerQREventListPopupWindow.EventCreationListener, OrganizerEventArrayAdapter.EventSelectionListener, OrganizerEventDetailsFragment.EventDeletionListener{
     private OrganizerQREventListPopupWindow popupWindow;
@@ -44,7 +45,13 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
     private OrganizerEventArrayAdapter eventArrayAdapter;
     private Context context;
 
-
+    /**
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,13 +94,19 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
         });
     }
 
-
+    /**
+     * refreshes event list after event deleted
+     */
     @Override
     public void onEventCreated() {
         // Refresh events list
         loadEvents();
     }
 
+    /**
+     *
+     * @param eventId
+     */
     public void onEventSelected(String eventId){
         createEventButton.setVisibility(View.INVISIBLE);
         OrganizerEventDetailsFragment detailsFragment = OrganizerEventDetailsFragment.newInstance(eventId);
@@ -105,6 +118,9 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
                 .commit();
     }
 
+    /**
+     * Interface for handling event deletion
+     */
     @Override
     public void onEventDeleted() {
         // Reload your events from Firestore and update the ListView
@@ -112,7 +128,9 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
         Log.d("Interface", "onEventDeleted function refreshes the listview by calling loadEvents()");
     }
 
-
+    /**
+     * Loads created events onto list view
+     */
     public void loadEvents(){
         ArrayList<AdministratorEvent> events = new ArrayList<>();
         eventArrayAdapter = new OrganizerEventArrayAdapter(this,events);
@@ -142,7 +160,18 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
     }
 
 
-    // Handle the result from the poster selection when creating an event
+    /**
+     * This is the Activity class that call the gallrery for the user to be able to select a event poster
+     *
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -46,6 +46,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Class for handling sharing of promo and checkin QR codes
+ * @author Akib Zaman Choudhury
+ */
 public class OrganizerQRShareActivity extends AppCompatActivity {
 
     String documentId ;
@@ -57,8 +61,14 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
     private ImageView imageView;
     private Button buttonShare;
 
-    
 
+    /**
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,9 +137,12 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Logic to retrieve and display image from Firebase Storage
+     * @param documentId
+     * @param field
+     */
     private void selectImage(String documentId, String field) {
-        // Logic to retrieve and display image from Firebase Storage
 
         DocumentReference eventDocRef = db.collection("Events").document(documentId);
         eventDocRef.get().addOnSuccessListener(documentSnapshot -> {
@@ -155,7 +168,10 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Retrives the firebase image and displays it
+     * @param imagePath
+     */
     private void downloadAndDisplayImage(String imagePath) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference imageRef = storage.getReference().child(imagePath);
@@ -174,6 +190,10 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Allows the user to share the retrieved images
+     * @param bitmapImage
+     */
     private void shareImage(Bitmap bitmapImage) {
         // Save the bitmap to cache directory
         try {
@@ -205,7 +225,9 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     *  Pre-select the first radio button as an example
+     */
     private void setupQRselect(){
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.share_qr_code_radio_group);
         // Pre-select the second radio button as an example
@@ -215,6 +237,9 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Changes radio button color using java
+     */
     private void changeRadioColor() {
 
         RadioGroup radioGroup = findViewById(R.id.share_qr_code_radio_group);
@@ -256,7 +281,9 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
 
 
 
-    //Temporary to test swap this with the firebase data
+    /**
+     * Adds events to the dialog box
+     */
     private void addEventsInit(){
 
         // TODO THIS CODE CRASHES IF THERES NO DETAIL OR DATE SO I COMMENTED IT OUT UNCOMMENT WHEN DATA IS FIXED
@@ -309,6 +336,9 @@ public class OrganizerQRShareActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Dialog box with all event items
+     */
     private void showOptionsDialog() {
         final String[] items = new String[events.size()];
         for (int i = 0; i < events.size(); i++) {

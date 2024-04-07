@@ -21,6 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * Class that handles the list view for checkinList
+ * @author Akib Zaman Choudhury
+ */
 public class OrganizerAttendeeSignupListActivity extends AppCompatActivity {
 
     OrganizerAttendeeSignupArrayAdapter attendeeArrayAdapter;
@@ -28,6 +33,13 @@ public class OrganizerAttendeeSignupListActivity extends AppCompatActivity {
     private ListView list;
     private FirebaseFirestore db;
 
+    /**
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +63,9 @@ public class OrganizerAttendeeSignupListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Loads up attendees from firebase
+     */
     public void loadEvents(){
 
         ArrayList<OrganizerAttendeeSignup> attendees = new ArrayList<>();

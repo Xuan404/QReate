@@ -92,10 +92,5 @@ public class OrganizerEvent {
         this.documentID = documentID;
     }
 
-    /**
-     * returns name
-     *
-     * @return String
-     */
-    //THIS DOESNT WORK
+
 }

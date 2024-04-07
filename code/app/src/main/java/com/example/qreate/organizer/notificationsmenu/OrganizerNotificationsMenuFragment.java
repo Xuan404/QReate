@@ -91,7 +91,10 @@ public class OrganizerNotificationsMenuFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     * Shows the name injtials for the profile icon
+     * @param view
+     */
     private void initializePicViewModel(View view){
         profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
         profilePicViewModel.getGeneratedProfilePic().observe(getViewLifecycleOwner(), bitmap -> {
@@ -105,7 +108,10 @@ public class OrganizerNotificationsMenuFragment extends Fragment {
     }
 
 
-
+    /**
+     * Drop down profile menu
+     * @param view
+     */
     private void showPopupMenu(View view) {
         // Initialize the PopupMenu
         PopupMenu popupMenu = new PopupMenu(getActivity(), view); // For Fragment, use getActivity() instead of this
@@ -139,6 +145,9 @@ public class OrganizerNotificationsMenuFragment extends Fragment {
         popupMenu.show();
     }
 
+    /**
+     *  Handles swiching from current fragment to Account details fragment
+     */
     private void accountProfile() {
         //Handles fragment transaction related to the account profile
 

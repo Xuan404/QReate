@@ -119,6 +119,10 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
         return view;
     }
 
+
+    /**
+     *  Shows the dialog box options for choosing event
+     */
     private void showOptionsDialog() {
         final String[] items = new String[events.size()];
         for (int i = 0; i < events.size(); i++) {
@@ -151,6 +155,10 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
         dialog.show();
     }
 
+    /**
+     * Shows the name injtials for the profile icon
+     * @param view
+     */
     private void initializePicViewModel(View view){
         profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
         profilePicViewModel.getGeneratedProfilePic().observe(getViewLifecycleOwner(), bitmap -> {
@@ -163,7 +171,9 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
 
     }
 
-
+    /**
+     * Adds events to the dialog box
+     */
     private void addEventsInit(){
         // TODO THIS CODE CRASHES IF THERES NO DETAIL OR DATE SO I COMMENTED IT OUT UNCOMMENT WHEN DATA IS FIXED
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -212,7 +222,10 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
     }
 
 
-
+    /**
+     * Drop down profile menu
+     * @param view
+     */
     private void showPopupMenu(View view) {
         // Initialize the PopupMenu
         PopupMenu popupMenu = new PopupMenu(getActivity(), view); // For Fragment, use getActivity() instead of this
@@ -246,6 +259,9 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
         popupMenu.show();
     }
 
+    /**
+     *  Handles swiching from current fragment to Account details fragment
+     */
     private void accountProfile() {
         //Handles fragment transaction related to the account profile
 

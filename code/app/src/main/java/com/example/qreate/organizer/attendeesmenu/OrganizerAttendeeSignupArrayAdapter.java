@@ -14,6 +14,10 @@ import com.example.qreate.R;
 
 import java.util.ArrayList;
 
+/**
+ * Array adapter class for signup list
+ * @author Akib Zamn Choudhury
+ */
 public class OrganizerAttendeeSignupArrayAdapter extends ArrayAdapter<OrganizerAttendeeSignup> {
 
     public OrganizerAttendeeSignupArrayAdapter(Context context, ArrayList<OrganizerAttendeeSignup> attendees) {

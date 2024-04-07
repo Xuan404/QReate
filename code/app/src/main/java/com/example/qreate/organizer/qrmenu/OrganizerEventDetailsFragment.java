@@ -33,6 +33,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+
+/**
+ * Fragment that allows the user to delete and see event details
+ * @author Harshita
+ */
 public class OrganizerEventDetailsFragment extends Fragment {
     private ImageView poster;
     private TextView eventName;

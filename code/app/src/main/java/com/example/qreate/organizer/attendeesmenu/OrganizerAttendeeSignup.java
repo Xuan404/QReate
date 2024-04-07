@@ -1,5 +1,9 @@
 package com.example.qreate.organizer.attendeesmenu;
 
+/**
+ * Class for retriving signedup Attendee name and id
+ * @author Akib Zaman Choudhury
+ */
 public class OrganizerAttendeeSignup {
 
     private String attendeeName;

@@ -60,7 +60,13 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
     private OrganizerEvent selectedEvent;
     private ExecutorService executorService; // An ExecutorService that can schedule commands to run after a given delay, or to execute periodically.
 
-
+    /**
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +129,12 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
 
     }
 
+    /**
+     *  Creates the Announcement Document
+     * @param title
+     * @param description
+     * @param documentId
+     */
     public void createAnnouncement(String title, String description, String documentId) {
 
         // Create a new document with title and description
@@ -136,8 +148,10 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
     }
 
 
-
-    // Retrieves the fcm token and sends a notification
+    /**
+     * Retrieves the fcm token and calls sendFcmMessage() to send a notification
+     * @param eventId
+     */
     public void retrieveFcmTokens(String eventId) {
 
         DocumentReference eventDocRef = db.collection("Events").document(eventId);
@@ -172,8 +186,14 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
     }
 
 
-
-    // Sends notification to the fcm tokens passed
+    /**
+     * Sends notification to the fcm tokens passed
+     *
+     * @param serverKey
+     * @param deviceToken
+     * @param messageTitle
+     * @param messageBody
+     */
     public void sendFcmMessage(String serverKey, String deviceToken, String messageTitle, String messageBody) {
         executorService.execute(new Runnable() {
             @Override
@@ -233,7 +253,9 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * shutsdown the notification service
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -243,7 +265,9 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
     }
 
 
-    //Temporary to test swap this with the firebase data
+    /**
+     *  Sets up the dialog box for choosing an event
+     */
     private void addEventsInit(){
 
 
@@ -296,6 +320,10 @@ public class OrganizerNotificationsSendActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    /**
+     * Dialog box for choosing event
+     */
     private void showOptionsDialog() {
         final String[] items = new String[events.size()];
         for (int i = 0; i < events.size(); i++) {

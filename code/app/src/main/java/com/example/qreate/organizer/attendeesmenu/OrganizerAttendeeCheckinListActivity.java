@@ -17,7 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * Class that handles the list view for checkinList
+ * @author Akib Zaman Choudhury
+ */
 public class OrganizerAttendeeCheckinListActivity extends AppCompatActivity {
 
     OrganizerAttendeeCheckinArrayAdapter attendeeArrayAdapter;
@@ -48,6 +51,9 @@ public class OrganizerAttendeeCheckinListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Loads up the attendees from firebase
+     */
     public void loadEvents(){
 
         ArrayList<OrganizerAttendeeCheckin> attendees = new ArrayList<>();

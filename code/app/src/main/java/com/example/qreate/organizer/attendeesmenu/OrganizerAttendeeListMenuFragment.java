@@ -57,6 +57,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+*   Handles all activities related to the Attendee List menu
+ *   @author Akib Zamn Choudhury
+*/
 public class OrganizerAttendeeListMenuFragment extends Fragment {
     private com.example.qreate.attendee.profilePicViewModel profilePicViewModel;
     private String documentId;
@@ -143,7 +147,12 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     * Sends local notification to the user based on milestone reached
+     * @param notificationId
+     * @param title
+     * @param content
+     */
     public void sendLocalNotification(int notificationId, String title, String content) {
         String channelId = "local_channel_id";
 
@@ -188,10 +197,9 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
     }
 
 
-
-
-
-
+    /**
+     * Updates Stats and checks if milestone has been reached
+     */
     private void updateStats() {
 
         DocumentReference eventDocRef = db.collection("Events").document(documentId);
@@ -235,7 +243,9 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
 
     }
 
-
+    /**
+     *  Dialog box for choosing event
+     */
     private void showOptionsDialog() {
         final String[] items = new String[events.size()];
         for (int i = 0; i < events.size(); i++) {
@@ -284,7 +294,9 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
     }
 
 
-
+    /**
+     * Sets up event inside dialog box
+     */
     private void addEventsInit(){
         // TODO THIS CODE CRASHES IF THERES NO DETAIL OR DATE SO I COMMENTED IT OUT UNCOMMENT WHEN DATA IS FIXED
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);

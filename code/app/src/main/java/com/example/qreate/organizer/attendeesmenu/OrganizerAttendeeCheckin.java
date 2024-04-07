@@ -1,5 +1,9 @@
 package com.example.qreate.organizer.attendeesmenu;
 
+/**
+ * Attendee class for retriving name and doc id
+ * @author Akib Zaman Choudhury
+ */
 public class OrganizerAttendeeCheckin {
     private String attendeeName;
     private String id;

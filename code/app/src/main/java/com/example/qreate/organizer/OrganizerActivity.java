@@ -38,7 +38,6 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * The following class is responsible for all activities related to the Organizer
  *
- * Outstanding Issue: OrganizerActivityTest does not PASS unless line 53: authenticateUser(this); is commented.
  * @author Akib Zaman Choudhury
  */
 public class OrganizerActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener{
@@ -197,11 +196,18 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
 
 ///////////////////////////// NAVIGATION BAR VISIBILITY ///////////////////////////////////////////////
+
+    /**
+     * Hides botton navigation bar
+     */
     public void hideBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.organizer_handler_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar disappear
     }
 
+    /**
+     * Shows botton navigation bar
+     */
     public void showBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.organizer_handler_navigation_bar);
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
@@ -212,11 +218,17 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
 ////////////// FUNCTIONS FOR HANDLING ORGANIZER COLLECTION CREATION //////////////////////////////////
 
+    /**
+     * Interface for handling the asynchronous nature of firebase
+     */
     public interface DocumentIdCallback {
         void onDocumentIdRetrieved(String documentId);
         void onError(Exception e);
     }
 
+    /**
+     * Creates the orgnaizer collection
+     */
     public void createOrganizerCollection() {
 
         retrieveUserDocument(new DocumentIdCallback() {
@@ -244,10 +256,10 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
     }
 
 
-
-
+    /**
+     * Function to help set up checkIfOrganizerExists
+     */
     private void authenticateOrganizer() {
-        //Function to help set up checkIfOrganizerExists
 
         retrieveUserDocument(new DocumentIdCallback() {
             @Override
@@ -269,7 +281,12 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
 
     }
 
-
+    /**
+     * Checks if the organizer document for the corresponding user existis
+     * @param collectionName
+     * @param fieldName
+     * @param documentReference
+     */
     public void checkIfOrganizersExist(String collectionName, String fieldName, DocumentReference documentReference) {
 
 
@@ -295,8 +312,11 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
     }
 
 
-
-
+    /**
+     * Implements the DocumentIdCallback interface when retrieving the User document
+     *
+     * @param callback
+     */
     public void retrieveUserDocument(DocumentIdCallback callback) {
 
         db.collection("Users")

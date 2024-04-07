@@ -27,7 +27,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Class for setting up the Geolocation map and markers
+ * @author Akib Zaman Choudhury
+ */
 public class OrganizerGeolocationMap extends AppCompatActivity implements OnMapReadyCallback {
 
     private String eventDocId;
@@ -58,7 +61,10 @@ public class OrganizerGeolocationMap extends AppCompatActivity implements OnMapR
     }
 
 
-
+    /**
+     * Places markers all over the map based on attendee checkins
+     * @param googleMap
+     */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
 
