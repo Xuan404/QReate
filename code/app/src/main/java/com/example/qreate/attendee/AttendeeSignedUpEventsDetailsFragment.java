@@ -88,8 +88,8 @@ public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
                                     String formattedDate = dateFormat.format(dateTimestamp.toDate());
                                     eventDate.setText(formattedDate);
                                 }
+                                eventTime.setText(document.getString("timeOfEvent"));
                                 // poster.setText(document.getString("poster"));
-                                // eventTime.setText(document.getString("time"));
                                 // eventLocation.setText(document.getString("location"));
                             } else {
                                 Log.d("Firestore", "Error getting documents: ", task.getException());

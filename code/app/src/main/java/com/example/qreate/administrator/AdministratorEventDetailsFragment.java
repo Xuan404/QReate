@@ -83,7 +83,7 @@ public class AdministratorEventDetailsFragment extends Fragment {
                                     String formattedDate = dateFormat.format(dateTimestamp.toDate());
                                     eventDate.setText(formattedDate);
                                 }
-                                // eventTime.setText(document.getString("time"));
+                                eventTime.setText(document.getString("timeOfEvent"));
                                 // eventLocation.setText(document.getString("location"));
                             } else {
                                 Log.d("Firestore", "Error getting documents: ", task.getException());

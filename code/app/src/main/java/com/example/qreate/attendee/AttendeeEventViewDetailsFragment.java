@@ -221,8 +221,8 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                                     String formattedDate = dateFormat.format(dateTimestamp.toDate());
                                     eventDate.setText(formattedDate);
                                 }
+                                eventTime.setText(document.getString("timeOfEvent"));
                                 // poster.setText(document.getString("poster"));
-                                // eventTime.setText(document.getString("time"));
                                 // eventLocation.setText(document.getString("location"));
                                 // Ensure you have fields named accordingly in your Firestore document
                             } else {
