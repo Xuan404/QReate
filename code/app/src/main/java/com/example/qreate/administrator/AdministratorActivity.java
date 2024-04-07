@@ -1,6 +1,7 @@
 package com.example.qreate.administrator;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -13,9 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.EditProfileScreenFragment;
 import com.example.qreate.R;
 import com.example.qreate.HomeScreenFragment;
+import com.example.qreate.UpdateProfilePicFragment;
 import com.example.qreate.WelcomeScreenFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,7 +38,7 @@ import java.util.HashMap;
  *
  * Outstanding Issue: AdministratorActivityTest does not PASS unless line 48: authenticateUser(this); is commented.
  */
-public class AdministratorActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
+public class AdministratorActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener{
     private BottomNavigationView bottomNavigationView;
     private FirebaseFirestore db;
     private String selectedEventId;

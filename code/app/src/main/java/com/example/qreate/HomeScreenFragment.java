@@ -2,6 +2,7 @@ package com.example.qreate;
 
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -36,7 +37,7 @@ import java.io.ByteArrayOutputStream;
  *
  * @author Akib Zaman Choudhury
  */
-public class HomeScreenFragment extends Fragment {
+public class HomeScreenFragment extends Fragment{
 
     /**
      * Creates the view and inflates the home_screen layout
@@ -182,7 +183,6 @@ public class HomeScreenFragment extends Fragment {
         return stringBase64;
 
     }
-
 
 
 

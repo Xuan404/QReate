@@ -2,8 +2,10 @@ package com.example.qreate;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
  *
  * @author Akib Zaman Choudhury
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     /**
      * Creates and Inflates the view
@@ -84,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 
 
 }

@@ -1,6 +1,7 @@
 package com.example.qreate.organizer;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -11,9 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.EditProfileScreenFragment;
 import com.example.qreate.HomeScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.UpdateProfilePicFragment;
 import com.example.qreate.WelcomeScreenFragment;
 import com.example.qreate.organizer.attendeesmenu.OrganizerAttendeeListMenuFragment;
 import com.example.qreate.organizer.geolocationmenu.OrganizerGeolocationMenuFragment;
@@ -38,7 +41,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Outstanding Issue: OrganizerActivityTest does not PASS unless line 53: authenticateUser(this); is commented.
  * @author Akib Zaman Choudhury
  */
-public class OrganizerActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener {
+public class OrganizerActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener{
 
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
     private BottomNavigationView bottomNavigationView;
@@ -311,7 +314,5 @@ public class OrganizerActivity extends AppCompatActivity implements EditProfileS
                 });
     }
 //////////////////////////////////////////////// END //////////////////////////////////////////////////
-
-
 
 }
