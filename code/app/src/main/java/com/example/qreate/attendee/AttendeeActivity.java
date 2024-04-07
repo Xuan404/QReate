@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
@@ -311,6 +312,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                                     Log.e("FetchAttendee", "Error fetching attendee document", task.getException());
                                 }
                             });
+                    incrementSignupCount(selectedEventId);
                     hideDeleteNavigationBar();
                     showBottomNavigationBar();
                     getSupportFragmentManager().popBackStackImmediate();
@@ -370,6 +372,20 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         } else if (currentFragment instanceof UpcomingEventsFragment) {
             ((UpcomingEventsFragment) currentFragment).removeEventFromList(eventId);
         }
+    }
+
+    private void incrementSignupCount(String eventId) {
+        final DocumentReference eventRef = db.collection("Events").document(eventId);
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+                    Long currentCount = eventSnapshot.getLong("signup_count");
+                    if (currentCount == null || currentCount <= 0) {
+                        return null;
+                    }
+                    transaction.update(eventRef, "signup_count", currentCount - 1);
+                    return null;
+                }).addOnSuccessListener(aVoid -> Log.d("Transaction", "Transaction success! signup_count incremented"))
+                .addOnFailureListener(e -> Log.e("Transaction", "Transaction failure.", e));
     }
 
 

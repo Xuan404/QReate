@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.Transaction;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -145,6 +146,7 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                                             newEntry.put("checkInCount", 0);
 
                                             signedupAttendeesList.add(newEntry);
+                                            incrementSignupCount(eventId);
 
                                             eventRef.update("signedup_attendees", signedupAttendeesList)
                                                     .addOnSuccessListener(aVoid -> {
@@ -247,6 +249,18 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
     private void showBottomNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).showBottomNavigationBar();
+    }
+
+    private void incrementSignupCount(String eventId) {
+        final DocumentReference eventRef = db.collection("Events").document(eventId);
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+                    DocumentSnapshot eventSnapshot = transaction.get(eventRef);
+                    Long currentCount = eventSnapshot.getLong("signup_count");
+                    if (currentCount == null) currentCount = 0L;
+                    transaction.update(eventRef, "signup_count", currentCount + 1);
+                    return null;
+                }).addOnSuccessListener(aVoid -> Log.d("Transaction", "Transaction success! signup_count incremented"))
+                .addOnFailureListener(e -> Log.e("Transaction", "Transaction failure.", e));
     }
 
 }
