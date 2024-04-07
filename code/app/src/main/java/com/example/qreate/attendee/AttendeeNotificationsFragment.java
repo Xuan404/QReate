@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
+import com.example.qreate.administrator.AdministratorEvent;
 import com.example.qreate.organizer.OrganizerActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -243,5 +244,14 @@ public class AttendeeNotificationsFragment extends Fragment implements NotifArra
         return notifArrayAdapter.getSelectedNotifId();
     }
 
+    public void deleteNotification(String notifId) {
+        for (int i = 0; i < notificationsArrayList.size(); i++) {
+            if (notificationsArrayList.get(i).getId().equals(notifId)) {
+                notificationsArrayList.remove(i);
+                break;
+            }
+        }
+        notifArrayAdapter.notifyDataSetChanged(); // Notify the adapter about the data change
+    }
 
 }
