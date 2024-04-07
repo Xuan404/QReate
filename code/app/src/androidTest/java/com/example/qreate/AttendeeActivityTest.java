@@ -5,6 +5,7 @@ import androidx.test.espresso.assertion.ViewAssertions;
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,7 +22,7 @@ import com.example.qreate.attendee.AttendeeActivity;
  * The following test is only there to test out fragment changes for the navigation bar and not the whole activity.
  */
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(AndroidJUnit4ClassRunner.class)
 public class AttendeeActivityTest {
 
     @Rule
