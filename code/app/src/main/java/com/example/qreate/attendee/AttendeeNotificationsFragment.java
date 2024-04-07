@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  * @author Shraddha Mehta
  */
 
-public class AttendeeNotificationsFragment extends Fragment {
+public class AttendeeNotificationsFragment extends Fragment implements NotifArrayAdapter.OnNotifSelectedListener{
 
     private ListView notificationsListView;
     private ArrayList<Notif> notificationsArrayList;
@@ -92,7 +92,7 @@ public class AttendeeNotificationsFragment extends Fragment {
         //initialize data
         notificationsArrayList = new ArrayList<>();
         //set up adapter
-        notifArrayAdapter = new NotifArrayAdapter(getContext(), notificationsArrayList);
+        notifArrayAdapter = new NotifArrayAdapter(getContext(), notificationsArrayList, this);
         //set up the ListView
         notificationsListView = view.findViewById(R.id.notif_list_view);
         initializePicViewModel(view);
@@ -142,8 +142,8 @@ public class AttendeeNotificationsFragment extends Fragment {
                                         for(QueryDocumentSnapshot announcementsDoc : announcementQuerySnapshot){
                                             String notifDescription = announcementsDoc.getString("description");
                                             String notifTitle = announcementsDoc.getString("title");
-
-                                            Notif notif = new Notif(notifDescription, notifTitle);
+                                            String eventId = announcementsDoc.getId();
+                                            Notif notif = new Notif(notifDescription, notifTitle, eventId);
                                             notificationsArrayList.add(notif);
                                         }
                                         notifArrayAdapter.notifyDataSetChanged();
@@ -222,6 +222,26 @@ public class AttendeeNotificationsFragment extends Fragment {
         transaction.commit();
     }
 
+    @Override
+    public void onNotifSelected() {
+        hideBottomNavigationBar();
+        showDetailsNavigationBar();
+    }
+
+
+    private void hideBottomNavigationBar() {
+        // Find the BottomNavigationView and set its visibility to GONE
+        ((AttendeeActivity)getActivity()).hideBottomNavigationBar();
+    }
+
+    private void showDetailsNavigationBar() {
+        // Find the BottomNavigationView and set its visibility to GONE
+        ((AttendeeActivity)getActivity()).showDetailsNavigationBar();
+    }
+
+    public String getSelectedNotifId() {
+        return notifArrayAdapter.getSelectedNotifId();
+    }
 
 
 }
