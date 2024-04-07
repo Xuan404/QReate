@@ -306,7 +306,7 @@ public class AttendeeScanFragment extends Fragment {
                                                                         Toast.makeText(getContext(), "You have successfully checkedin", Toast.LENGTH_SHORT).show();
 
                                                                     } else {
-                                                                        Toast.makeText(getContext(), "Cannot Checkin before due date", Toast.LENGTH_SHORT).show();
+                                                                        Toast.makeText(getContext(), "Cannot Checkin before due date/time", Toast.LENGTH_SHORT).show();
                                                                     }
 
 

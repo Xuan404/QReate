@@ -1,8 +1,14 @@
 package com.example.qreate.organizer.attendeesmenu;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.SpannableString;
@@ -27,6 +33,9 @@ import androidx.appcompat.app.AlertDialog;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -77,7 +86,6 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
 
-
         db = FirebaseFirestore.getInstance();
         view = inflater.inflate(R.layout.organizer_attendee_list_menu_screen, container, false);
         ImageButton profileButton = view.findViewById(R.id.attendee_list_menu_screen_profile_button);
@@ -85,6 +93,8 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
         events = new ArrayList<OrganizerEvent>();
         addEventsInit();
         initializePicViewModel(view);
+
+
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,12 +143,62 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
         return view;
     }
 
+
+    public void sendLocalNotification(int notificationId, String title, String content) {
+        String channelId = "local_channel_id";
+
+        // Create a notification manager
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
+
+        // For Android 8.0 and higher, register the notification channel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence channelName = "Local Notifications";
+            String channelDescription = "This channel is used for local notifications";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel = new NotificationChannel(channelId, channelName, importance);
+            channel.setDescription(channelDescription);
+
+            // Register the channel with the system
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        // Build the notification and set the notification content
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), channelId)
+                .setSmallIcon(R.mipmap.ic_launcher) // Replace with your own drawable icon
+                .setContentTitle(title)
+                .setContentText(content)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true); // Remove the notification when tapped
+
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // Notify the notification manager to trigger the notification
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        notificationManager.notify(notificationId, builder.build());
+
+    }
+
+
+
+
+
+
     private void updateStats() {
 
         DocumentReference eventDocRef = db.collection("Events").document(documentId);
 
         eventDocRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
+                String eventName = documentSnapshot.getString("name");
                 // Retrieve and store the checkin_count value
                 Number checkinCount = documentSnapshot.getLong("checkin_count");
                 // Retrieve and store the signup_count value
@@ -151,6 +211,16 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
                 checkinTextView.setText(checkinText);
                 totalTextView.setText(totalText);
 
+                if (checkinCount.intValue() > 0) {
+                    sendLocalNotification(1, eventName, "An Attendee has Checked in!");
+                } else if (checkinCount.intValue() > 10){
+                    sendLocalNotification(1, eventName, "More than 10 Attendee have Checked in !");
+                } else if (checkinCount.intValue() > 20){
+                    sendLocalNotification(1, eventName, "More than 20 Attendee have Checked in !!");
+                } else if (checkinCount.intValue() > 30){
+                    sendLocalNotification(1, eventName, "More than 30 Attendee has Checked in !!");
+
+                }
 
 
             } else {
