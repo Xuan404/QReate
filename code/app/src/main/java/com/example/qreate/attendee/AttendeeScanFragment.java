@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -53,9 +54,12 @@ import com.google.zxing.integration.android.IntentResult;
 import org.w3c.dom.Text;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -289,9 +293,10 @@ public class AttendeeScanFragment extends Fragment {
                                                                     DocumentSnapshot document = task.getResult();
                                                                     Timestamp timestamp = document.getTimestamp("date");
                                                                     Date date = timestamp.toDate();
+                                                                    String time = document.getString("timeOfEvent");
 
                                                                     // Firestore Inserts and signup/date validation before checkin
-                                                                    if (validCheckIn(date)) {
+                                                                    if (validCheckIn(date, time)) {
 
                                                                         setEventCheckin(documentId);
                                                                         setCheckinAttendee(documentId);
@@ -330,25 +335,29 @@ public class AttendeeScanFragment extends Fragment {
                 });
     }
 
-    private boolean validCheckIn(Date date) {
-        // TODO add the signup validation after harshita and gitanjali finish their side of things
+    private boolean validCheckIn(Date date, String time) {
 
-        // Convert the timestamp to a LocalDate
-        LocalDate timestampDate = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            timestampDate = date.toInstant()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Log.d("TimeDate", "Yayy");
+            // Time
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a", Locale.US);
+            LocalTime timeToCompare = LocalTime.parse(time, formatter);
+            LocalTime currentTime = LocalTime.now();
+
+            //Date
+            LocalDate timestampDate = date.toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate();
+            LocalDate today = LocalDate.now();
+
+            Log.d("TimeDate", "Yayyy");
+
+            Log.d("TimeDate", String.valueOf(today.equals(timestampDate)));
+
+            return currentTime.isAfter(timeToCompare) && today.equals(timestampDate);
         }
 
-        // Get today's date
-        LocalDate today = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            today = LocalDate.now();
-        }
-
-        // Compare the two dates
-        return today.equals(timestampDate);
+        return false;
 
     }
 
