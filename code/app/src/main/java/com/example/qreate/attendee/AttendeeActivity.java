@@ -300,9 +300,8 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                                 if (task.isSuccessful()) {
                                     QuerySnapshot querySnapshot = task.getResult();
                                     if (!querySnapshot.isEmpty()) {
-                                        // Assuming there is only one document per device_id
                                         DocumentSnapshot attendeeDocument = querySnapshot.getDocuments().get(0);
-                                        String attendeeId = attendeeDocument.getId(); // This is the attendeeId you need
+                                        String attendeeId = attendeeDocument.getId();
 
                                         removeEventFromAttendee(selectedEventId, attendeeId);
                                     } else {

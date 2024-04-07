@@ -259,10 +259,10 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
         if (eventArrayAdapter != null) {
             for (int i = 0; i < eventArrayAdapter.getCount(); i++) {
                 AdministratorEvent event = eventArrayAdapter.getItem(i);
-                if (event != null && eventId.equals(event.getId())) { // Assuming AdministratorEvent has a getId() method
+                if (event != null && eventId.equals(event.getId())) {
                     eventArrayAdapter.remove(event);
                     eventArrayAdapter.notifyDataSetChanged();
-                    break; // Stop the loop once the event is found and removed
+                    break;
                 }
             }
         }
