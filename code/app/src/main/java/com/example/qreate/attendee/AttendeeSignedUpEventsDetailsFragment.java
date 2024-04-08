@@ -87,19 +87,19 @@ public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
                                                 // Assuming device_id is unique, get the first document.
                                                 QueryDocumentSnapshot doc = (QueryDocumentSnapshot) task1.getResult().getDocuments().get(0);
                                                 String orgName = doc.getString("name");
-                                                eventOrganizer.setText(orgName);
+                                                eventOrganizer.setText("Organizer: " + orgName);
                                             }
                                         });
-                                eventDescription.setText(document.getString("description"));
-                                eventLocation.setText(document.getString("location"));
+                                eventDescription.setText("Description: " + document.getString("description"));
+                                eventLocation.setText("Location: " + document.getString("location"));
                                 Timestamp dateTimestamp = document.getTimestamp("date");
                                 if (dateTimestamp != null) {
                                     // Format the Timestamp as a String to include only the date part in dd-MM-yyyy format
                                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
                                     String formattedDate = dateFormat.format(dateTimestamp.toDate());
-                                    eventDate.setText(formattedDate);
+                                    eventDate.setText("Date: " + formattedDate);
                                 }
-                                eventTime.setText(document.getString("timeOfEvent"));
+                                eventTime.setText("Time: " + document.getString("timeOfEvent"));
                             } else {
                                 Log.d("Firestore", "Error getting documents: ", task.getException());
                             }
