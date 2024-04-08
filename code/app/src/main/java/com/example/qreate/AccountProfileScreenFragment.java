@@ -1,5 +1,6 @@
 package com.example.qreate;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,12 +16,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.qreate.administrator.AdministratorActivity;
 import com.example.qreate.attendee.AttendeeActivity;
 import com.example.qreate.attendee.GenerateProfilePic;
@@ -38,6 +44,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AccountProfileScreenFragment extends Fragment {
+
+    private ImageView emptyProfilePic;
+    private ActivityResultLauncher<Intent> updateProfileLauncher;
 
     String current_activity;
     // Regex pattern for validating an email address
@@ -67,6 +76,7 @@ public class AccountProfileScreenFragment extends Fragment {
         retrieveAndSetUserInfo(view);
 
         Button confirmDataButton = view.findViewById(R.id.edit_profile_confirm_button);
+        emptyProfilePic = view.findViewById(R.id.empty_profile_pic);
 
         confirmDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,12 +92,9 @@ public class AccountProfileScreenFragment extends Fragment {
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment updateProfilePicFragment = new UpdateProfilePicFragment();
-                FragmentManager fragmentManager = getParentFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.profile_handler, updateProfilePicFragment)
-                        .addToBackStack(null)
-                        .commit();
+                // Intent creation and starting the activity should be inside the onClick method
+                Intent intent = new Intent(getActivity(), UpdateProfileScreenActivity.class);
+                updateProfileLauncher.launch(intent);
             }
         });
 
@@ -95,10 +102,26 @@ public class AccountProfileScreenFragment extends Fragment {
         return view;
     }
 
-    public void displaySelectedImage(Uri imageUri) {
-        ImageView imageView = getView().findViewById(R.id.empty_profile_pic);
-        imageView.setImageURI(imageUri);
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Initialize the launcher
+        updateProfileLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == AppCompatActivity.RESULT_OK && result.getData() != null) {
+                        Uri imageUri = result.getData().getData();
+                        if (imageUri != null && emptyProfilePic != null) {
+                            Glide.with(this)
+                                    .load(imageUri)
+                                    .apply(new RequestOptions().circleCrop())
+                                    .into(emptyProfilePic);
+                        }
+                    }
+                });
     }
+
 
     /**
      * Turns bitmap into Base64 in order to store it to Firestore

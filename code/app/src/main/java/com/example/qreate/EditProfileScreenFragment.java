@@ -1,11 +1,13 @@
 package com.example.qreate;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -21,16 +23,23 @@ import android.widget.Switch;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.qreate.R;
 import com.example.qreate.attendee.GenerateProfilePic;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
@@ -48,6 +57,11 @@ import java.util.Map;
  * @author Akib Zaman Choudhury
  */
 public class EditProfileScreenFragment extends Fragment {
+
+    private String selectedProfilePicUrl;
+
+    private ImageView emptyProfilePic;
+    private ActivityResultLauncher<Intent> updateProfileLauncher;
 
     // Regex pattern for validating an email address
     private static final String EMAIL_REGEX =
@@ -103,10 +117,13 @@ public class EditProfileScreenFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+
         View view = inflater.inflate(R.layout.edit_profile_info, container, false);
         //This one goes to the next screen, wherease the class AccountProfileScreenFragment destroys itself and returns to previous fragment
         // so two classes, same fragment layout but different behaviour
         // on pressing confirm, validates user details and returns
+
+        emptyProfilePic = view.findViewById(R.id.empty_profile_pic);
 
         Button confirmDataButton = view.findViewById(R.id.edit_profile_confirm_button);
 
@@ -121,18 +138,50 @@ public class EditProfileScreenFragment extends Fragment {
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment updateProfilePicFragment = new UpdateProfilePicFragment();
-                FragmentManager fragmentManager = getParentFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.profile_handler, updateProfilePicFragment)
-                        .addToBackStack(null)
-                        .commit();
+                // Intent creation and starting the activity should be inside the onClick method
+                Intent intent = new Intent(getActivity(), UpdateProfileScreenActivity.class);
+                updateProfileLauncher.launch(intent);
             }
         });
 
         return view;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Initialize the launcher
+        updateProfileLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == AppCompatActivity.RESULT_OK && result.getData() != null) {
+                        Uri imageUri = result.getData().getData();
+                        if (imageUri != null) {
+                            uploadImageToFirebaseStorage(imageUri);
+                        }
+                    }
+                });
+    }
+
+    private void uploadImageToFirebaseStorage(Uri fileUri) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("profile_pics/" + System.currentTimeMillis() + ".jpg");
+
+        storageRef.putFile(fileUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                        selectedProfilePicUrl = downloadUri.toString();
+                        Glide.with(this)
+                                .load(downloadUri)
+                                .apply(new RequestOptions().circleCrop())
+                                .into(emptyProfilePic);
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
 
     private void authenticateUserInfo(View view) {
 
@@ -193,7 +242,7 @@ public class EditProfileScreenFragment extends Fragment {
 
         } else {
 
-            sendUserInfoToFirestore(name, phone, email, homepage, status, encodedBitmap);
+            sendUserInfoToFirestore(name, phone, email, homepage, status, encodedBitmap, selectedProfilePicUrl);
             removeFragment(); //removes the fragment
         }
 
@@ -211,7 +260,7 @@ public class EditProfileScreenFragment extends Fragment {
      * @param status
      * @param generatedEncodedPic
      */
-    private void sendUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status, String generatedEncodedPic ) {
+    private void sendUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status, String generatedEncodedPic, String profilePicUrl) {
 
         // Get a Firestore instance
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -227,7 +276,7 @@ public class EditProfileScreenFragment extends Fragment {
         device.put("homepage", homepage);
         device.put("allow_coordinates", status);
         device.put("generated_pic", generatedEncodedPic);
-
+        device.put("profile_pic", profilePicUrl);
 
         // Send the unique ID to Firestore
         db.collection("Users").add(device);
