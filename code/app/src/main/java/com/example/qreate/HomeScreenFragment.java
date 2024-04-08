@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.qreate.attendee.GenerateProfilePic;
 import com.google.android.gms.tasks.Task;
 
@@ -38,6 +40,7 @@ import java.io.ByteArrayOutputStream;
  * @author Akib Zaman Choudhury
  */
 public class HomeScreenFragment extends Fragment{
+    private String selectedProfilePicUrl;
 
     /**
      * Creates the view and inflates the home_screen layout
@@ -84,6 +87,7 @@ public class HomeScreenFragment extends Fragment{
                                 String phoneNumber = document.getString("phone_number");
                                 String email = document.getString("email");
                                 String profileGenPicURL = document.getString("generated_pic");
+                                String profilePicUrl = document.getString("profile_pic");
 
                                 TextView nameText = view.findViewById(R.id.home_screen_welcome_user_text);
                                 TextView phoneNumberText = view.findViewById(R.id.home_screen_phone_number_text);
@@ -94,8 +98,20 @@ public class HomeScreenFragment extends Fragment{
                                 emailText.setText(email);
 
 
-                                Bitmap generatedProfilePic = GenerateProfilePic.generateProfilePicture(getInitials(name));
-                                profileGeneratedIV.setImageBitmap(generatedProfilePic);
+                                ImageView profileImageView = view.findViewById(R.id.home_screen_empty_profile_pic);
+                                if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
+                                    // If the profile_pic URL exists, load it into the ImageView using Glide
+                                    Glide.with(HomeScreenFragment.this)
+                                            .load(profilePicUrl)
+                                            .apply(new RequestOptions().circleCrop())
+                                            .into(profileImageView);
+                                } else {
+                                    // If profile_pic URL doesn't exist, generate a profile picture based on initials
+                                    assert name != null;
+                                    String initials = getInitials(name);
+                                    Bitmap generatedProfilePicBitmap = GenerateProfilePic.generateProfilePicture(initials);
+                                    profileImageView.setImageBitmap(generatedProfilePicBitmap);
+                                }
 
                             } else {
                                 Log.d("Firestore", "No such document");
