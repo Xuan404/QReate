@@ -1,21 +1,28 @@
 package com.example.qreate.administrator;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.qreate.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
 
@@ -30,6 +37,7 @@ public class AdministratorEventDetailsFragment extends Fragment {
     private TextView eventDate;
     private TextView eventTime;
     private TextView eventLocation;
+    private ImageView eventPoster;
     private FirebaseFirestore db;
 
     @Nullable
@@ -44,6 +52,7 @@ public class AdministratorEventDetailsFragment extends Fragment {
         eventDate = view.findViewById(R.id.event_details_event_date);
         eventTime = view.findViewById(R.id.event_details_event_time);
         eventLocation = view.findViewById(R.id.event_details_event_location);
+        eventPoster = view.findViewById(R.id.event_poster);
 
         // Retrieve the event ID passed from the previous fragment
         Bundle args = getArguments();
@@ -62,7 +71,10 @@ public class AdministratorEventDetailsFragment extends Fragment {
                             if (document.exists()) {
                                 // Extract event details from the document and update the UI
                                 eventName.setText(document.getString("name"));
-
+                                String posterPath = document.getString("poster");
+                                if (posterPath != null && !posterPath.isEmpty()) {
+                                    loadPosterImage(posterPath);
+                                }
                                 String device_id = document.getString("org_device_id");
                                 db.collection("Users")
                                         .whereEqualTo("device_id", device_id)
@@ -95,6 +107,26 @@ public class AdministratorEventDetailsFragment extends Fragment {
         }
 
         return view;
+    }
+
+    private void loadPosterImage(String posterPath) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference posterRef = storage.getReference(posterPath);
+
+        posterRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(AdministratorEventDetailsFragment.this)
+                        .load(uri.toString())
+                        .into(eventPoster);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Firestore", "Error getting poster image: ", e);
+            }
+        });
+
     }
 
     public static AdministratorEventDetailsFragment newInstance(String eventId) {

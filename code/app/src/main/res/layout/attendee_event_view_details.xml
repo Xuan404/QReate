@@ -22,8 +22,7 @@
             android:id="@+id/event_details_poster"
             android:layout_width="250dp"
             android:layout_height="250dp"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/poster" />
+            android:layout_marginTop="40dp" />
 
         <TextView
             android:id="@+id/event_details_name"
@@ -75,7 +74,6 @@
             android:fontFamily="@font/poppins_bold"
             android:paddingStart="16dp"
             android:paddingTop="10dp"
-            android:text="Time"
             android:textColor="#D9D9D9"
             android:textSize="18sp" />
 

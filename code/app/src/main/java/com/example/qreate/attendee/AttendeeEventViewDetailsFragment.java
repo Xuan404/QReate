@@ -1,5 +1,6 @@
 package com.example.qreate.attendee;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -15,13 +16,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.qreate.R;
+import com.example.qreate.administrator.AdministratorEventDetailsFragment;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.Transaction;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -201,6 +208,10 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                             if (document.exists()) {
                                 // Extract event details from the document and update the UI
                                 eventName.setText(document.getString("name"));
+                                String posterPath = document.getString("poster");
+                                if (posterPath != null && !posterPath.isEmpty()) {
+                                    loadPosterImage(posterPath);
+                                }
                                 String device_id = document.getString("org_device_id");
                                 db.collection("Users")
                                         .whereEqualTo("device_id", device_id)
@@ -261,6 +272,26 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                     return null;
                 }).addOnSuccessListener(aVoid -> Log.d("Transaction", "Transaction success! signup_count incremented"))
                 .addOnFailureListener(e -> Log.e("Transaction", "Transaction failure.", e));
+    }
+
+    private void loadPosterImage(String posterPath) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference posterRef = storage.getReference(posterPath);
+
+        posterRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(AttendeeEventViewDetailsFragment.this)
+                        .load(uri.toString())
+                        .into(poster);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("Firestore", "Error getting poster image: ", e);
+            }
+        });
+
     }
 
 }
