@@ -69,5 +69,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.2.0")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    testImplementation ("org.mockito:mockito-core:3.+")
+    androidTestImplementation ("org.mockito:mockito-android:3.+")
 
 }
