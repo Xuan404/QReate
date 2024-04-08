@@ -43,7 +43,6 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
     private String device_id;
     private Button createEventButton;
     private OrganizerEventArrayAdapter eventArrayAdapter;
-    private Context context;
 
     /**
      *
