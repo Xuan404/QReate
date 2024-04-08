@@ -417,22 +417,31 @@ public class OrganizerQREventListPopupWindow {
      * Method for time picker, selecting time of event
      */
     private void initTimePicker(){
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int min = calendar.get(Calendar.MINUTE);
+        Calendar now = Calendar.getInstance();
+        int currentHour = now.get(Calendar.HOUR_OF_DAY);
+        int currentMin = now.get(Calendar.MINUTE);
 
-        TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hour, int minute) {
-                updateTime(hour,minute);
+        Calendar selectedCal = Calendar.getInstance();
+        selectedCal.setTime(selectedDate);
+        boolean isToday = now.get(Calendar.YEAR ) == selectedCal.get(Calendar.YEAR)&&
+                now.get(Calendar.MONTH) == selectedCal.get(Calendar.MONTH)&&
+                now.get(Calendar.DAY_OF_MONTH) == selectedCal.get(Calendar.DAY_OF_MONTH);
+        //check time
+        TimePickerDialog.OnTimeSetListener timeSetListener= (view, hourOfDay, minute) -> {
+            if(isToday && (hourOfDay < currentHour || (hourOfDay == currentHour&& minute< currentMin))){
+                Toast.makeText(context, "Please select a time in the future.", Toast.LENGTH_SHORT).show();
+                updateTime(currentHour,currentMin);
+            } else {
+                updateTime(hourOfDay, minute);
             }
         };
 
         //show dialog
-        TimePickerDialog timePickerDialog = new TimePickerDialog(context, timeSetListener, hour, min, false);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(context, timeSetListener, currentHour, currentMin, false);
         timePickerDialog.show();
 
     }
+
 
     /**
      * Sets time format
