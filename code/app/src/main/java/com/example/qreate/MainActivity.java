@@ -80,8 +80,8 @@ public class MainActivity extends AppCompatActivity{
         administratorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AdministratorActivity.class);
-                startActivity(intent);
+                AdminPasswordFragment adminLoginPopupFragment = new AdminPasswordFragment();
+                adminLoginPopupFragment.show(getSupportFragmentManager(), "admin_login_popup");
             }
         });
 
