@@ -38,9 +38,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import android.widget.Toast;
 
 /**
- * The following class is responsible for all activities related to the Administrator
+ * Handles administrative activities within the application, facilitating operations such as user management,
+ * event handling, and content management through a bottom navigation bar interface. It provides features for
+ * navigating between different administrative functionalities, managing profiles, events, and images, including
+ * their deletion and detailed viewing. It implements the OnFragmentInteractionListener interface from the
+ * EditProfileScreenFragment to handle fragment interactions.
  *
- * Outstanding Issue: AdministratorActivityTest does not PASS unless line 48: authenticateUser(this); is commented.
+ * Note: Some of the test won't pass unless authenticateUser(this) is commented out
+ * in the onCreate method.
  */
 public class AdministratorActivity extends AppCompatActivity implements EditProfileScreenFragment.OnFragmentInteractionListener{
     private BottomNavigationView bottomNavigationView;
@@ -100,17 +105,25 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         });
     }
 
-
+    /**
+     * Hides the main bottom navigation bar.
+     */
     public void hideMainBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar disappear
     }
 
+    /**
+     * Makes the main bottom navigation bar visible.
+     */
     public void showMainBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
     }
 
+    /**
+     * Makes the details navigation bar visible and sets its selected item.
+     */
     public void showDetailsNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_view_details_navigation_bar);
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
@@ -118,11 +131,18 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         setupDetailsNavigationBar();
     }
 
+    /**
+     * Hides the details navigation bar.
+     */
     public void hideDetailsNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_view_details_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar reappear
     }
 
+    /**
+     * Makes the delete navigation bar visible and sets its selected item. This method also defines the
+     * behavior for item selection within the delete navigation bar.
+     */
     public void showDeleteNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_delete_navigation_bar);
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
@@ -130,11 +150,18 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         setupDeleteNavigationBar();
     }
 
+    /**
+     * Hides the delete navigation bar.
+     */
     public void hideDeleteNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.administrator_delete_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar reappear
     }
 
+    /**
+     * Configures the delete navigation bar by setting up the listener for item selection. This includes
+     * actions for canceling or confirming deletions.
+     */
     public void setupDeleteNavigationBar(){
         BottomNavigationView deleteNavBar = findViewById(R.id.administrator_delete_navigation_bar);
         BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
@@ -188,6 +215,12 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
 
     }
 
+    /**
+     * Deletes the event poster by updating the Firestore document for the given event to remove the poster field.
+     * Upon successful deletion, logs are printed and UI elements are updated to reflect the change.
+     *
+     * @param eventId The unique document ID of the event for which the poster is to be deleted.
+     */
     private void deleteEventPoster(String eventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference eventRef = db.collection("Events").document(eventId);
@@ -202,6 +235,12 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         selectedFragment.loadImages();
     }
 
+    /**
+     * Deletes the profile picture by setting the profile_pic field to null for the given profile ID in Firestore.
+     * Upon successful deletion, logs are printed and UI elements are updated to reflect the change.
+     *
+     * @param profileId The unique document ID of the profile for which the profile picture is to be deleted.
+     */
     private void deleteProfilePic(String profileId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference userRef = db.collection("Users").document(profileId);
@@ -216,7 +255,13 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         selectedFragment.loadImages();
     }
 
-
+    /**
+     * Deletes an event from Firestore, including all references to it from attendees and organizers.
+     * This multi-step process involves removing the event from attendees' signup lists, organizers' event lists,
+     * and finally deleting the event document itself.
+     *
+     * @param eventId The unique document ID of the event to be deleted.
+     */
     private void deleteEvent(String eventId) {
         removeEventFromAttendee(eventId, new OnCompleteListener<Void>() {
             @Override
@@ -245,6 +290,14 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         });
     }
 
+    /**
+     * Removes an event from all attendees' lists by updating their signup_event_list in Firestore.
+     * Iterates through all attendee documents to check if they are signed up for the specified event and removes it if present.
+     * Notifies a provided completion listener once all updates are completed or if an error occurs.
+     *
+     * @param eventId The document ID of the event to be removed from attendee documents.
+     * @param completionListener Callback to notify upon completion of the update operations.
+     */
     private void removeEventFromAttendee(String eventId, OnCompleteListener<Void> completionListener) {
         DocumentReference eventRef = db.collection("Events").document(eventId);
         db.collection("Attendees")
@@ -281,6 +334,14 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 });
     }
 
+    /**
+     * Removes an event from the organizer's event list by finding the organizer based on device_id,
+     * then updating their events_list to remove the specified event. Utilizes the completion listener to
+     * notify upon success or failure of the operation.
+     *
+     * @param eventId The document ID of the event to be removed from the organizer's events list.
+     * @param completionListener Callback to notify upon completion of the operation.
+     */
     private void removeEventFromOrganizer(String eventId, OnCompleteListener<Void> completionListener) {
         DocumentReference eventRef = db.collection("Events").document(eventId);
         eventRef
@@ -335,6 +396,13 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 });
     }
 
+    /**
+     * Deletes the specified event document from Firestore. Notifies the provided completion listener
+     * upon successful deletion or if an error occurs.
+     *
+     * @param eventId The document ID of the event to be deleted.
+     * @param completionListener Callback to notify upon completion of the deletion.
+     */
     private void removeEvent(String eventId, OnCompleteListener<Void> completionListener) {
         db.collection("Events").document(eventId)
                 .delete()
@@ -350,6 +418,13 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     }
 
 
+    /**
+     * Initiates the deletion process for a profile, including the removal of events associated with the attendee
+     * and organizer tied to the profile, as well as the profile itself. Utilizes nested callbacks to ensure
+     * sequential execution of deletion steps.
+     *
+     * @param profileId The document ID of the profile to be deleted in Users.
+     */
     private void deleteProfile(String profileId) {
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         checkIfOwnProfile(profileId, device_id, new ProfileDeletionCallback() {
@@ -394,6 +469,11 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         });
     }
 
+    /**
+     * Callback interface used during the profile deletion process. Provides methods to be called at various stages of
+     * deletion, including after checking if a profile is the user's own, after removing an attendee from events, after
+     * deleting an attendee, after removing events for an organizer, and after deleting an organizer and the user profile.
+     */
     private interface ProfileDeletionCallback {
         default void onOwnProfileChecked(boolean isOwnProfile) {}
         default void onAttendeeEventsRemoved(String attendeeId) {}
@@ -404,7 +484,13 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     }
 
 
-
+    /**
+     * Checks if the profile to be deleted belongs to the current administrator. Prevents an admin from deleting their own profile.
+     *
+     * @param profileId The document ID of the profile to be checked in Users.
+     * @param device_id The device ID of the current administrator.
+     * @param callback Callback to notify whether the profile belongs to the admin.
+     */
     private void checkIfOwnProfile(String profileId, String device_id, ProfileDeletionCallback callback) {
         db.collection("Users").document(profileId)
                 .get()
@@ -434,6 +520,13 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 });
     }
 
+    /**
+     * Removes an attendee from all events they are signed up for. This involves updating each event's signedup_attendees list
+     * and possibly adjusting other related fields.
+     *
+     * @param profileDeviceId The device ID associated with the attendee's profile.
+     * @param callback Callback to notify upon completion of the removal process.
+     */
     private void removeAttendeeFromEvents(String profileDeviceId, ProfileDeletionCallback callback) {
         Log.d("Firestore", "Starting to remove attendee from events for device_id: " + profileDeviceId);
 
@@ -503,6 +596,12 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 });
     }
 
+    /**
+     * Deletes the specified attendee document from Firestore. This method is called as part of the profile deletion process.
+     *
+     * @param attendeeId The document ID of the attendee to be deleted in Attendees.
+     * @param callback Callback to notify upon completion of the deletion.
+     */
     private void deleteAttendee(String attendeeId, ProfileDeletionCallback callback) {
         if (attendeeId == null || attendeeId.isEmpty()) {
             Log.d("deleteAttendee", "No attendeeId provided, skipping deleteAttendee.");
@@ -533,6 +632,13 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     }
 
 
+    /**
+     * Removes all events organized by a specific organizer. This includes deleting each event document and updating
+     * related attendee documents as necessary.
+     *
+     * @param profileDeviceId The device ID of the organizer whose events are to be deleted.
+     * @param callback Callback to notify upon completion of the event removal process.
+     */
     private void removeEventsForOrganizer(String profileDeviceId, ProfileDeletionCallback callback) {
         Log.d("FirestoreOperation", "Starting to delete events for organizer with device ID: " + profileDeviceId);
         db.collection("Organizers")
@@ -599,6 +705,15 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 });
     }
 
+    /**
+     * Deletes a specific event document from Firestore as part of the organizer's event cleanup process.
+     * Updates the processing count and notifies the callback when all events have been processed.
+     *
+     * @param eventRef Reference to the event document to be deleted.
+     * @param eventsToProcess Counter for the number of events still to be processed.
+     * @param organizerSnapshot Snapshot of the organizer's document, used for final updates.
+     * @param callback Callback to notify once all organizer events are processed.
+     */
     private void deleteEventDocument(DocumentReference eventRef, AtomicInteger eventsToProcess, DocumentSnapshot organizerSnapshot, ProfileDeletionCallback callback) {
         eventRef.delete()
                 .addOnSuccessListener(aVoid -> {
@@ -620,6 +735,13 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     }
 
 
+    /**
+     * Clears the events list from an organizer's document in Firestore. This is called after all of an organizer's
+     * events have been deleted.
+     *
+     * @param organizerSnapshot Snapshot of the organizer's document.
+     * @param callback Callback to notify once the organizer's events list has been cleared.
+     */
     private void clearOrganizerEventsList(DocumentSnapshot organizerSnapshot, ProfileDeletionCallback callback) {
         organizerSnapshot.getReference().update("events_list", FieldValue.delete())
                 .addOnSuccessListener(aVoid -> {
@@ -636,7 +758,12 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
 
 
 
-
+    /**
+     * Deletes the specified organizer document from Firestore. This method is part of the profile deletion process.
+     *
+     * @param organizerId The document ID of the organizer to be deleted.
+     * @param callback Callback to notify upon completion of the deletion.
+     */
     private void deleteOrganizer(String organizerId, ProfileDeletionCallback callback) {
         if (organizerId == null || organizerId.isEmpty()) {
             Log.d("deleteOrganizer", "No organizerId provided, skipping deleteOrganizer operation.");
@@ -659,7 +786,12 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 });
     }
 
-
+    /**
+     * Deletes the specified user (profile) document from Firestore. This is the final step in the profile deletion process.
+     *
+     * @param profileId The document ID of the profile to be deleted in Users.
+     * @param callback Callback to notify upon completion of the deletion.
+     */
     private void deleteUser(String profileId, ProfileDeletionCallback callback) {
         if (profileId == null || profileId.isEmpty()) {
             Log.d("deleteUser", "No profileId provided, skipping deleteUser operation.");
@@ -682,7 +814,10 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 });
     }
 
-
+    /**
+     * Configures the details navigation bar, which includes options for canceling and viewing details.
+     * It also navigates to specific details based on the selected item in the main navigation bar.
+     */
     public void setupDetailsNavigationBar() {
         BottomNavigationView detailsNavBar = findViewById(R.id.administrator_view_details_navigation_bar);
         BottomNavigationView navBar = findViewById(R.id.administrator_handler_navigation_bar);
@@ -734,6 +869,14 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         });
     }
 
+    /**
+     * Navigates to the event details fragment for a specific event. This method initiates a fragment transaction to
+     * replace the current view with the {@link AdministratorEventDetailsFragment}, passing the event ID to display
+     * detailed information about the event. The transaction is added to the back stack to enable intuitive navigation
+     * back to the previous screen.
+     *
+     * @param eventId The unique document ID of the event whose details are to be displayed.
+     */
     private void navigateToEventDetails(String eventId) {
         AdministratorEventDetailsFragment detailsFragment = AdministratorEventDetailsFragment.newInstance(eventId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -742,6 +885,15 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         transaction.commit();
     }
 
+    /**
+     * Navigates to the image details fragment for a specific image. This method replaces the current view with
+     * the {@link AdministratorImageDetailsFragment}, using an image ID and type to fetch and display the relevant
+     * image details. The operation adds the transaction to the back stack, allowing users to return to the previous
+     * screen easily.
+     *
+     * @param imageId The unique document ID of the image to display details for.
+     * @param imageType The type of the image, indicating the category or context to which the image belongs.
+     */
     private void navigateToImageDetails(String imageId, int imageType) {
         AdministratorImageDetailsFragment detailsFragment = AdministratorImageDetailsFragment.newInstance(imageId, imageType);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -750,6 +902,14 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         transaction.commit();
     }
 
+    /**
+     * Initiates navigation to the profile details fragment for a specific user profile. By replacing the current
+     * view with the {@link AdministratorProfileDetailsFragment} and passing the profile ID, this method allows
+     * detailed information about the user profile to be displayed. The fragment transaction is added to the back
+     * stack, ensuring that users can navigate back to the previous view seamlessly.
+     *
+     * @param profileId The unique document ID of the user profile whose details are to be viewed.
+     */
     private void navigateToProfileDetails(String profileId) {
         AdministratorProfileDetailsFragment detailsFragment = AdministratorProfileDetailsFragment.newInstance(profileId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

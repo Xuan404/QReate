@@ -19,11 +19,28 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+/**
+ * A Fragment that displays detailed information about an image, which can either be a profile picture or an event poster.
+ * This includes displaying the image itself and its reference (such as the name of the user or the event).
+ * The image and its details are retrieved from Firebase Firestore based on the passed image ID and type.
+ */
 public class AdministratorImageDetailsFragment extends Fragment {
     private ImageView image;
     private TextView imageRef;
     private FirebaseFirestore db;
 
+    /**
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,6 +64,12 @@ public class AdministratorImageDetailsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Loads and displays the profile image and name from Firebase Firestore given a profile ID.
+     * Uses Glide to asynchronously load and display the profile picture.
+     *
+     * @param profileId The unique document identifier for the profile.
+     */
     private void loadProfile(String profileId) {
         if (profileId != null) {
             db.collection("Users").document(profileId)
@@ -63,6 +86,12 @@ public class AdministratorImageDetailsFragment extends Fragment {
         }
     }
 
+    /**
+     * Loads and displays the event image (poster) and name from Firebase Firestore given an event ID.
+     * Retrieves the image from Firebase Storage and uses Glide to display it.
+     *
+     * @param eventId The unique document identifier for the event.
+     */
     private void loadEvent(String eventId) {
         if (eventId != null) {
             db.collection("Events").document(eventId)
@@ -86,6 +115,14 @@ public class AdministratorImageDetailsFragment extends Fragment {
 
 
 
+    /**
+     * Creates a new instance of AdministratorImageDetailsFragment with specified image ID and type.
+     * This static method facilitates creating fragments with necessary data for fetching and displaying image details.
+     *
+     * @param imageId   The unique identifier of the image to be displayed.
+     * @param imageType Indicates the type of the image, determining whether it's a profile image or an event poster.
+     * @return A new instance of AdministratorImageDetailsFragment.
+     */
     public static AdministratorImageDetailsFragment newInstance(String imageId, int imageType) {
         AdministratorImageDetailsFragment fragment = new AdministratorImageDetailsFragment();
         Bundle args = new Bundle();

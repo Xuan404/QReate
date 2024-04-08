@@ -30,6 +30,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Fragment to display detailed information about an event in the administrator's dashboard.
+ * It shows the event's name, organizer, description, date, time, location, and poster image.
+ * The event details are retrieved from Firestore using the event ID passed as an argument.
+ */
 public class AdministratorEventDetailsFragment extends Fragment {
     private TextView eventName;
     private TextView eventOrganizer;
@@ -40,6 +45,18 @@ public class AdministratorEventDetailsFragment extends Fragment {
     private ImageView eventPoster;
     private FirebaseFirestore db;
 
+    /**
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -109,6 +126,12 @@ public class AdministratorEventDetailsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Loads the event's poster image from the specified storage path and sets it into the ImageView.
+     * Uses Firebase Storage to retrieve the image and Glide for efficient image loading and display.
+     *
+     * @param posterPath The storage path of the poster image in Firebase Storage.
+     */
     private void loadPosterImage(String posterPath) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference posterRef = storage.getReference(posterPath);
@@ -129,6 +152,13 @@ public class AdministratorEventDetailsFragment extends Fragment {
 
     }
 
+    /**
+     * Creates a new instance of AdministratorEventDetailsFragment with the specified event ID as an argument.
+     * This static method allows for creating fragment instances with necessary data to fetch event details.
+     *
+     * @param eventId The unique ID of the event whose details are to be displayed.
+     * @return A new instance of AdministratorEventDetailsFragment.
+     */
     public static AdministratorEventDetailsFragment newInstance(String eventId) {
         AdministratorEventDetailsFragment fragment = new AdministratorEventDetailsFragment();
         Bundle args = new Bundle();
