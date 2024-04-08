@@ -96,6 +96,10 @@ public class AttendeeScanFragment extends Fragment {
     private Double latitude;
     private Double longitude;
 
+    /**
+     * Initializes components and registers activity result launchers for QR code scanning and location permission requests.
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -182,7 +186,12 @@ public class AttendeeScanFragment extends Fragment {
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
+    /**
+     * Searches for documents within the "Events" collection in Firestore that match a given field value.
+     * This method is used to validate QR codes for event check-ins or promotional offers.
+     * @param fieldName The name of the field to search by.
+     * @param fieldValue The value of the field to match against.
+     */
     private void findDocumentByFieldValueCheckin(String fieldName, String fieldValue) {
 
         db.collection("Events")
@@ -224,6 +233,10 @@ public class AttendeeScanFragment extends Fragment {
                 });
     }
 
+    /**
+     * Navigates to an event details fragment, displaying information about the event associated with the scanned QR code.
+     * @param eventId The ID of the event to display details for.
+     */
     private void navigateToEventDetailsFragment(String eventId){
         AttendeeEventViewDetailsFragment detailsFragment = AttendeeEventViewDetailsFragment.newInstance(eventId);
         getActivity().getSupportFragmentManager().beginTransaction()
@@ -232,6 +245,11 @@ public class AttendeeScanFragment extends Fragment {
                 .commit();
     }
 
+    /**
+     * Verifies if the attendee is currently checked into the event associated with the scanned QR code.
+     * @param deviceId The device ID of the attendee.
+     * @param documentId The document ID of the event to check against.
+     */
     private void checkCurrentlyCheckedIn(String deviceId, String documentId) {
         db.collection("Attendees")
                 .whereEqualTo("device_id", deviceId)
@@ -335,6 +353,12 @@ public class AttendeeScanFragment extends Fragment {
                 });
     }
 
+    /**
+     * Validates if the current time and date allow for checking into the event.
+     * @param date The date of the event.
+     * @param time The time the event starts.
+     * @return True if the current time and date are valid for check-in, otherwise false.
+     */
     private boolean validCheckIn(Date date, String time) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -361,6 +385,10 @@ public class AttendeeScanFragment extends Fragment {
 
     }
 
+    /**
+     * Removes an attendee's check-in status from an event.
+     * @param eventId The ID of the event to remove the check-in status from.
+     */
     private void removeEventCheckin(String eventId) {
 
 
@@ -412,6 +440,10 @@ public class AttendeeScanFragment extends Fragment {
     }
 
 
+    /**
+     * Marks an attendee as checked in to an event.
+     * @param eventId The ID of the event to check the attendee into.
+     */
     private void setEventCheckin(String eventId) {
         // inserts the attendee ref into the checked in list of event doc
         db.collection("Attendees").whereEqualTo("device_id", device_id)
@@ -445,6 +477,10 @@ public class AttendeeScanFragment extends Fragment {
 
     }
 
+    /**
+     * Updates the attendee's document to indicate they are currently checked in to an event.
+     * @param eventDocId The ID of the event document.
+     */
     private void setCheckinAttendee(String eventDocId) {
 
         // Get the event document reference from the "Events" collection
@@ -465,6 +501,10 @@ public class AttendeeScanFragment extends Fragment {
 
     }
 
+    /**
+     * Updates the check-in count for an event based on attendee check-ins.
+     * @param eventId The ID of the event to update the check-in count for.
+     */
     private void updateCheckinCount(String eventId){
 
         // Step 1: Find the attendee document with the provided device_id
@@ -525,6 +565,9 @@ public class AttendeeScanFragment extends Fragment {
 
     }
 
+    /**
+     * Sets the geolocation for an attendee based on their current location.
+     */
     private void setAttendeeGeolocation() {
         // sets the current checked in event to event to the event scanned
 
@@ -559,6 +602,9 @@ public class AttendeeScanFragment extends Fragment {
 
     }
 
+    /**
+     * Requests the location permission from the user.
+     */
     private void requestLocationPermission() {
         // Check if location permission is not already granted
         if (ContextCompat.checkSelfPermission(
@@ -571,6 +617,9 @@ public class AttendeeScanFragment extends Fragment {
         }
     }
 
+    /**
+     * Retrieves the current location of the device and updates the user's geolocation in Firestore.
+     */
     private void retrieveLocation() {
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

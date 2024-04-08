@@ -28,6 +28,11 @@ import com.google.firebase.storage.StorageReference;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+/**
+ * A Fragment for displaying detailed information about an event the attendee has signed up for.
+ * This fragment shows the event details including name, organizer, description, date, time, location,
+ * and an event poster.
+ */
 public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
     private ImageView poster;
     private TextView eventName;
@@ -38,6 +43,15 @@ public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
     private TextView eventLocation;
     private FirebaseFirestore db;
 
+    /**
+     * Called to have the fragment instantiate its user interface view. This is optional, and non-graphical
+     * fragments can return null. This method will be called between onCreate(Bundle) and onActivityCreated(Bundle).
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -113,6 +127,12 @@ public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
 
     }
 
+    /**
+     * Factory method to create a new instance of this fragment using the provided eventId.
+     *
+     * @param eventId The unique identifier of the event to display details for.
+     * @return A new instance of fragment AttendeeSignedUpEventsDetailsFragment.
+     */
     public static AttendeeSignedUpEventsDetailsFragment newInstance(String eventId) {
         AttendeeSignedUpEventsDetailsFragment fragment = new AttendeeSignedUpEventsDetailsFragment();
         Bundle args = new Bundle();
@@ -121,6 +141,12 @@ public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Loads the event poster image from Firebase Storage and displays it in the UI. This method
+     * retrieves the image using its storage path, downloads the image, and sets it on the ImageView.
+     *
+     * @param posterPath The storage path for the event poster image in Firebase Storage.
+     */
     private void loadPosterImage(String posterPath) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference posterRef = storage.getReference(posterPath);
