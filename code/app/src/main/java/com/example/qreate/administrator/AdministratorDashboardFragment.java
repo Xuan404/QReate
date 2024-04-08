@@ -39,7 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The following class allows the administrator to see the Dashboard and view all {@link AdministratorEvent}, {@link AdministratorProfile} and {@link AdministratorImage}. (Deletion functionality will be implemented for Part 4)
+ * A Fragment representing the dashboard view for administrators. It allows the administrator to view and interact
+ * with lists of events, profiles, and images. This fragment provides functionalities such as loading these lists
+ * from Firestore, displaying them using custom ArrayAdapters, and navigating to detailed views.
  */
 public class AdministratorDashboardFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener,ProfileArrayAdapter.OnProfileSelectedListener,ImageArrayAdapter.OnImageSelectedListener{
     private ListView list;
@@ -85,6 +87,13 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         return view;
     }
 
+    /**
+     * Initializes the ViewModel for managing the profile picture. Sets an observer on the profilePicUrl LiveData.
+     * Depending on the URL being present or not, it either fetches the profile picture from the URL or generates
+     * a new one.
+     *
+     * @param view The current view instance of the fragment
+     */
     private void initializePicViewModel(View view){
         profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
 
@@ -108,6 +117,10 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
 
     }
 
+    /**
+     * Loads events from the Firestore database and updates the ListView with the fetched data.
+     * Uses the EventArrayAdapter for populating the ListView.
+     */
     public void loadEvents() {
         CollectionReference eventsRef = db.collection("Events");
         ArrayList<AdministratorEvent> events = new ArrayList<>();
@@ -132,6 +145,10 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         });
     }
 
+    /**
+     * Loads profiles from the Firestore database and updates the ListView with the fetched data.
+     * Uses the ProfileArrayAdapter for populating the ListView.
+     */
     public void loadProfiles() {
         CollectionReference profilesRef = db.collection("Users");
         ArrayList<AdministratorProfile> profiles = new ArrayList<>();
@@ -160,7 +177,10 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         });
     }
 
-
+    /**
+     * Loads profiles from the Firestore database and updates the ListView with the fetched data.
+     * Uses the ProfileArrayAdapter for populating the ListView.
+     */
     public void loadImages() {
         CollectionReference profilesImagesRef = db.collection("Users");
         CollectionReference postersImagesRef = db.collection("Events");
@@ -203,6 +223,10 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         });
     }
 
+    /**
+     * Handles navigation to the account profile fragment, hiding the main bottom navigation bar and
+     * replacing the current view with the {@link AccountProfileScreenFragment}.
+     */
     private void accountProfile() {
         //Handles fragment transaction related to the account profile
 
@@ -215,6 +239,12 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         transaction.commit();
     }
 
+    /**
+     * Displays a popup menu when the profile button is clicked. This menu allows the administrator to navigate
+     * to their account profile or log out.
+     *
+     * @param view The view from which the popup menu is anchored
+     */
     private void showPopupMenu(View view) {
         // Initialize the PopupMenu
         PopupMenu popupMenu = new PopupMenu(getActivity(), view); // For Fragment, use getActivity() instead of this
@@ -249,6 +279,12 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
     }
 
 
+    /**
+     * Handles the event selection action within the dashboard. This method is triggered when an event is selected
+     * from the list of events displayed to the administrator. It performs actions to modify the UI in response to
+     * the selection, specifically hiding the main bottom navigation bar and showing the details navigation bar to
+     * facilitate further interactions with the selected event.
+     */
     @Override
     public void onEventSelected() {
         hideBottomNavigationBar(); // Implement this method
@@ -256,57 +292,86 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
     }
 
 
+    /**
+     * Handles the profile selection action within the dashboard. This method is called when a profile is selected
+     * from the list of user profiles shown to the administrator. It updates the UI to reflect this selection by
+     * hiding the main bottom navigation bar and presenting the details navigation bar, allowing the administrator
+     * to perform actions related to the selected profile.
+     */
     @Override
     public void onProfileSelected() {
         hideBottomNavigationBar(); // Implement this method
         showDetailsNavigationBar(); // Implement this method
     }
 
+    /**
+     * Manages the image selection action within the dashboard. When an image is selected from the list, this method
+     * is invoked to adapt the UI accordingly. It hides the main bottom navigation bar and shows the details
+     * navigation bar, providing access to functionality pertinent to the selected image, such as viewing detailed
+     * information or initiating image-related operations.
+     */
     @Override
     public void onImageSelected() {
         hideBottomNavigationBar(); // Implement this method
         showDetailsNavigationBar(); // Implement this method
     }
 
-    /*
-    public void clearEventSelection() {
-        if (eventArrayAdapter != null) {
-            eventArrayAdapter.clearSelection();
-        }
-        else if (profileArrayAdapter != null) {
-            profileArrayAdapter.clearSelection();
-        }
-        else if (imageArrayAdapter != null) {
-            imageArrayAdapter.clearSelection();
-        }
-    }
 
+    /**
+     * Hides the main bottom navigation bar by calling the corresponding method in the {@link AdministratorActivity}.
      */
-
     private void hideBottomNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AdministratorActivity)getActivity()).hideMainBottomNavigationBar();
     }
 
+    /**
+     * Shows the details navigation bar by calling the corresponding method in the {@link AdministratorActivity}.
+     */
     private void showDetailsNavigationBar() {
         // Show the administrator_view_details_handler Bottom Navigation Bar
         // This assumes you have a method in AdministratorActivity to show this specific bar
         ((AdministratorActivity)getActivity()).showDetailsNavigationBar();
     }
 
+    /**
+     * Retrieves the document ID of the currently selected event. This method is intended to be used in situations where
+     * an event's detailed information needs to be displayed or manipulated.
+     *
+     * @return The unique document ID of the selected event as a {@link String}. Returns {@code null} if no event is selected.
+     */
     public String getSelectedEventId() {
         return eventArrayAdapter.getSelectedEventId();
     }
 
+    /**
+     * Retrieves the document ID of the currently selected image. This method facilitates access to specific images,
+     * enabling operations such as viewing or deleting the image.
+     *
+     * @return The unique document ID of the selected image as a {@link String}. Returns {@code null} if no image is selected.
+     */
     public String getSelectedImageId() {
         return imageArrayAdapter.getSelectedImageId();
     }
 
 
+    /**
+     * Retrieves the type of the currently selected image. The image type helps in identifying the context or
+     * category of the image, such as whether it is a profile picture or an event poster.
+     *
+     * @return The type of the selected image as an {@code int}. Standard types are defined in the {@link AdministratorImage}
+     * class. Returns a default value or {@code -1} if no image is selected or if the type is unspecified.
+     */
     public int getSelectedImageType() {
         return imageArrayAdapter.getSelectedImageType();
     }
 
+    /**
+     * Retrieves the document ID of the currently selected profile. This method is useful for operations that require
+     * reference to a specific user profile, such as editing profile details or viewing profile-related information.
+     *
+     * @return The unique document ID of the selected profile as a {@link String}. Returns {@code null} if no profile is selected.
+     */
     public String getSelectedProfileId() {
         return profileArrayAdapter.getSelectedProfileId();
     }

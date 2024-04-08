@@ -36,11 +36,11 @@ public class ProfileArrayAdapter extends ArrayAdapter<AdministratorProfile> {
     private ProfileArrayAdapter.OnProfileSelectedListener mListener;
 
     /**
-     * Constructs a new {@link ProfileArrayAdapter}.
+     * Constructs a new ProfileArrayAdapter.
      *
-     * @param context  The current context. This value cannot be null.
-     * @param profiles An ArrayList of {@link AdministratorProfile} objects to be represented in the ListView.
-     *                 This value cannot be null.
+     * @param context  The current context. Used to inflate the layout file.
+     * @param profiles An ArrayList of {@link AdministratorProfile} objects to display in the list.
+     * @param listener An instance of OnProfileSelectedListener to handle profile selection events.
      */
     public ProfileArrayAdapter(Context context, ArrayList<AdministratorProfile> profiles, ProfileArrayAdapter.OnProfileSelectedListener listener) {
         super(context, 0, profiles);
@@ -48,17 +48,12 @@ public class ProfileArrayAdapter extends ArrayAdapter<AdministratorProfile> {
     }
 
     /**
-     * Provides a view (of profiles list) for the ListView
-     * @param position The position of the item within the adapter's data set of the item whose view
-     *        we want.
-     * @param convertView The old view to reuse, if possible. Note: You should check that this view
-     *        is non-null and of an appropriate type before using. If it is not possible to convert
-     *        this view to display the correct data, this method can create a new view.
-     *        Heterogeneous lists can specify their number of view types, so that this View is
-     *        always of the right type (see {@link #getViewTypeCount()} and
-     *        {@link #getItemViewType(int)}).
-     * @param parent The parent that this view will eventually be attached to
-     * @return view
+     * Provides a view for an AdapterView (ListView).
+     *
+     * @param position     The position of the item within the adapter's data set.
+     * @param convertView  The old view to reuse, if possible.
+     * @param parent       The parent that this view will eventually be attached to.
+     * @return A View corresponding to the data at the specified position.
      */
     @NonNull
     @Override
@@ -112,15 +107,19 @@ public class ProfileArrayAdapter extends ArrayAdapter<AdministratorProfile> {
         return view;
     }
 
+
+    /**
+     * Interface for receiving notification when a profile is selected.
+     */
     public interface OnProfileSelectedListener {
         void onProfileSelected();
     }
 
-    public void clearSelection() {
-        selectedPosition = -1; // Reset the selected position
-        notifyDataSetChanged(); // Notify the adapter to refresh the list view
-    }
-
+    /**
+     * Retrieves the ID of the currently selected profile.
+     *
+     * @return The unique document ID of the selected profile, or null if no profile is selected.
+     */
     public String getSelectedProfileId() {
         if (selectedPosition != -1) {
             AdministratorProfile selectedProfile = getItem(selectedPosition);
@@ -129,6 +128,12 @@ public class ProfileArrayAdapter extends ArrayAdapter<AdministratorProfile> {
         return null;
     }
 
+    /**
+     * Changes the color of the radio button based on its checked state. Uses a ColorStateList to define
+     * different colors for checked and unchecked states.
+     *
+     * @param view The View that contains the radio button.
+     */
     private void changeRadioColor(View view) {
 
         RadioButton radioButton = view.findViewById(R.id.choose_profile_radio_button);
