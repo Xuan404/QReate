@@ -21,6 +21,11 @@ import com.example.qreate.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * A Fragment that displays detailed information about a user profile, including the profile's image, name,
+ * contact information, and homepage URL. The details are retrieved from Firebase Firestore based on the provided
+ * profile ID.
+ */
 public class AdministratorProfileDetailsFragment extends Fragment {
     private ImageView profileImage;
     private TextView profileName;
@@ -30,6 +35,18 @@ public class AdministratorProfileDetailsFragment extends Fragment {
     private FirebaseFirestore db;
     private String profileId;
 
+    /**
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -89,6 +106,14 @@ public class AdministratorProfileDetailsFragment extends Fragment {
         return view;
 
     }
+
+    /**
+     * Creates a new instance of AdministratorProfileDetailsFragment with the specified profile ID.
+     * This method allows for creating fragment instances pre-populated with necessary data.
+     *
+     * @param profileId The unique ID of the profile whose details are to be displayed.
+     * @return A new instance of AdministratorProfileDetailsFragment.
+     */
     public static AdministratorProfileDetailsFragment newInstance(String profileId) {
         AdministratorProfileDetailsFragment fragment = new AdministratorProfileDetailsFragment();
         Bundle args = new Bundle();

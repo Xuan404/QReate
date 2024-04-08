@@ -10,6 +10,7 @@ public class AdministratorEvent {
     /**
      * This is a constructor for the AdministratorEvent class
      * @param eventName the name of the event
+     * @param id the document ID of the event in the Events collection
      */
     public AdministratorEvent(String eventName, String id) {
         this.eventName = eventName;
@@ -25,10 +26,9 @@ public class AdministratorEvent {
     }
 
     /**
-     * This method returns the name of the event organizer
-     * @return the name of the event organizer
+     * This method returns the event Id
+     * @return the document ID of the event in the Events collection
      */
-
     public String getId() {
         return id;
     }

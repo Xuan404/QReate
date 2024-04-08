@@ -21,19 +21,21 @@ import com.example.qreate.R;
 import java.util.ArrayList;
 
 /**
- * An ArrayAdapter subclass for displaying a list of {@link AdministratorEvent} objects.
- * This adapter is designed to be used with a ListView in the administrator dashboard to show events
- * with their names, organizers, and a radio button to select a specific event. Only one event
- * can be selected at a time.
+ * Custom ArrayAdapter to display a list of {@link AdministratorEvent} objects within a ListView.
+ * It features event names and organizers, along with a radio button for selecting a specific event.
+ * The class ensures that only one event can be selected at any given time and provides functionality
+ * to reflect these selections visually in the ListView.
  */
 public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
     private int selectedPosition = -1; // Track the selected position
     private OnEventSelectedListener mListener;
 
     /**
-     * Constructs a new {@code EventArrayAdapter}.
-     * @param context The current context. Used to inflate the layout file.
-     * @param events An ArrayList of {@link AdministratorEvent} objects to display in the list.
+     * Constructs a new EventArrayAdapter.
+     *
+     * @param context  The current context. Used to inflate the layout file.
+     * @param events   An ArrayList of {@link AdministratorEvent} objects to display in the list.
+     * @param listener Listener to handle events when a specific event is selected from the list.
      */
     public EventArrayAdapter(Context context, ArrayList<AdministratorEvent> events, OnEventSelectedListener listener) {
         super(context, 0, events);
@@ -41,17 +43,12 @@ public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
     }
 
     /**
-     * Provides a view (of events list) for the ListView
-     * @param position The position of the item within the adapter's data set of the item whose view
-     *        we want.
-     * @param convertView The old view to reuse, if possible. Note: You should check that this view
-     *        is non-null and of an appropriate type before using. If it is not possible to convert
-     *        this view to display the correct data, this method can create a new view.
-     *        Heterogeneous lists can specify their number of view types, so that this View is
-     *        always of the right type (see {@link #getViewTypeCount()} and
-     *        {@link #getItemViewType(int)}).
-     * @param parent The parent that this view will eventually be attached to
-     * @return view
+     * Provides a view for each event in the ListView.
+     *
+     * @param position     The position of the item within the adapter's data set of the item whose view we want.
+     * @param convertView  The old view to reuse, if possible.
+     * @param parent       The parent that this view will eventually be attached to.
+     * @return A View corresponding to the data at the specified position.
      */
     @NonNull
     @Override
@@ -84,18 +81,18 @@ public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
         return view;
     }
 
+    /**
+     * Interface definition for a callback to be invoked when an event is selected.
+     */
     public interface OnEventSelectedListener {
         void onEventSelected();
     }
 
-    /*
-    public void clearSelection() {
-        selectedPosition = -1; // Reset the selected position
-        notifyDataSetChanged(); // Notify the adapter to refresh the list view
-    }
-
+    /**
+     * Returns the ID of the currently selected event.
+     *
+     * @return The unique document ID of the selected event or {@code null} if no event is selected.
      */
-
     public String getSelectedEventId() {
         if (selectedPosition != -1) {
             AdministratorEvent selectedEvent = getItem(selectedPosition);
@@ -104,7 +101,12 @@ public class EventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
         return null;
     }
 
-    // Change radio Group color
+    /**
+     * Changes the color of the radio button depending on its checked state.
+     * Applies a color state list with defined colors for checked and unchecked states.
+     *
+     * @param view The current view containing the radio button.
+     */
     private void changeRadioColor(View view) {
 
         RadioButton radioButton = view.findViewById(R.id.choose_event_radio_button);
