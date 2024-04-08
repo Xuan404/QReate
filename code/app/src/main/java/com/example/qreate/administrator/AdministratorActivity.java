@@ -26,6 +26,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -350,6 +351,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
 
 
 
+
                     }
 
                 });
@@ -391,52 +393,55 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                     if (!queryDocumentSnapshots.isEmpty()) {
                         DocumentSnapshot attendeeSnapshot = queryDocumentSnapshots.getDocuments().get(0);
                         DocumentReference attendeeRef = attendeeSnapshot.getReference();
+                        String attendeeId = attendeeSnapshot.getId();
                         Log.d("Firestore", "Attendee document acquired");
-
-                        // getting the attendee's sign up event list
-                        List<DocumentReference> signUpEventList = (List<DocumentReference>) attendeeSnapshot.get("signup_event_list");
-                        Log.d("Firestore", "Attendee sign up list acquired");
-
-                        // delete the attendee from the signedup_attendees list in each event in their signup_event list
-                        if (signUpEventList != null && !signUpEventList.isEmpty()) {
-                            for (DocumentReference eventRef : signUpEventList) {
-                                eventRef.get().addOnSuccessListener(documentSnapshot -> {
-                                    List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) documentSnapshot.get("signedup_attendees");
-                                    if (signedUpAttendees != null) {
-                                        signedUpAttendees.removeIf(attendee -> attendeeRef.equals(((DocumentReference) attendee.get("attendeeRef")).getId()));
-                                        eventRef.update("signedup_attendees", signedUpAttendees)
-                                                .addOnSuccessListener(aVoid -> Log.d("UpdateEvent", "Attendee removed from event's signedup_attendees"))
-                                                .addOnFailureListener(e -> Log.e("UpdateEvent", "Error removing attendee from event", e));
-                                        // decrease the sign up count
-                                        Long currentCount = documentSnapshot.getLong("signup_count");
-                                        eventRef.update("signup_count", currentCount - 1);
+                        db.collection("Events")
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            QuerySnapshot querySnapshot = task.getResult();
+                                            Log.d("Firestore", "Event Documents Retrieved");
+                                            if (querySnapshot != null) {
+                                                for (DocumentSnapshot document : querySnapshot) {
+                                                    Log.d("Firestore", "Event Document Retrieved");
+                                                    DocumentReference eventRef = document.getReference();
+                                                    eventRef.get().addOnSuccessListener(documentSnapshot -> {
+                                                        List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) documentSnapshot.get("signedup_attendees");
+                                                        if (signedUpAttendees != null) {
+                                                            signedUpAttendees.removeIf(attendee -> attendeeId.equals(((DocumentReference) attendee.get("attendeeRef")).getId()));
+                                                            eventRef.update("signedup_attendees", signedUpAttendees)
+                                                                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                                                                        Log.d("UpdateEvent", "Attendee removed from event's signedup_attendees");
+                                                                        // decrease the sign up count
+                                                                        Long currentCount = documentSnapshot.getLong("signup_count");
+                                                                        eventRef.update("signup_count", currentCount - 1);
+                                                                    })
+                                                                    .addOnFailureListener(e -> Log.e("UpdateEvent", "Error removing attendee from event", e));
+                                                        }
+                                                    }).addOnFailureListener(e -> Log.e("FetchEvent", "Error fetching event document", e));
+                                                }
+                                                completionListener.onComplete(null);
+                                            } else {
+                                                Log.d("Firestore", "Event documents do not exist");
+                                            }
+                                        } else {
+                                            Log.d("Firestore", "Event documents could not be retrieved");
+                                        }
                                     }
-                                }).addOnFailureListener(e -> Log.e("FetchEvent", "Error fetching event document", e));
-                            }
-                            completionListener.onComplete(null);
-                        } else {
-                            Log.d("Firestore", "Attendee has not signed up for any events");
-                            // If no organizer is found, consider it as operation completed
-                            completionListener.onComplete(null);
-                        }
-
+                                });
                     } else {
-                        Log.d("Firestore", "Attendee with given device ID not found");
-                        // If no attendee is found, consider it as operation completed
+                        Log.d("Firestore", "Attendee document does not exists");
                         completionListener.onComplete(null);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.w("Firestore", "Error getting document", e);
+                    Log.w("Firestore", "Error getting Attendee document", e);
                     // If there's an error fetching the event document, notify completion listener
                     completionListener.onComplete(null);
                 });
     }
-
-
-
-
-
 
     private void deleteImage(String imageId) {
         DocumentReference eventDoc = db.collection("Events").document(imageId);
