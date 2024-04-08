@@ -175,7 +175,9 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                     String profile_image = document.getString("profile_pic");
                     String generated_image = document.getString("generated_pic");
                     String profile_id = document.getId();
-                    images.add(new AdministratorImage(profileName, profile_image, generated_image, profile_id, AdministratorImage.TYPE_PROFILE));
+                    if (profile_image != null && !profile_image.isEmpty()) {
+                        images.add(new AdministratorImage(profileName, profile_image, generated_image, profile_id, AdministratorImage.TYPE_PROFILE));
+                    }
                 }
                 imageArrayAdapter.notifyDataSetChanged();
             } else {
