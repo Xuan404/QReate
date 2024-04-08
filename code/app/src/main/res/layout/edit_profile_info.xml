@@ -24,12 +24,13 @@
     <ImageView
         android:id="@+id/empty_profile_pic"
         android:layout_width="170dp"
-        android:layout_height="160dp"
+        android:layout_height="169dp"
         android:layout_below="@+id/edit_profile_text"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
         android:contentDescription="empty profile pic"
-        android:src="@drawable/empty_profile_pic"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/empty_profile_pic" />
 
     <TextView
         android:id="@+id/edit_name_text"
@@ -38,7 +39,7 @@
         android:layout_below="@+id/add_photo_button"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="-262dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:layout_toEndOf="@+id/empty_profile_pic"
         android:fontFamily="@font/abhaya_libre_extrabold"
         android:text="Name"

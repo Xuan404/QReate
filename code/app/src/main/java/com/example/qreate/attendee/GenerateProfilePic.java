@@ -20,8 +20,8 @@ public class GenerateProfilePic {
      * @return a bitmap with users initials
      */
     public static Bitmap generateProfilePicture(String initials){
-        int width = 160;
-        int height = 160;
+        int width = 140;
+        int height = 140;
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 

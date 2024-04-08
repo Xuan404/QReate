@@ -172,6 +172,7 @@ public class EditProfileScreenFragment extends Fragment {
                 .addOnSuccessListener(taskSnapshot -> {
                     taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(downloadUri -> {
                         selectedProfilePicUrl = downloadUri.toString();
+
                         Glide.with(this)
                                 .load(downloadUri)
                                 .apply(new RequestOptions().circleCrop())
@@ -286,7 +287,7 @@ public class EditProfileScreenFragment extends Fragment {
     //bitmap to Base64
     private String encodeBitmap(Bitmap profilePictureBitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        profilePictureBitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+        profilePictureBitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
         byte[] byteArray = baos.toByteArray();
         String stringBase64 = android.util.Base64.encodeToString(byteArray, android.util.Base64.NO_WRAP);
         return stringBase64;
