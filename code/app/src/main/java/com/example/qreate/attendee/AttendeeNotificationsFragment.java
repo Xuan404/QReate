@@ -77,7 +77,6 @@ public class AttendeeNotificationsFragment extends Fragment implements NotifArra
      * @return Return the View for the fragment's UI, or null.
      */
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -160,6 +159,13 @@ public class AttendeeNotificationsFragment extends Fragment implements NotifArra
 
     }
 
+    /**
+     * Initializes the profile picture view model to manage profile picture data. It sets up
+     * an observer for the profile picture URL and updates the profile button image accordingly.
+     * If there is no URL available, it attempts to fetch a generated profile picture.
+     *
+     * @param view The view within which the profile button exists.
+     */
     private void initializePicViewModel(View view){
         profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
 
@@ -236,6 +242,11 @@ public class AttendeeNotificationsFragment extends Fragment implements NotifArra
         transaction.commit();
     }
 
+    /**
+     * Triggered when a notification is selected from the list. This method should hide the
+     * bottom navigation bar and display the details navigation bar, allowing the user to interact
+     * with the selected notification in more detail.
+     */
     @Override
     public void onNotifSelected() {
         hideBottomNavigationBar();
@@ -243,20 +254,40 @@ public class AttendeeNotificationsFragment extends Fragment implements NotifArra
     }
 
 
+    /**
+     * Hides the bottom navigation bar of the activity. This method is typically called when
+     * navigating to a detailed view of a notification where the bottom navigation bar is not needed.
+     */
     private void hideBottomNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).hideBottomNavigationBar();
     }
 
+    /**
+     * Displays the details navigation bar when a notification is selected. This navigation bar
+     * provides contextual options related to the notification details view.
+     */
     private void showDetailsNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).showDetailsNavigationBar();
     }
 
+    /**
+     * Retrieves the ID of the currently selected notification. This ID can be used to perform
+     * further operations such as deleting the notification or displaying its full details.
+     *
+     * @return The ID of the selected notification, or null if no notification is selected.
+     */
     public String getSelectedNotifId() {
         return notifArrayAdapter.getSelectedNotifId();
     }
 
+    /**
+     * Deletes a notification from the list based on its ID. This method updates the
+     * notificationsArrayList and notifies the notifArrayAdapter of the change to refresh the ListView.
+     *
+     * @param notifId The ID of the notification to be deleted.
+     */
     public void deleteNotification(String notifId) {
         for (int i = 0; i < notificationsArrayList.size(); i++) {
             if (notificationsArrayList.get(i).getId().equals(notifId)) {

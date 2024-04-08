@@ -112,6 +112,14 @@ public class AttendeeEventDetailsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Initializes the profile picture ViewModel and sets up the profile picture in the UI.
+     * This method fetches the profile picture URL or a generated profile picture based on the device ID,
+     * then displays it using Glide or directly sets the Bitmap if the picture is generated. Observers
+     * are used to react to data changes asynchronously.
+     *
+     * @param view The View in which the profile picture ImageView exists.
+     */
     private void initializePicViewModel(View view){
         profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
 

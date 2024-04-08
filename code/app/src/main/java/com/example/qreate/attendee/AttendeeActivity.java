@@ -207,16 +207,26 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     ////////////// FUNCTIONS FOR HANDLING ATTENDEE EVENTS PAGE //////////////////////////////////
 
+    /**
+     * Hides the primary bottom navigation bar, typically to prioritize displaying another navigation mechanism or content view.
+     */
     public void hideBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.attendee_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar disappear
     }
 
+    /**
+     * Shows the primary bottom navigation bar, making it visible to the user after being hidden.
+     */
     public void showBottomNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.attendee_navigation_bar);
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
     }
 
+    /**
+     * Displays the details navigation bar which is specific for viewing detailed content such as notifications or event details.
+     * It sets a default selected item and initializes further setup for detailed navigation.
+     */
     public void showDetailsNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.attendee_view_details_navigation_bar);
         navBar.setVisibility(View.VISIBLE);
@@ -224,11 +234,18 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         setupDetailsNavigationBar();
     }
 
+    /**
+     * Hides the details navigation bar to revert back to a more general navigation state or to prioritize other content.
+     */
     public void hideDetailsNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.attendee_view_details_navigation_bar);
         navBar.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * Displays the deletion navigation bar, which includes options related to deleting or canceling the deletion of items.
+     * It sets a default selected item and initializes the deletion navigation setup.
+     */
     public void showDeleteNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.attendee_delete_navigation_bar);
         navBar.setVisibility(View.VISIBLE); // Make the bottom navigation bar reappear
@@ -236,11 +253,19 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         setupDeleteNavigationBar();
     }
 
+    /**
+     * Hides the deletion navigation bar, typically after a deletion action is completed or canceled.
+     */
     public void hideDeleteNavigationBar() {
         BottomNavigationView navBar = findViewById(R.id.attendee_delete_navigation_bar);
         navBar.setVisibility(View.INVISIBLE); // Make the bottom navigation bar reappear
     }
 
+
+    /**
+     * Configures the details navigation bar, setting up item selection handling to navigate to more specific content views
+     * based on the current navigation state or selected items.
+     */
     public void setupDetailsNavigationBar() {
         BottomNavigationView detailsNavBar = findViewById(R.id.attendee_view_details_navigation_bar);
         BottomNavigationView navBar = findViewById(R.id.attendee_navigation_bar);
@@ -292,6 +317,9 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         });
     }
 
+    /**
+     * Configures the delete navigation bar, setting up item selection handling for deletion actions and cancellation.
+     */
     public void setupDeleteNavigationBar(){
         BottomNavigationView deleteNavBar = findViewById(R.id.attendee_delete_navigation_bar);
         BottomNavigationView navBar = findViewById(R.id.attendee_navigation_bar);
@@ -347,6 +375,10 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
     }
 
+    /**
+     * Navigates to a detailed view of a specific event that is not part of the current attendee's list of signed-up events.
+     * @param eventId The ID of the event to navigate to.
+     */
     private void navigateToOtherEventDetails(String eventId) {
         AttendeeEventViewDetailsFragment detailsFragment = AttendeeEventViewDetailsFragment.newInstance(eventId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -355,6 +387,10 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         transaction.commit();
     }
 
+    /**
+     * Navigates to detailed view of a current or upcoming event that the attendee has signed up for.
+     * @param eventId The ID of the event to navigate to.
+     */
     private void navigateToCurrentAndUpcomingEventDetails(String eventId) {
         AttendeeSignedUpEventsDetailsFragment detailsFragment = AttendeeSignedUpEventsDetailsFragment.newInstance(eventId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -364,6 +400,11 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     }
 
 
+    /**
+     * Removes an event from the attendee's list of signed-up events and updates the Firestore document accordingly.
+     * @param eventId The ID of the event to be removed.
+     * @param attendeeId The ID of the attendee from whose list the event is to be removed.
+     */
     private void removeEventFromAttendee(String eventId, String attendeeId) {
         DocumentReference attendeeRef = db.collection("Attendees").document(attendeeId);
 
@@ -377,6 +418,11 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                 .addOnFailureListener(e -> Log.e("UpdateAttendee", "Error removing event from attendee's list", e));
     }
 
+    /**
+     * Removes an attendee from an event's list of signed-up attendees and updates the Firestore document.
+     * @param eventId The ID of the event from which the attendee is to be removed.
+     * @param attendeeId The ID of the attendee to be removed from the event.
+     */
     private void removeAttendeeFromEvent(String eventId, String attendeeId) {
         DocumentReference eventRef = db.collection("Events").document(eventId);
 
@@ -398,6 +444,10 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         }
     }
 
+    /**
+     * Decrements the signup count for an event in Firestore, reflecting one less attendee.
+     * @param eventId The ID of the event for which the signup count is to be decremented.
+     */
     private void decrementSignupCount(String eventId) {
         final DocumentReference eventRef = db.collection("Events").document(eventId);
         db.runTransaction((Transaction.Function<Void>) transaction -> {
@@ -412,6 +462,10 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                 .addOnFailureListener(e -> Log.e("Transaction", "Transaction failure.", e));
     }
 
+    /**
+     * Navigates to a detailed view of a specific notification.
+     * @param notifId The ID of the notification to navigate to.
+     */
     private void navigateToNotifDetails(String notifId) {
         NotifViewDetailsFragment detailsFragment = NotifViewDetailsFragment.newInstance(notifId);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -422,16 +476,36 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
 
 ////////////// FUNCTIONS FOR HANDLING ORGANIZER COLLECTION CREATION //////////////////////////////////
-
+    /**
+     * Interface for handling the retrieval of a document's unique ID from Firestore.
+     */
     public interface DocumentIdCallback {
+        /**
+         * Called when the document ID has been successfully retrieved.
+         *
+         * @param documentId The retrieved document ID.
+         */
         void onDocumentIdRetrieved(String documentId);
+        /**
+         * Called when there is an error during the document ID retrieval process.
+         *
+         * @param e The exception thrown during the retrieval process.
+         */
         void onError(Exception e);
     }
 
+    /**
+     * Interface for handling the reception of a Firebase Cloud Messaging (FCM) token.
+     */
     public interface FCMTokenCallback {
         void onTokenReceived(String tokenFCM);
     }
 
+    /**
+     * Creates a new attendee record in Firestore's "Attendees" collection. The method first retrieves the
+     * user's document ID and then creates an FCM token. Using both pieces of data, it assembles a record to
+     * be added to the "Attendees" collection.
+     */
     public void createAttendeeCollection() {
 
         retrieveUserDocument(new DocumentIdCallback() {
@@ -464,7 +538,10 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     }
 
 
-
+    /**
+     * Authenticates the attendee by checking if their document exists in the "Attendees" collection based
+     * on their device ID. If the document does not exist, a new attendee collection is created.
+     */
     private void authenticateAttendee() {
         //Function to help set up checkIfOrganizerExists
 
@@ -489,6 +566,13 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     }
 
 
+    /**
+     * Checks if an attendee already exists in the specified collection by matching a document reference.
+     *
+     * @param collectionName The name of the Firestore collection to search within.
+     * @param fieldName The document field name to match against the provided document reference.
+     * @param documentReference The document reference to search for in the collection.
+     */
     public void checkIfAttendeesExist(String collectionName, String fieldName, DocumentReference documentReference) {
 
         db.collection(collectionName)
@@ -513,6 +597,12 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
     }
 
 
+    /**
+     * Retrieves the Firestore document ID for the current user based on their device ID. This is used
+     * to authenticate and manage attendee data in the database.
+     *
+     * @param callback The callback to handle the outcome of the document ID retrieval process.
+     */
     public void retrieveUserDocument(DocumentIdCallback callback) {
 
         db.collection("Users")
@@ -530,6 +620,12 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                 });
     }
 
+    /**
+     * Creates a Firebase Cloud Messaging (FCM) token for the device. This token is used for sending
+     * notifications to the device.
+     *
+     * @param callback The callback to handle the reception of the FCM token.
+     */
     public void createFCMToken(FCMTokenCallback callback) {
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(task -> {

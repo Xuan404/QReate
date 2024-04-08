@@ -47,6 +47,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * The CurrentEventsFragment is responsible for displaying a list of events that the user
+ * is currently signed up for. It utilizes an EventArrayAdapter to display each event in a
+ * ListView. The fragment provides functionality to navigate to the event details, update the
+ * user's profile, and log out through a popup menu.
+ */
 public class CurrentEventsFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener{
     private EventArrayAdapter eventArrayAdapter;
     private ListView eventList;
@@ -96,6 +102,13 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
 
     }
 
+    /**
+     * Initializes the profile picture ViewModel and sets up the profile picture icon with the
+     * fetched or generated profile picture. It also sets up a click listener for the profile icon
+     * to show a popup menu with options for viewing the profile and logging out.
+     *
+     * @param view The current view of the fragment.
+     */
     private void initializePicViewModel(View view){
         profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
 
@@ -180,11 +193,22 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
         transaction.commit();
     }
 
+    /**
+     * Overrides the onViewCreated method to initiate the loading of all events the user
+     * is signed up for once the view is created.
+     *
+     * @param view               The View returned by onCreateView.
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     */
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadAllEvents();
     }
 
+    /**
+     * Fetches all events that the user is signed up for from Firestore and updates the ListView
+     * with these events. This method filters the events to only include those that are occurring today.
+     */
     public void loadAllEvents() {
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -207,6 +231,12 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
                 .addOnFailureListener(e -> Log.e("CurrentEventsFragment", "Error fetching attendee info", e));
     }
 
+    /**
+     * Fetches event details by their references and updates the event list to display events
+     * occurring today. This method filters events based on their date to include only today's events.
+     *
+     * @param eventRefs A list of DocumentReferences pointing to the events to be fetched.
+     */
     private void fetchEventsByReferences(List<DocumentReference> eventRefs) {
         // Prepare to fetch today's events
         Calendar startOfDay = Calendar.getInstance();
@@ -247,26 +277,51 @@ public class CurrentEventsFragment extends Fragment implements EventArrayAdapter
         });
     }
 
+    /**
+     * Handles the event selection action by hiding the bottom navigation bar and showing the
+     * details navigation bar.
+     */
     @Override
     public void onEventSelected() {
         hideBottomNavigationBar(); // Implement this method
         showDetailsNavigationBar(); // Implement this method
     }
 
+    /**
+     * Hides the bottom navigation bar. This method is typically called when navigating to a
+     * detailed view of an event where the bottom navigation bar is not needed.
+     */
     private void hideBottomNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).hideBottomNavigationBar();
     }
 
+    /**
+     * Shows the details navigation bar, providing the user with navigation options relevant to
+     * the detailed view of an event.
+     */
     private void showDetailsNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).showDetailsNavigationBar();
     }
 
+    /**
+     * Retrieves the ID of the currently selected event. This ID can be used for further operations,
+     * such as fetching event details.
+     *
+     * @return The ID of the selected event, or null if no event is selected.
+     */
     public String getSelectedEventId() {
         return eventArrayAdapter.getSelectedEventId();
     }
 
+    /**
+     * Removes an event from the event list based on its ID. This method is typically called when
+     * an event needs to be removed from the user's current events list, such as after a user
+     * unregisters from the event.
+     *
+     * @param eventId The document ID of the event to be removed from the list.
+     */
     public void removeEventFromList(String eventId) {
         if (eventArrayAdapter != null) {
             for (int i = 0; i < eventArrayAdapter.getCount(); i++) {

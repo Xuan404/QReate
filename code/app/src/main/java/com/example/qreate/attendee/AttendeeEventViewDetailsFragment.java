@@ -37,6 +37,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Fragment for displaying the detailed view of an event to an attendee. It includes
+ * functionality for viewing event details and signing up for the event.
+ */
 public class AttendeeEventViewDetailsFragment extends Fragment {
     private ImageView poster;
     private TextView eventName;
@@ -47,6 +51,16 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
     private TextView eventLocation;
 
     private FirebaseFirestore db;
+
+    /**
+     * Inflates the layout for the event details view, initializes UI components, and sets up event handlers
+     * for interaction elements like the back and sign-up buttons.
+     *
+     * @param inflater           The LayoutInflater object to inflate views in the fragment.
+     * @param container          If non-null, this is the parent view to which the fragment's UI is attached.
+     * @param savedInstanceState If non-null, the fragment is being re-constructed from a previous saved state.
+     * @return view
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -248,6 +262,12 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
 
     }
 
+    /**
+     * Factory method to create a new instance of this fragment using the provided parameters.
+     *
+     * @param eventId The unique ID of the event to display in detail.
+     * @return A new instance of fragment AttendeeEventViewDetailsFragment.
+     */
     public static AttendeeEventViewDetailsFragment newInstance(String eventId) {
         AttendeeEventViewDetailsFragment fragment = new AttendeeEventViewDetailsFragment();
         Bundle args = new Bundle();
@@ -256,11 +276,19 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Shows the bottom navigation bar, typically called when navigating away from the details view.
+     */
     private void showBottomNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).showBottomNavigationBar();
     }
 
+    /**
+     * Increments the signup count for the event in the Firestore database.
+     *
+     * @param eventId The unique ID of the event for which the signup count is incremented.
+     */
     private void incrementSignupCount(String eventId) {
         final DocumentReference eventRef = db.collection("Events").document(eventId);
         db.runTransaction((Transaction.Function<Void>) transaction -> {
@@ -273,6 +301,11 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                 .addOnFailureListener(e -> Log.e("Transaction", "Transaction failure.", e));
     }
 
+    /**
+     * Loads the poster image for the event from Firebase Storage and displays it in the UI.
+     *
+     * @param posterPath The storage path of the poster image in Firebase Storage.
+     */
     private void loadPosterImage(String posterPath) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference posterRef = storage.getReference(posterPath);

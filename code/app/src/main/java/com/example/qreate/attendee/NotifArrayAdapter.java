@@ -96,6 +96,12 @@ public class NotifArrayAdapter extends ArrayAdapter<Notif> {
         return viewItem;
     }
 
+    /**
+     * Changes the color of the radio button to indicate selection status.
+     * This method customizes the appearance of the radio button based on its checked state.
+     *
+     * @param view The View containing the radio button whose color needs to be changed.
+     */
     private void changeRadioColor(View view) {
 
         RadioButton radioButton = view.findViewById(R.id.notif_radio_button);
@@ -123,6 +129,11 @@ public class NotifArrayAdapter extends ArrayAdapter<Notif> {
 
     }
 
+    /**
+     * Returns the ID of the selected notification.
+     *
+     * @return The ID of the selected notification, or null if no notification is selected.
+     */
     public String getSelectedNotifId() {
         if (selectedPosition != -1) {
             Notif selectedNotif = getItem(selectedPosition);
@@ -131,6 +142,9 @@ public class NotifArrayAdapter extends ArrayAdapter<Notif> {
         return null;
     }
 
+    /**
+     * Interface definition for a callback to be invoked when a notification is selected.
+     */
     public interface OnNotifSelectedListener {
         void onNotifSelected();
     }

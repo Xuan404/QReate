@@ -99,6 +99,12 @@ public class UpcomingEventsFragment extends Fragment implements EventArrayAdapte
 
     }
 
+    /**
+     * Initializes the profilePicViewModel to fetch and display the attendee's profile picture.
+     * Sets up an ImageButton to display the profile picture and a PopupMenu for account management options.
+     *
+     * @param view The View returned by onCreateView.
+     */
     private void initializePicViewModel(View view){
         profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
 
@@ -183,11 +189,23 @@ public class UpcomingEventsFragment extends Fragment implements EventArrayAdapte
         transaction.commit();
     }
 
+    /**
+     * Called immediately after onCreateView has returned, but before any saved state has been restored into the view.
+     * This method is useful for doing final setup for the fragment view, such as fetching data to populate views.
+     *
+     * @param view               The View returned by onCreateView.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     */
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadAllEvents();
     }
 
+    /**
+     * Fetches all upcoming events the attendee is signed up for by querying the Firestore database.
+     * Upcoming events are determined based on the current date and time, and only those occurring after
+     * the current day are considered. The events are displayed using an EventArrayAdapter.
+     */
     public void loadAllEvents() {
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -210,6 +228,12 @@ public class UpcomingEventsFragment extends Fragment implements EventArrayAdapte
                 .addOnFailureListener(e -> Log.e("CurrentEventsFragment", "Error fetching attendee info", e));
     }
 
+    /**
+     * Fetches events by their references and filters them based on their date to determine if they are upcoming.
+     * Populates the EventArrayAdapter with these events.
+     *
+     * @param eventRefs A list of DocumentReference objects pointing to event documents in Firestore.
+     */
     private void fetchEventsByReferences(List<DocumentReference> eventRefs) {
         // Prepare to fetch today's events
         Calendar startOfDay = Calendar.getInstance();
@@ -250,26 +274,46 @@ public class UpcomingEventsFragment extends Fragment implements EventArrayAdapte
         });
     }
 
+    /**
+     * Callback method to be invoked when an event is selected from the list.
+     * This method is responsible for hiding the bottom navigation bar and showing the details navigation bar.
+     */
     @Override
     public void onEventSelected() {
         hideBottomNavigationBar(); // Implement this method
         showDetailsNavigationBar(); // Implement this method
     }
 
+    /**
+     * Hides the BottomNavigationView associated with the AttendeeActivity.
+     */
     private void hideBottomNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).hideBottomNavigationBar();
     }
 
+    /**
+     * Shows the details BottomNavigationView associated with the AttendeeActivity.
+     */
     private void showDetailsNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).showDetailsNavigationBar();
     }
 
+    /**
+     * Gets the ID of the selected event.
+     *
+     * @return A String representing the selected event's document ID.
+     */
     public String getSelectedEventId() {
         return eventArrayAdapter.getSelectedEventId();
     }
 
+    /**
+     * Removes an event from the list based on its ID.
+     *
+     * @param eventId The ID of the event to be removed.
+     */
     public void removeEventFromList(String eventId) {
         if (eventArrayAdapter != null) {
             for (int i = 0; i < eventArrayAdapter.getCount(); i++) {

@@ -45,6 +45,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * OtherEventsFragment is a Fragment subclass that displays a list of future events an attendee can participate in.
+ * This class fetches event data from Firestore and displays it using a custom ArrayAdapter. Each list item represents
+ * an event with its name and date, and it allows attendees to view more details about the event.
+ */
 public class OtherEventsFragment extends Fragment implements EventArrayAdapter.OnEventSelectedListener {
     private EventArrayAdapter eventArrayAdapter;
     private ListView eventList;
@@ -94,12 +99,19 @@ public class OtherEventsFragment extends Fragment implements EventArrayAdapter.O
 
     }
 
+    /**
+     * Called immediately after onCreateView(LayoutInflater, ViewGroup, Bundle) has returned, but before any saved state has been restored into the view.
+     * This method is useful for doing final initialization once these pieces are in place, such as retrieving views or restoring state.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadAllEvents();
     }
 
+    /**
+     * Fetches all future events from Firestore, adds them to the adapter's dataset, and notifies the adapter of the dataset change.
+     */
     public void loadAllEvents(){
         CollectionReference eventsRef = db.collection("Events");
         ArrayList<AdministratorEvent> events = new ArrayList<>();
@@ -135,7 +147,9 @@ public class OtherEventsFragment extends Fragment implements EventArrayAdapter.O
 
     }
 
-
+    /**
+     * Initializes the ViewModel for profile pictures, sets the profile picture if available, and provides a fallback mechanism.
+     */
     private void initializePicViewModel(View view){
         profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
 
@@ -219,23 +233,35 @@ public class OtherEventsFragment extends Fragment implements EventArrayAdapter.O
         transaction.commit();
     }
 
+    /**
+     * Callback method to be invoked when an event is selected from the list. This method hides the bottom navigation bar and shows the details navigation bar.
+     */
     @Override
     public void onEventSelected() {
         hideBottomNavigationBar(); // Implement this method
         showDetailsNavigationBar(); // Implement this method
     }
 
-
+    /**
+     * Hides the main bottom navigation bar.
+     */
     private void hideBottomNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).hideBottomNavigationBar();
     }
 
+    /**
+     * Shows the details navigation bar for additional actions specific to the selected event.
+     */
     private void showDetailsNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).showDetailsNavigationBar();
     }
 
+    /**
+     * Retrieves the ID of the currently selected event.
+     * @return The ID of the selected event
+     */
     public String getSelectedEventId() {
         return eventArrayAdapter.getSelectedEventId();
     }

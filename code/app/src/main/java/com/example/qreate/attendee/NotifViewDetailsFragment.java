@@ -21,11 +21,25 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+/**
+ * NotifViewDetailsFragment is a Fragment subclass used to display the details of a specific notification.
+ * It fetches and shows the notification's title and description based on the notification ID passed through its arguments.
+ * The class also manages navigation by allowing users to return to the previous screen.
+ */
 public class NotifViewDetailsFragment extends Fragment {
     private TextView notifName;
     private TextView notifDescription;
     private FirebaseFirestore db;
 
+    /**
+     * Inflates the layout for this fragment, initializes Firestore and UI components, and sets up a listener
+     * for the back button. It retrieves notification details from Firestore based on the provided notification ID.
+     *
+     * @param inflater           LayoutInflater object to inflate views in the fragment
+     * @param container          If non-null, this is the parent view to which the fragment's UI should be attached
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state
+     * @return view              Returns the View for the fragment's UI, or null
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,10 +92,21 @@ public class NotifViewDetailsFragment extends Fragment {
 
     }
 
+    /**
+     * Shows the bottom navigation bar by calling a method in the parent Activity. This method is
+     * typically called when navigating away from the current fragment.
+     */
     private void showBottomNavigationBar() {
         // Find the BottomNavigationView and set its visibility to GONE
         ((AttendeeActivity)getActivity()).showBottomNavigationBar();
     }
+
+    /**
+     * Creates a new instance of NotifViewDetailsFragment with the provided notification ID as an argument.
+     *
+     * @param notifId The ID of the notification whose details are to be displayed
+     * @return A new instance of NotifViewDetailsFragment
+     */
     public static NotifViewDetailsFragment newInstance(String notifId) {
         NotifViewDetailsFragment fragment = new NotifViewDetailsFragment();
         Bundle args = new Bundle();
