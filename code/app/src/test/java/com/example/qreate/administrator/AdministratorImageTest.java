@@ -1,9 +1,6 @@
 package com.example.qreate.administrator;
 
-import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import com.example.qreate.organizer.OrganizerEvent;
 
 import org.junit.After;
 import org.junit.Before;
@@ -11,9 +8,10 @@ import org.junit.Test;
 //SWAP TO intellij and it should work
 public class AdministratorImageTest {
     String name = "test image name";
-    String image = "test image";
+    String image = "test imageUrl";
+    String image_generated = "test generatedUrl";
     String id = "test id";
-    String type = "test type";
+    int type;
 
     @Before
     public void setUp() throws Exception {
@@ -25,25 +23,25 @@ public class AdministratorImageTest {
 
     @Test
     public void getImageName() {
-        AdministratorImage mockImage = new AdministratorImage(name, image, id, type);
+        AdministratorImage mockImage = new AdministratorImage(name, image, image_generated, id, type);
         assertEquals(name, mockImage.getImageName());
     }
 
     @Test
     public void getImage() {
-        AdministratorImage mockImage = new AdministratorImage(name, image, id, type);
-        assertEquals(image, mockImage.getImage());
+        AdministratorImage mockImage = new AdministratorImage(name, image, image_generated, id, type);
+        assertEquals(image, mockImage.getImageUrl());
     }
 
     @Test
     public void getId() {
-        AdministratorImage mockImage = new AdministratorImage(name, image, id, type);
+        AdministratorImage mockImage = new AdministratorImage(name, image, image_generated, id, type);
         assertEquals(id, mockImage.getId());
     }
 
     @Test
     public void getImageType() {
-        AdministratorImage mockImage = new AdministratorImage(name, image, id, type);
-        assertEquals(type, mockImage.getImageType());
+        AdministratorImage mockImage = new AdministratorImage(name, image, image_generated, id, type);
+        assertEquals(type, mockImage.getType());
     }
 }

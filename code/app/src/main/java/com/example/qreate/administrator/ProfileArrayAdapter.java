@@ -2,8 +2,11 @@ package com.example.qreate.administrator;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.CompoundButtonCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.qreate.R;
 
 import java.util.ArrayList;
@@ -85,6 +90,25 @@ public class ProfileArrayAdapter extends ArrayAdapter<AdministratorProfile> {
                 mListener.onProfileSelected();
             }
         });
+
+        AdministratorProfile profile_id = getItem(position);
+
+        // Check if profileImage (URL) is not null and not empty
+        if (profile.getProfileImage() != null && !profile.getProfileImage().isEmpty()) {
+            Glide.with(getContext())
+                    .load(profile.getProfileImage())
+                    .apply(new RequestOptions().circleCrop())
+                    .into(profile_image);
+        } else if (profile.getGeneratedPic() != null && !profile.getGeneratedPic().isEmpty()) {
+            // Decode Base64 to bitmap
+            byte[] decodedString = Base64.decode(profile.getGeneratedPic(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+            profile_image.setImageBitmap(decodedByte);
+        } else {
+            // Fallback placeholder if both profile and generated pics are missing
+            profile_image.setImageResource(R.drawable.profile);
+        }
         return view;
     }
 

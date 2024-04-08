@@ -2,8 +2,12 @@ package com.example.qreate.administrator;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +20,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.CompoundButtonCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.qreate.R;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -74,6 +82,28 @@ public class ImageArrayAdapter extends ArrayAdapter<AdministratorImage> {
         //image.setImageResource(R.drawable.profile);
         radioButton.setChecked(position == selectedPosition);
 
+
+        if (images.getType() == AdministratorImage.TYPE_PROFILE) {
+            if (images.getImageUrl() != null && !images.getImageUrl().isEmpty()) {
+                Glide.with(getContext())
+                        .load(images.getImageUrl())
+                        .apply(new RequestOptions().circleCrop())
+                        .into(image);
+            } else if (images.getGeneratedImageUrl() != null && !images.getGeneratedImageUrl().isEmpty()) {
+                // Decode Base64 to bitmap
+                byte[] decodedString = Base64.decode(images.getGeneratedImageUrl(), Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                image.setImageBitmap(decodedByte);
+            } else {
+                // Fallback placeholder if both profile and generated pics are missing
+                image.setImageResource(R.drawable.profile);
+            }
+        } else if (images.getType() == AdministratorImage.TYPE_EVENT) {
+            loadEventImageFromFirebaseStorage(images.getImageUrl(), image);
+        }
+
+
         // Handle radio button clicks
         radioButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,14 +135,14 @@ public class ImageArrayAdapter extends ArrayAdapter<AdministratorImage> {
         return null;
     }
 
-    public String getSelectedImageType() {
+    public int getSelectedImageType() {
         if (selectedPosition != -1) {
             AdministratorImage selectedImage = getItem(selectedPosition);
             if (selectedImage != null) {
-                return selectedImage.getImageType();
+                return selectedImage.getType();
             }
         }
-        return null;
+        return -1;
     }
 
     private void changeRadioColor(View view) {
@@ -139,5 +169,22 @@ public class ImageArrayAdapter extends ArrayAdapter<AdministratorImage> {
             CompoundButtonCompat.setButtonTintList(radioButton, colorStateList); // Support library for pre-Lollipop
         }
 
+    }
+
+    private void loadEventImageFromFirebaseStorage(String imagePath, ImageView imageView) {
+        if (imagePath != null && !imagePath.isEmpty()) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference imageRef = storage.getReference(imagePath);
+
+            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                Glide.with(getContext())
+                        .load(uri.toString())
+                        .placeholder(R.drawable.profile)
+                        .into(imageView);
+            }).addOnFailureListener(e -> {
+                Log.d("Firestore", "Error getting event image: ", e);
+                // Handle the failure by setting a default image or leaving the placeholder
+            });
+        }
     }
 }

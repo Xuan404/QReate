@@ -143,9 +143,10 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                 List<AdministratorProfile> profilesList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String profileName = document.getString("name");
-                    String profileImage = document.getString("profile_picture");
+                    String profileImage = document.getString("profile_pic");
+                    String generatedPic = document.getString("generated_pic");
                     String profileId = document.getId();
-                    profilesList.add(new AdministratorProfile(profileName, profileImage, profileId));
+                    profilesList.add(new AdministratorProfile(profileName, profileImage, generatedPic, profileId));
                 }
                 // Update the adapter with the new list
                 profileArrayAdapter.clear();
@@ -169,15 +170,13 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
 
         profilesImagesRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                List<AdministratorImage> imagesList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    String imageName = document.getString("name");
-                    String image = document.getString("profile_picture");
-                    String imageId = document.getId();
-                    imagesList.add(new AdministratorImage(imageName, image, imageId, "Profiles"));
+                    String profileName = document.getString("name");
+                    String profile_image = document.getString("profile_pic");
+                    String generated_image = document.getString("generated_pic");
+                    String profile_id = document.getId();
+                    images.add(new AdministratorImage(profileName, profile_image, generated_image, profile_id, AdministratorImage.TYPE_PROFILE));
                 }
-                // Update the adapter with the new list
-                imageArrayAdapter.addAll(imagesList);
                 imageArrayAdapter.notifyDataSetChanged();
             } else {
                 Log.d("Firestore", "Error getting documents: ", task.getException());
@@ -186,15 +185,13 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
 
         postersImagesRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                List<AdministratorImage> imagesList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    String imageName = document.getString("name");
-                    String image = document.getString("poster");
-                    String imageId = document.getId();
-                    imagesList.add(new AdministratorImage(imageName, image, imageId, "Events"));
+                    String eventName = document.getString("name");
+                    String poster_image = document.getString("poster");
+                    String eventId = document.getId();
+                    images.add(new AdministratorImage(eventName, poster_image, null, eventId, AdministratorImage.TYPE_EVENT));
                 }
                 // Update the adapter with the new list
-                imageArrayAdapter.addAll(imagesList);
                 imageArrayAdapter.notifyDataSetChanged();
             } else {
                 Log.d("Firestore", "Error getting documents: ", task.getException());
@@ -301,12 +298,15 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
         return imageArrayAdapter.getSelectedImageId();
     }
 
-    public String getSelectedImageType() {
+
+    public int getSelectedImageType() {
         return imageArrayAdapter.getSelectedImageType();
     }
 
     public String getSelectedProfileId() {
         return profileArrayAdapter.getSelectedProfileId();
     }
+
+
 
 }
