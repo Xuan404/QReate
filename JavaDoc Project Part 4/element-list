@@ -1,0 +1,8 @@
+com.example.qreate
+com.example.qreate.administrator
+com.example.qreate.attendee
+com.example.qreate.organizer
+com.example.qreate.organizer.attendeesmenu
+com.example.qreate.organizer.geolocationmenu
+com.example.qreate.organizer.notificationsmenu
+com.example.qreate.organizer.qrmenu
