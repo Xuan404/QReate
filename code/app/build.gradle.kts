@@ -51,6 +51,8 @@ dependencies {
     androidTestImplementation ("androidx.fragment:fragment-testing:1.6.2")
     androidTestImplementation ("androidx.test.espresso:espresso-contrib:3.4.0")
 
+    debugImplementation ("androidx.fragment:fragment-testing:1.6.2")
+
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
     implementation ("com.google.firebase:firebase-storage:20.3.0")
     implementation("com.google.firebase:firebase-firestore:24.10.3")
@@ -65,5 +67,7 @@ dependencies {
     implementation("androidx.multidex:multidex:2.0.1")
     implementation ("com.google.android.gms:play-services-maps:18.2.0")
     implementation ("com.google.android.gms:play-services-location:21.2.0")
+    implementation ("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
 }

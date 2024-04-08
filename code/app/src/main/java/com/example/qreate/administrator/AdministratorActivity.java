@@ -1,24 +1,20 @@
 package com.example.qreate.administrator;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.EditProfileScreenFragment;
 import com.example.qreate.R;
 import com.example.qreate.HomeScreenFragment;
-import com.example.qreate.UpdateProfilePicFragment;
 import com.example.qreate.WelcomeScreenFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,6 +31,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import android.widget.Toast;
 
 /**
  * The following class is responsible for all activities related to the Administrator
@@ -48,6 +45,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     private String selectedProfileId;
     private String selectedImageId;
     private String selectedImageType;
+    String profileDeviceId;
 
 
     /**
@@ -338,11 +336,45 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     }
 
     private void deleteProfile(String profileId) {
-        db.collection("Users").document(profileId)
-                .delete()
-                .addOnSuccessListener(aVoid -> Log.d("Delete Profile", "Profile successfully deleted!"))
-                .addOnFailureListener(e -> Log.w("Delete Profile", "Error deleting profile", e));
+        // check if the admin is trying to delete his own profile
+        checkIfOwnProfile(profileId, new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                // after checking if the profile is not the admin's
+
+            }
+        });
     }
+
+
+    private void checkIfOwnProfile(String profileId, OnCompleteListener<DocumentSnapshot> completionListener) {
+        String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        db.collection("Users").document(profileId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null && document.exists()) {
+                                profileDeviceId = document.getString("device_id");
+                                Log.d("Firebase", "device_id of the profile has been retrieved ");
+                                if (profileDeviceId.equals(device_id)) {
+                                    Toast.makeText(AdministratorActivity.this,"Admin cannot delete his own profile", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    completionListener.onComplete(task);
+                                }
+                            } else {
+                                Log.d("Firebase", "Profile document does not exist");
+                            }
+                        } else {
+                            Log.d("Firebase", "Task was unsuccessful ");
+                        }
+                    }
+                });
+    }
+
+
 
     private void deleteImage(String imageId) {
         DocumentReference eventDoc = db.collection("Events").document(imageId);

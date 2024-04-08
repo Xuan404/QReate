@@ -69,7 +69,6 @@
             android:paddingEnd="25dp">
 
             <LinearLayout
-                android:id="@id/choose_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
@@ -86,7 +85,7 @@
                     android:background="@drawable/gallery" />
 
                 <Button
-                    android:id="@id/button_gallary"
+                    android:id="@id/choose_image"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
