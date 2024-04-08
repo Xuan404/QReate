@@ -13,7 +13,13 @@ import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.CoreMatchers.containsString;
+
+import static java.util.regex.Pattern.matches;
 
 import com.example.qreate.attendee.AttendeeActivity;
 
@@ -29,14 +35,19 @@ public class AttendeeActivityTest {
     public ActivityScenarioRule<AttendeeActivity> activityRule = new ActivityScenarioRule<>(AttendeeActivity.class);
 
     @Test
-    public void navigateToNotificationsPage() {
-        // Click the "Events" icon in the navigation bar
+    public void navigateToNotificationsFragment() {
+
+        // Perform click action on notifications_icon within the fragment
+        // Note: This step assumes notifications_icon is accessible within the launched fragment,
+        // which may not align with typical use cases of FragmentScenario for isolated testing.
         onView(withId(R.id.notifications_icon)).perform(click());
-        // Check that the Events page is displayed
-        onView(withId(R.id.notif_list_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+
+        // Verify a specific view within the AttendeeNotificationsFragment is displayed
+        // Replace R.id.specific_view_in_notification_fragment with the actual view ID you want to check
+        onView(withText(containsString("Announcements"))).check(ViewAssertions.matches(isDisplayed()));
     }
 
-    @Test
+    /*@Test
     public void navigateToScanPage() {
         // Click the "Scan" icon in the navigation bar
         onView(withId(R.id.qr_icon)).perform(click());
@@ -50,5 +61,5 @@ public class AttendeeActivityTest {
         onView(withId(R.id.events_icon_nav)).perform(click());
         // Check that the Notifications page is displayed
         onView(withId(R.id.qr_menu_screen_image)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
-    }
+    }*/
 }

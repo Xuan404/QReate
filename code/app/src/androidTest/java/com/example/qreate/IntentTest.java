@@ -18,6 +18,8 @@ import androidx.test.rule.GrantPermissionRule;
 
 import com.example.qreate.administrator.AdministratorActivity;
 import com.example.qreate.attendee.AttendeeActivity;
+import com.example.qreate.attendee.AttendeeScanFragment;
+import com.example.qreate.attendee.CapActivityForAttendeeQRScannerPage;
 import com.example.qreate.organizer.OrganizerActivity;
 import com.example.qreate.organizer.OrganizerEvent;
 import com.example.qreate.organizer.notificationsmenu.OrganizerNotificationsMenuFragment;
@@ -136,5 +138,13 @@ public class IntentTest {
 
         onView(withId(R.id.notifications_menu_screen_send_notifications)).perform(click());
         intended(hasComponent(OrganizerNotificationsSendActivity.class.getName()));
+    }
+    @Test
+    public void testAttendeeScanSwap() {
+        // Launch the fragment in a container
+        FragmentScenario<AttendeeScanFragment> scenario = FragmentScenario.launchInContainer(AttendeeScanFragment.class);
+
+        onView(withId(R.id.tap_to_scan_qr_button)).perform(click());
+        intended(hasComponent(CapActivityForAttendeeQRScannerPage.class.getName()));
     }
 }

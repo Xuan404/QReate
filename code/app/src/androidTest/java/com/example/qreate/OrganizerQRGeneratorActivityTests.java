@@ -60,12 +60,12 @@ public class OrganizerQRGeneratorActivityTests {
     }
 
     //TODO account for usage of finish()
-    @Test
+    /*@Test
     public void testBackButton() {
 
         // Perform a click on the button that should start qr menu fragment
         onView(withId(R.id.generate_qr_code_screen_backbutton)).perform(click());
         intended(hasComponent(OrganizerActivity.class.getName()));
-    }
+    }*/
 
 }

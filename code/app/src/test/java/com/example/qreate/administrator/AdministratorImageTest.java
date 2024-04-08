@@ -8,7 +8,7 @@ import com.example.qreate.organizer.OrganizerEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
+//SWAP TO intellij and it should work
 public class AdministratorImageTest {
     String name = "test image name";
     String image = "test image";
