@@ -74,6 +74,7 @@ public class OrganizerQREventListPopupWindow {
     private String imageName;
     private String name;
     private String description;
+    private String location;
     private String signupLimit;
     private String selectedTime;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -249,12 +250,16 @@ public class OrganizerQREventListPopupWindow {
 
         EditText editTextName = view.findViewById(R.id.editTextEventName);
         EditText editTextDescription = view.findViewById(R.id.editTextEventDescription);
+        EditText editTextLocation = view.findViewById(R.id.editTextEventLocation);
         EditText editTextLimitSignup = view.findViewById(R.id.signupNumber);
+
 
 
         name = editTextName.getText().toString();
         description = editTextDescription.getText().toString();
+        location = editTextLocation.getText().toString();
         signupLimit = editTextLimitSignup.getText().toString();
+
 
 
 
@@ -278,6 +283,7 @@ public class OrganizerQREventListPopupWindow {
         device.put("org_device_id", device_id);
         device.put("name", name);
         device.put("description", description);
+        device.put("location", location);
         device.put("date", selectedDate);
         device.put("timeOfEvent", selectedTime);
         device.put("poster", imagePath);

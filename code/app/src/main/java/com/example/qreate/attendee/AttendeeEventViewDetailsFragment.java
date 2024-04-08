@@ -225,6 +225,7 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                                             }
                                         });
                                 eventDescription.setText(document.getString("description"));
+                                eventLocation.setText(document.getString("location"));
                                 Timestamp dateTimestamp = document.getTimestamp("date");
                                 if (dateTimestamp != null) {
                                     // Format the Timestamp as a String to include only the date part in dd-MM-yyyy format
@@ -233,8 +234,6 @@ public class AttendeeEventViewDetailsFragment extends Fragment {
                                     eventDate.setText(formattedDate);
                                 }
                                 eventTime.setText(document.getString("timeOfEvent"));
-                                // poster.setText(document.getString("poster"));
-                                // eventLocation.setText(document.getString("location"));
                                 // Ensure you have fields named accordingly in your Firestore document
                             } else {
                                 Log.d("Firestore", "Error getting documents: ", task.getException());

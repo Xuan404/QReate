@@ -57,10 +57,34 @@
         android:background="@color/white"
         android:gravity="start"
         android:layout_width="350dp"
-        android:layout_height="100dp" />
+        android:layout_height="35dp" />
+
+    <TextView
+        android:id="@+id/eventLocationText"
+        android:layout_below="@+id/editTextEventDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:text="Event Location:"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/editTextEventLocation"
+        android:layout_below="@+id/eventLocationText"
+        android:layout_width="350dp"
+        android:layout_height="35dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/white"
+        android:gravity="start"/>
+
+
     <TextView
         android:id="@+id/dateText"
-        android:layout_below="@id/editTextEventDescription"
+        android:layout_below="@+id/editTextEventLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
