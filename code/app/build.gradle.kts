@@ -49,6 +49,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
     androidTestImplementation ("androidx.fragment:fragment-testing:1.6.2")
+    androidTestImplementation ("androidx.test.espresso:espresso-contrib:3.4.0")
 
     debugImplementation ("androidx.fragment:fragment-testing:1.6.2")
 
@@ -68,5 +69,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.2.0")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    testImplementation ("org.mockito:mockito-core:3.+")
+    androidTestImplementation ("org.mockito:mockito-android:3.+")
 
 }

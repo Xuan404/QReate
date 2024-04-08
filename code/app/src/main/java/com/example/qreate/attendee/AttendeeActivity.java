@@ -79,8 +79,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
 
         authenticateUser(this);
-
-
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -265,7 +263,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                             if(selectedNotifId != null) {
                                 navigateToNotifDetails(selectedNotifId);
                             }
-                            showDeleteNavigationBar();
                         }
                     } else if (navBarItemId==R.id.events_icon_nav) {
                         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.attendee_handler_frame);
