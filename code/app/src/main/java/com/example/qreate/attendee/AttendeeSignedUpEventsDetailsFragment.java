@@ -91,6 +91,7 @@ public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
                                             }
                                         });
                                 eventDescription.setText(document.getString("description"));
+                                eventLocation.setText(document.getString("location"));
                                 Timestamp dateTimestamp = document.getTimestamp("date");
                                 if (dateTimestamp != null) {
                                     // Format the Timestamp as a String to include only the date part in dd-MM-yyyy format
@@ -99,8 +100,6 @@ public class AttendeeSignedUpEventsDetailsFragment extends Fragment {
                                     eventDate.setText(formattedDate);
                                 }
                                 eventTime.setText(document.getString("timeOfEvent"));
-                                // poster.setText(document.getString("poster"));
-                                // eventLocation.setText(document.getString("location"));
                             } else {
                                 Log.d("Firestore", "Error getting documents: ", task.getException());
                             }
