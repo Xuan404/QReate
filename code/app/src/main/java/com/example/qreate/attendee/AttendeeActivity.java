@@ -338,7 +338,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
                                         Log.e("FetchAttendee", "Error fetching attendee document", task.getException());
                                     }
                                 });
-                        incrementSignupCount(selectedEventId);
+                        decrementSignupCount(selectedEventId);
                     }
                     hideDeleteNavigationBar();
                     showBottomNavigationBar();
@@ -401,7 +401,7 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
         }
     }
 
-    private void incrementSignupCount(String eventId) {
+    private void decrementSignupCount(String eventId) {
         final DocumentReference eventRef = db.collection("Events").document(eventId);
         db.runTransaction((Transaction.Function<Void>) transaction -> {
                     DocumentSnapshot eventSnapshot = transaction.get(eventRef);
