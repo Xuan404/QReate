@@ -22,6 +22,12 @@ import static androidx.test.espresso.intent.Intents.intending;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasAction;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+/**
+ * IMPORTANT!!! comment out the line 86: authenticateUser(this); of AttendeeActivity class otherwise this test will FAIL.
+
+ This test aims to rigorously verify that the 'Tap to Scan' feature promptly and reliably activates the camera .
+ */
+
 @RunWith(AndroidJUnit4.class)
 public class CameraIntentTest {
 
