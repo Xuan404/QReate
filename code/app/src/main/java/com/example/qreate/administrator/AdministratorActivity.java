@@ -31,6 +31,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import android.widget.Toast;
 
 /**
  * The following class is responsible for all activities related to the Administrator
@@ -44,6 +47,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     private String selectedProfileId;
     private String selectedImageId;
     private String selectedImageType;
+    private String profileDeviceId;
 
 
     /**
@@ -335,11 +339,105 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     }
 
     private void deleteProfile(String profileId) {
-        db.collection("Users").document(profileId)
-                .delete()
-                .addOnSuccessListener(aVoid -> Log.d("Delete Profile", "Profile successfully deleted!"))
-                .addOnFailureListener(e -> Log.w("Delete Profile", "Error deleting profile", e));
+        String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        // check if the admin is trying to delete his own profile
+        checkIfOwnProfile(profileId, device_id, new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                // after checking if the profile is not the admin's, delete their attendee profile if it exists
+                removeAttendeeFromEvents(profileDeviceId, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+
+
+                    }
+
+                });
+            }
+        });
     }
+
+    private void checkIfOwnProfile(String profileId, String device_id, OnCompleteListener<DocumentSnapshot> completionListener) {
+        db.collection("Users").document(profileId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null && document.exists()) {
+                                profileDeviceId = document.getString("device_id");
+                                Log.d("Firestore", "device_id of the profile has been retrieved ");
+                                if (profileDeviceId.equals(device_id)) {
+                                    Toast.makeText(AdministratorActivity.this,"Admin cannot delete his own profile", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    completionListener.onComplete(task);
+                                }
+                            } else {
+                                Log.d("Firestore", "Profile document does not exist");
+                            }
+                        } else {
+                            Log.d("Firestore", "Task was unsuccessful ");
+                        }
+                    }
+                });
+    }
+
+    private void removeAttendeeFromEvents(String profileDeviceId, OnCompleteListener<Void> completionListener) {
+        db.collection("Attendees").whereEqualTo("device_id", profileDeviceId)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot attendeeSnapshot = queryDocumentSnapshots.getDocuments().get(0);
+                        DocumentReference attendeeRef = attendeeSnapshot.getReference();
+                        Log.d("Firestore", "Attendee document acquired");
+
+                        // getting the attendee's sign up event list
+                        List<DocumentReference> signUpEventList = (List<DocumentReference>) attendeeSnapshot.get("signup_event_list");
+                        Log.d("Firestore", "Attendee sign up list acquired");
+
+                        // delete the attendee from the signedup_attendees list in each event in their signup_event list
+                        if (signUpEventList != null && !signUpEventList.isEmpty()) {
+                            for (DocumentReference eventRef : signUpEventList) {
+                                eventRef.get().addOnSuccessListener(documentSnapshot -> {
+                                    List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) documentSnapshot.get("signedup_attendees");
+                                    if (signedUpAttendees != null) {
+                                        signedUpAttendees.removeIf(attendee -> attendeeRef.equals(((DocumentReference) attendee.get("attendeeRef")).getId()));
+                                        eventRef.update("signedup_attendees", signedUpAttendees)
+                                                .addOnSuccessListener(aVoid -> Log.d("UpdateEvent", "Attendee removed from event's signedup_attendees"))
+                                                .addOnFailureListener(e -> Log.e("UpdateEvent", "Error removing attendee from event", e));
+                                        // decrease the sign up count
+                                        Long currentCount = documentSnapshot.getLong("signup_count");
+                                        eventRef.update("signup_count", currentCount - 1);
+                                    }
+                                }).addOnFailureListener(e -> Log.e("FetchEvent", "Error fetching event document", e));
+                            }
+                            completionListener.onComplete(null);
+                        } else {
+                            Log.d("Firestore", "Attendee has not signed up for any events");
+                            // If no organizer is found, consider it as operation completed
+                            completionListener.onComplete(null);
+                        }
+
+                    } else {
+                        Log.d("Firestore", "Attendee with given device ID not found");
+                        // If no attendee is found, consider it as operation completed
+                        completionListener.onComplete(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.w("Firestore", "Error getting document", e);
+                    // If there's an error fetching the event document, notify completion listener
+                    completionListener.onComplete(null);
+                });
+    }
+
+
+
+
+
 
     private void deleteImage(String imageId) {
         DocumentReference eventDoc = db.collection("Events").document(imageId);

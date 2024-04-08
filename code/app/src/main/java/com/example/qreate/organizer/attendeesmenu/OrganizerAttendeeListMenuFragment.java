@@ -41,6 +41,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.qreate.AccountProfileScreenFragment;
 import com.example.qreate.R;
 import com.example.qreate.organizer.OrganizerActivity;
@@ -283,13 +285,24 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
 
     private void initializePicViewModel(View view){
         profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
-        profilePicViewModel.getGeneratedProfilePic().observe(getViewLifecycleOwner(), bitmap -> {
-            ImageButton profileButton = view.findViewById(R.id.attendee_list_menu_screen_profile_button);
-            profileButton.setImageBitmap(bitmap);
-        });
 
+        ImageButton profileButton = view.findViewById(R.id.attendee_list_menu_screen_profile_button);
         String deviceId = Settings.Secure.getString(requireContext().getContentResolver(), Settings.Secure.ANDROID_ID);
-        profilePicViewModel.fetchGeneratedPic(getContext(), deviceId);
+        profilePicViewModel.fetchProfilePicUrl(deviceId);
+
+        profilePicViewModel.getProfilePicUrl().observe(getViewLifecycleOwner(), profilePicUrl -> {
+            if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
+                Glide.with(this)
+                        .load(profilePicUrl)
+                        .apply(new RequestOptions().circleCrop())
+                        .into(profileButton);
+            } else {
+                profilePicViewModel.getGeneratedProfilePic().observe(getViewLifecycleOwner(), bitmap -> {
+                    profileButton.setImageBitmap(bitmap);
+                });
+                profilePicViewModel.fetchGeneratedPic(getContext(), deviceId);
+            }
+        });
 
     }
 

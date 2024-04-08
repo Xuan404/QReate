@@ -27,7 +27,6 @@
         android:layout_centerVertical="true"
         android:layout_marginTop="100dp"
         android:layout_below="@id/home_screen_qreate_title"
-        android:src="@drawable/empty_profile_pic"
         android:layout_gravity="center"/>
 
     <TextView
