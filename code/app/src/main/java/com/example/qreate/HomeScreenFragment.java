@@ -62,6 +62,11 @@ public class HomeScreenFragment extends Fragment{
         return view;
     }
 
+    /**
+     * Retrieves user information from Firestore based on the device ID and sets it in the UI components.
+     *
+     * @param view The view containing the UI components to set user information.
+     */
     private void retrieveAndSetUserInfo(View view){
 
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);

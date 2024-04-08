@@ -55,7 +55,7 @@ import java.util.UUID;
 /**
  * A Pup up window that allows the user to create an aevent
  * Reference https://www.youtube.com/watch?v=qCoidM98zNk
- * @author Akib Zaman Choudhury
+ *
  */
 public class OrganizerQREventListPopupWindow {
 

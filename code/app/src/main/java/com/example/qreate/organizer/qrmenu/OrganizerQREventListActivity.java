@@ -34,7 +34,7 @@ import java.util.List;
 
 /**
  * Show the User a list of Events that he has created
- * @author Akib Zaman Choudhury
+ *
  */
 public class OrganizerQREventListActivity extends AppCompatActivity implements OrganizerQREventListPopupWindow.EventCreationListener, OrganizerEventArrayAdapter.EventSelectionListener, OrganizerEventDetailsFragment.EventDeletionListener{
     private OrganizerQREventListPopupWindow popupWindow;
@@ -103,7 +103,7 @@ public class OrganizerQREventListActivity extends AppCompatActivity implements O
     }
 
     /**
-     *
+     * Fragment change when an event's radio buttom is selected
      * @param eventId
      */
     public void onEventSelected(String eventId){

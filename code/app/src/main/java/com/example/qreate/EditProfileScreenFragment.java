@@ -85,7 +85,13 @@ public class EditProfileScreenFragment extends Fragment {
      */
     private OnFragmentInteractionListener mListener;
 
-
+    /**
+     * Called when the fragment is attached to a context. This method should not be overridden directly in your code.
+     * Instead, override {@link #onAttach(Context)} to perform initialization tasks when the fragment is attached to a context.
+     *
+     * @param context The context to which the fragment is attached.
+     * @throws RuntimeException If the context does not implement the {@link OnFragmentInteractionListener} interface.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -147,6 +153,13 @@ public class EditProfileScreenFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Called when the fragment is creating the view. This method should not be overridden directly in your code.
+     * Instead, override {@link #onCreate(Bundle)} to perform initialization tasks when the fragment is created.
+     *
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     *                            Otherwise, it is null.
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,6 +177,11 @@ public class EditProfileScreenFragment extends Fragment {
                 });
     }
 
+    /**
+     * Uploads the image file to Firebase Storage.
+     *
+     * @param fileUri The URI of the image file to be uploaded.
+     */
     private void uploadImageToFirebaseStorage(Uri fileUri) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference().child("profile_pics/" + System.currentTimeMillis() + ".jpg");
@@ -184,6 +202,11 @@ public class EditProfileScreenFragment extends Fragment {
                 });
     }
 
+    /**
+     * Authenticates user information entered in the profile update form.
+     *
+     * @param view The view containing the user input fields.
+     */
     private void authenticateUserInfo(View view) {
 
         boolean nonEmptyInput = true;
@@ -285,6 +308,12 @@ public class EditProfileScreenFragment extends Fragment {
     }
 
     //bitmap to Base64
+    /**
+     * Encodes a Bitmap image into a Base64 string.
+     *
+     * @param profilePictureBitmap The Bitmap image to be encoded.
+     * @return The Base64 encoded string representing the input Bitmap image.
+     */
     private String encodeBitmap(Bitmap profilePictureBitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         profilePictureBitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
@@ -370,6 +399,10 @@ public class EditProfileScreenFragment extends Fragment {
     }
 
 
+    /**
+     * Removes the current fragment from the back stack and destroys it.
+     * This method should be called when the fragment needs to be removed from the UI.
+     */
     public void removeFragment() {
         //removes fragment from the back stack, in this case its the current fragment
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -378,6 +411,12 @@ public class EditProfileScreenFragment extends Fragment {
         fragmentTransaction.commit();
         fragmentManager.popBackStack(); // This line ensures the fragment is removed from the back stack
     }
+
+    /**
+     * Called when the fragment is being destroyed.
+     * This method should not be overridden directly in your code.
+     * Instead, override {@link #onDestroy()} to perform any cleanup tasks when the fragment is destroyed.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();

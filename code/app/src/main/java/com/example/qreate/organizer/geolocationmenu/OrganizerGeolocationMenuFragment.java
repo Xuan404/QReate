@@ -158,8 +158,9 @@ public class OrganizerGeolocationMenuFragment extends Fragment {
     }
 
     /**
-     * Shows the name injtials for the profile icon
-     * @param view
+     * Initializes the profile picture ViewModel and sets up the observer for profile picture changes.
+     *
+     * @param view The fragment's root view.
      */
     private void initializePicViewModel(View view){
         profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);

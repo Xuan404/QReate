@@ -45,6 +45,13 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * AccountProfileScreenFragment allows users to view and edit their profile information.
+ * This fragment is responsible for displaying user details like name, phone number, email, and homepage,
+ * as well as allowing the user to update their profile picture and privacy settings regarding their coordinates.
+ * Users can also navigate back to their respective activity views after updating their profile.
+ */
+
 public class AccountProfileScreenFragment extends Fragment {
     private String selectedProfilePicUrl;
 
@@ -61,13 +68,20 @@ public class AccountProfileScreenFragment extends Fragment {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
     /**
-     *
-     * @param activity
+     * Constructor for AccountProfileScreenFragment.
+     * @param activity The name of the current activity to adjust navigation behavior.
      */
     public AccountProfileScreenFragment(String activity) {
         current_activity = activity;
     }
 
+    /**
+     * Inflates the fragment's layout and sets up UI components and event handlers.
+     * @param inflater The LayoutInflater object that can be used to inflate views in the fragment.
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return Returns the View for the fragment's UI.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -105,6 +119,11 @@ public class AccountProfileScreenFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Initializes the updateProfileLauncher used for starting the UpdateProfileScreenActivity
+     * to select and upload a new profile picture.
+     * @param savedInstanceState If the fragment is being re-created from a previous saved state, this is the state.
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +141,10 @@ public class AccountProfileScreenFragment extends Fragment {
                 });
     }
 
+    /**
+     * Uploads the selected image file to Firebase Storage and updates the profile picture ImageView.
+     * @param fileUri The URI of the selected image file.
+     */
     private void uploadImageToFirebaseStorage(Uri fileUri) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference().child("profile_pics/" + System.currentTimeMillis() + ".jpg");
@@ -297,6 +320,21 @@ public class AccountProfileScreenFragment extends Fragment {
 
 
     // Sends updated user info to firebase
+    /**
+     * Updates the current user's information in Firestore with the provided details.
+     * This method retrieves the user document based on the device ID, then updates the document
+     * with the new user information, including name, phone number, email, homepage URL,
+     * status for allowing coordinates, the encoded bitmap for the generated profile picture, and
+     * the URL for the profile picture if one has been selected or uploaded.
+     *
+     * @param name The updated name of the user.
+     * @param phone The updated phone number of the user.
+     * @param email The updated email address of the user.
+     * @param homepage The updated homepage or website URL of the user.
+     * @param status The updated status indicating whether the user allows sharing their coordinates.
+     * @param generatedProfilePicBitmap The Bitmap of the generated profile picture based on the user's initials.
+     * @param profilePicUrl The URL of the selected or uploaded profile picture; null if no picture was selected.
+     */
     private void updateUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status, Bitmap generatedProfilePicBitmap, String profilePicUrl) {
 
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -345,7 +383,10 @@ public class AccountProfileScreenFragment extends Fragment {
     }
 
 
-    // Retrieves and sets User info
+    /**
+     * Retrieves the user's information from Firestore and sets it to the UI components.
+     * @param view The view containing the UI components.
+     */
     private void retrieveAndSetUserInfo(View view){
 
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -412,6 +453,9 @@ public class AccountProfileScreenFragment extends Fragment {
                 });
     }
 
+    /**
+     * Refreshes the user's information when the fragment resumes.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -419,6 +463,9 @@ public class AccountProfileScreenFragment extends Fragment {
         retrieveAndSetUserInfo(getView());
     }
 
+    /**
+     * Performs cleanup and navigation adjustments when the view is destroyed.
+     */
     public void onDestroyView() {
         super.onDestroyView();
         if (getActivity() != null) {
