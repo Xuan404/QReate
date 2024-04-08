@@ -1,4 +1,5 @@
 package com.example.qreate;
 
-public class EditProfileScreenTest {
+public class
+EditProfileScreenTest {
 }

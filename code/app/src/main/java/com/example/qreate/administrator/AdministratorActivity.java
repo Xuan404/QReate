@@ -69,7 +69,6 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         bottomNavigationView.setSelectedItemId(R.id.defaultNavPlaceholder);
 
         authenticateUser(this);
-
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFragment = null;

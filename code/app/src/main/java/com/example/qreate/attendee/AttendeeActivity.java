@@ -79,8 +79,6 @@ public class AttendeeActivity extends AppCompatActivity implements EditProfileSc
 
 
         authenticateUser(this);
-
-
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
