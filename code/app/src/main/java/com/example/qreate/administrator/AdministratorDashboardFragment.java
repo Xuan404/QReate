@@ -191,7 +191,9 @@ public class AdministratorDashboardFragment extends Fragment implements EventArr
                     String eventName = document.getString("name");
                     String poster_image = document.getString("poster");
                     String eventId = document.getId();
-                    images.add(new AdministratorImage(eventName, poster_image, null, eventId, AdministratorImage.TYPE_EVENT));
+                    if (poster_image != null && !poster_image.isEmpty()) {
+                        images.add(new AdministratorImage(eventName, poster_image, null, eventId, AdministratorImage.TYPE_EVENT));
+                    }
                 }
                 // Update the adapter with the new list
                 imageArrayAdapter.notifyDataSetChanged();
