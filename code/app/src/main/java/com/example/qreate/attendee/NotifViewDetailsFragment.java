@@ -35,6 +35,18 @@ public class NotifViewDetailsFragment extends Fragment {
         notifName = view.findViewById(R.id.notif_name);
         notifDescription = view.findViewById(R.id.notif_description);
 
+        Button backButton = view.findViewById(R.id.event_details_back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBottomNavigationBar();
+                // Pop the current fragment off the stack to return to the previous one
+                if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                    getParentFragmentManager().popBackStack();
+                }
+            }
+        });
+
         // Retrieve the event ID passed from the previous fragment
         Bundle args = getArguments();
         String notifId;
@@ -66,6 +78,10 @@ public class NotifViewDetailsFragment extends Fragment {
 
     }
 
+    private void showBottomNavigationBar() {
+        // Find the BottomNavigationView and set its visibility to GONE
+        ((AttendeeActivity)getActivity()).showBottomNavigationBar();
+    }
     public static NotifViewDetailsFragment newInstance(String notifId) {
         NotifViewDetailsFragment fragment = new NotifViewDetailsFragment();
         Bundle args = new Bundle();

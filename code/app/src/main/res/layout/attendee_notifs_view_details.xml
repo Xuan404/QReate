@@ -40,6 +40,16 @@
             android:textColor="#D9D9D9"
             android:textSize="18sp" />
 
+        <Button
+            android:id="@+id/event_details_back_button"
+            android:layout_width="254dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/yellow"
+            android:text="Back"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
 
