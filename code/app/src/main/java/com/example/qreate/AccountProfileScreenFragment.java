@@ -37,6 +37,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;
@@ -44,6 +46,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AccountProfileScreenFragment extends Fragment {
+    private String selectedProfilePicUrl;
 
     private ImageView emptyProfilePic;
     private ActivityResultLauncher<Intent> updateProfileLauncher;
@@ -112,13 +115,29 @@ public class AccountProfileScreenFragment extends Fragment {
                 result -> {
                     if (result.getResultCode() == AppCompatActivity.RESULT_OK && result.getData() != null) {
                         Uri imageUri = result.getData().getData();
-                        if (imageUri != null && emptyProfilePic != null) {
-                            Glide.with(this)
-                                    .load(imageUri)
-                                    .apply(new RequestOptions().circleCrop())
-                                    .into(emptyProfilePic);
+                        if (imageUri != null) {
+                            uploadImageToFirebaseStorage(imageUri);
                         }
                     }
+                });
+    }
+
+    private void uploadImageToFirebaseStorage(Uri fileUri) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference().child("profile_pics/" + System.currentTimeMillis() + ".jpg");
+
+        storageRef.putFile(fileUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(downloadUri -> {
+                        selectedProfilePicUrl = downloadUri.toString();
+                        Glide.with(this)
+                                .load(downloadUri)
+                                .apply(new RequestOptions().circleCrop())
+                                .into(emptyProfilePic);
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -257,7 +276,7 @@ public class AccountProfileScreenFragment extends Fragment {
             Toast.makeText(getActivity(), "Invalid email address", Toast.LENGTH_SHORT).show();
 
         } else {
-            updateUserInfoToFirestore(name, phone, email, homepage, status, generatedProfilePic);
+            updateUserInfoToFirestore(name, phone, email, homepage, status, generatedProfilePic, selectedProfilePicUrl);
         }
 
     }
@@ -278,7 +297,7 @@ public class AccountProfileScreenFragment extends Fragment {
 
 
     // Sends updated user info to firebase
-    private void updateUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status, Bitmap generatedProfilePicBitmap) {
+    private void updateUserInfoToFirestore(String name, String phone, String email, String homepage, boolean status, Bitmap generatedProfilePicBitmap, String profilePicUrl) {
 
         String device_id = Settings.Secure.getString(getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -311,6 +330,7 @@ public class AccountProfileScreenFragment extends Fragment {
                                 docRef.update("homepage", homepage);
                                 docRef.update("allow_coordinates", status);
                                 docRef.update("generated_pic", encodedProfilePic);
+                                docRef.update("profile_pic", selectedProfilePicUrl);
 
                             } else {
                                 Log.d("Firestore", "No such document");
@@ -350,12 +370,9 @@ public class AccountProfileScreenFragment extends Fragment {
                                 String email = document.getString("email");
                                 String homepage = document.getString("homepage");
                                 Boolean status = document.getBoolean("allow_coordinates");
+                                String profilePicUrl = document.getString("profile_pic");
 
-                                ImageView profileImageView = view.findViewById(R.id.empty_profile_pic);
-                                assert name != null;
-                                String initials = getInitials(name);
-                                Bitmap generatedProfilePicBitmap = GenerateProfilePic.generateProfilePicture(initials);
-                                profileImageView.setImageBitmap(generatedProfilePicBitmap);
+
 
 
                                 EditText editTextName = view.findViewById(R.id.edit_name);
@@ -369,6 +386,21 @@ public class AccountProfileScreenFragment extends Fragment {
                                 editTextEmail.setText(email);
                                 editTextHomepage.setText(homepage);
                                 switchButton.setChecked(status);
+
+                                ImageView profileImageView = view.findViewById(R.id.empty_profile_pic);
+                                if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
+                                    // If the profile_pic URL exists, load it into the ImageView using Glide
+                                    Glide.with(AccountProfileScreenFragment.this)
+                                            .load(profilePicUrl)
+                                            .apply(new RequestOptions().circleCrop())
+                                            .into(profileImageView);
+                                } else {
+                                    // If profile_pic URL doesn't exist, generate a profile picture based on initials
+                                    assert name != null;
+                                    String initials = getInitials(name);
+                                    Bitmap generatedProfilePicBitmap = GenerateProfilePic.generateProfilePicture(initials);
+                                    profileImageView.setImageBitmap(generatedProfilePicBitmap);
+                                }
 
                             } else {
                                 Log.d("Firestore", "No such document");
