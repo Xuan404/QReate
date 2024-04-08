@@ -175,13 +175,45 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                         deleteProfile(selectedProfileId);
                     }
                     if ((navBarItemId==R.id.images_icon) && (selectedImageId != null)) {
-                        deleteImage(selectedImageId);
+                        if (selectedImageType == AdministratorImage.TYPE_EVENT) {
+                            deleteEventPoster(selectedImageId);
+                        } else if (selectedImageType == AdministratorImage.TYPE_PROFILE) {
+                            deleteProfilePic(selectedImageId);
+                        }
                     }
                 }
                 return true;
             }
         });
 
+    }
+
+    private void deleteEventPoster(String eventId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference eventRef = db.collection("Events").document(eventId);
+        eventRef.update("poster", FieldValue.delete())
+                .addOnSuccessListener(aVoid -> Log.d("DeleteEventPoster", "Poster deleted successfully for event: " + eventId))
+                .addOnFailureListener(e -> Log.e("DeleteEventPoster", "Error deleting poster for event: " + eventId, e));
+        hideDeleteNavigationBar();
+        showMainBottomNavigationBar();
+        getSupportFragmentManager().popBackStackImmediate();
+        AdministratorDashboardFragment selectedFragment = new AdministratorDashboardFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
+        selectedFragment.loadImages();
+    }
+
+    private void deleteProfilePic(String profileId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference userRef = db.collection("Users").document(profileId);
+        userRef.update("profile_pic", null)
+                .addOnSuccessListener(aVoid -> Log.d("DeleteProfilePic", "Profile picture deleted successfully for profile: " + profileId))
+                .addOnFailureListener(e -> Log.e("DeleteProfilePic", "Error deleting profile picture for profile: " + profileId, e));
+        hideDeleteNavigationBar();
+        showMainBottomNavigationBar();
+        getSupportFragmentManager().popBackStackImmediate();
+        AdministratorDashboardFragment selectedFragment = new AdministratorDashboardFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
+        selectedFragment.loadImages();
     }
 
 
@@ -648,47 +680,6 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                     // Even in case of failure, we proceed with the callback to continue the process.
                     callback.onUserDeleted();
                 });
-    }
-
-
-
-    private void deleteImage(String imageId) {
-        DocumentReference eventDoc = db.collection("Events").document(imageId);
-        eventDoc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    // The task is successful, now check if the document exists
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        HashMap<String,Object> data = new HashMap<>();
-                        data.put("poster", FieldValue.delete());
-                        eventDoc.update(data).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // Field successfully deleted
-                                Log.d("Firestore", "Field successfully deleted");
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Error deleting the field
-                                Log.w("Firestore", "Error deleting field", e);
-                            }
-                        });
-
-                        Log.d("Events Document", "Events Document exists!");
-                    } else {
-                        Log.d("Events Document", "Events Document does not exist!");
-                    }
-                } else {
-                    // The task failed with an exception
-                    Log.d("Events Document", "Failed with: ", task.getException());
-                }
-            }
-        });
-
-
     }
 
 
