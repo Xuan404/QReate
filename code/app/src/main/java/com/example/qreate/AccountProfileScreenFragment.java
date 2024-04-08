@@ -95,8 +95,8 @@ public class AccountProfileScreenFragment extends Fragment {
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Intent creation and starting the activity should be inside the onClick method
                 Intent intent = new Intent(getActivity(), UpdateProfileScreenActivity.class);
+                intent.putExtra("sourceFragment", "AccountProfileScreenFragment");
                 updateProfileLauncher.launch(intent);
             }
         });
@@ -412,6 +412,12 @@ public class AccountProfileScreenFragment extends Fragment {
                 });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh user information when fragment resumes
+        retrieveAndSetUserInfo(getView());
+    }
 
     public void onDestroyView() {
         super.onDestroyView();

@@ -138,8 +138,8 @@ public class EditProfileScreenFragment extends Fragment {
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Intent creation and starting the activity should be inside the onClick method
                 Intent intent = new Intent(getActivity(), UpdateProfileScreenActivity.class);
+                intent.putExtra("sourceFragment", "EditProfileScreenFragment");
                 updateProfileLauncher.launch(intent);
             }
         });
@@ -384,5 +384,6 @@ public class EditProfileScreenFragment extends Fragment {
             mListener.onFragmentDestroyed();
         }
     }
+
 
 }
