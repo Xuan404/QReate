@@ -4,20 +4,14 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-
 import static junit.framework.TestCase.assertEquals;
-
-import static java.util.regex.Pattern.matches;
 
 import android.content.Context;
 
 import androidx.fragment.app.testing.FragmentScenario;
-import androidx.test.espresso.assertion.ViewAssertions;
 import androidx.test.espresso.intent.Intents;
-import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 import androidx.test.rule.GrantPermissionRule;
@@ -26,8 +20,6 @@ import com.example.qreate.administrator.AdministratorActivity;
 import com.example.qreate.attendee.AttendeeActivity;
 import com.example.qreate.organizer.OrganizerActivity;
 import com.example.qreate.organizer.OrganizerEvent;
-import com.example.qreate.organizer.geolocationmenu.OrganizerGeolocationMap;
-import com.example.qreate.organizer.geolocationmenu.OrganizerGeolocationMenuFragment;
 import com.example.qreate.organizer.notificationsmenu.OrganizerNotificationsMenuFragment;
 import com.example.qreate.organizer.notificationsmenu.OrganizerNotificationsSendActivity;
 import com.example.qreate.organizer.qrmenu.OrganizerQREventListActivity;
