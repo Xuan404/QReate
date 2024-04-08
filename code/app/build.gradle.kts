@@ -50,6 +50,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-intents:3.5.1")
     androidTestImplementation ("androidx.fragment:fragment-testing:1.6.2")
 
+    debugImplementation ("androidx.fragment:fragment-testing:1.6.2")
+
     implementation(platform("com.google.firebase:firebase-bom:32.7.3"))
     implementation ("com.google.firebase:firebase-storage:20.3.0")
     implementation("com.google.firebase:firebase-firestore:24.10.3")
