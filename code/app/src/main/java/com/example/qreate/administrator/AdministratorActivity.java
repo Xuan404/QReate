@@ -177,30 +177,6 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                     if ((navBarItemId==R.id.images_icon) && (selectedImageId != null)) {
                         deleteImage(selectedImageId);
                     }
-                    // DO NOT UNCOMMENT THIS. DELETION OF PROFILES AND IMAGES WONT WORK TEMPORARILY BUT NEED TO CREATE NEW FUNCTIONS FOR IT SO DONT TRY THAT
-//                    hideDeleteNavigationBar();
-//                    showMainBottomNavigationBar();
-//                    getSupportFragmentManager().popBackStackImmediate();
-//
-//                    if ((navBarItemId == R.id.events_icon) || (navBarItemId == R.id.profiles_icon) || (navBarItemId == R.id.images_icon)) {
-//                        selectedFragment = new AdministratorDashboardFragment();
-//                    }
-//                    if (selectedFragment != null) {
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
-//
-//                        if (selectedFragment instanceof AdministratorDashboardFragment) {
-//                            if (navBarItemId == R.id.events_icon) {
-//                                selectedFragment.loadEvents();
-//                            } else if (navBarItemId == R.id.profiles_icon) {
-//                                selectedFragment.loadProfiles();
-//                            } else if (navBarItemId == R.id.images_icon) {
-//                                selectedFragment.loadImages();
-//                            }
-//                        }
-//                    }
-
-
-
                 }
                 return true;
             }
