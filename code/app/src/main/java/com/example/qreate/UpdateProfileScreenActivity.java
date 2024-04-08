@@ -115,6 +115,10 @@ public class UpdateProfileScreenActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Removes the profile picture reference from the user document in Firestore.
+     * This method is called when the user wants to delete their profile picture.
+     */
     private void removeProfilePicFromUserDocument() {
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
 

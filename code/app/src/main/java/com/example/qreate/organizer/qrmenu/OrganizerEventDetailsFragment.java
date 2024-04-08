@@ -41,7 +41,7 @@ import java.util.Locale;
 
 /**
  * Fragment that allows the user to delete and see event details
- * @author Harshita
+ *
  */
 public class OrganizerEventDetailsFragment extends Fragment {
     private ImageView poster;
@@ -57,6 +57,14 @@ public class OrganizerEventDetailsFragment extends Fragment {
     private EventDeletionListener eventDeletionListener;
 
 
+    /**
+     * Inflates the layout for this fragment.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state.
+     * @return The View for the fragment's UI, or null.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -117,6 +125,12 @@ public class OrganizerEventDetailsFragment extends Fragment {
     }
 
 
+    /**
+     * Static factory method to create a new instance of this fragment.
+     *
+     * @param eventId The ID of the event to display.
+     * @return A new instance of OrganizerEventDetailsFragment.
+     */
     public static OrganizerEventDetailsFragment newInstance(String eventId) {
         OrganizerEventDetailsFragment fragment = new OrganizerEventDetailsFragment();
         Bundle args = new Bundle();
@@ -125,6 +139,11 @@ public class OrganizerEventDetailsFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Displays event details.
+     *
+     * @param eventId The document ID of the event to display.
+     */
     private void displayEventDetails(String eventId) {
         if (eventId != null) {
             db.collection("Events").document(eventId)
@@ -170,6 +189,11 @@ public class OrganizerEventDetailsFragment extends Fragment {
         }
     }
 
+    /**
+     * Deletes the event.
+     *
+     * @param eventId The document ID of the event to delete.
+     */
     private void deleteEvent(String eventId) {
         // delete event reference from each attendee's signup_event_list
         removeEventFromAttendee(eventId, new OnCompleteListener<Void>() {
@@ -193,6 +217,13 @@ public class OrganizerEventDetailsFragment extends Fragment {
         });
     }
 
+
+    /**
+     * Removes the event from the signup_event_list of all attendees who signed up for it.
+     *
+     * @param eventId           The document ID of the event to remove from attendees' signup_event_list.
+     * @param completionListener A listener to be called when the removal process is complete.
+     */
     private void removeEventFromAttendee(String eventId, OnCompleteListener<Void> completionListener) {
         DocumentReference eventRef = db.collection("Events").document(eventId);
         db.collection("Attendees")
@@ -229,6 +260,12 @@ public class OrganizerEventDetailsFragment extends Fragment {
                 });
     }
 
+    /**
+     * Removes the event from the organizer's event_list.
+     *
+     * @param eventId           The ID of the event to remove from the organizer's event_list.
+     * @param completionListener A listener to be called when the removal process is complete.
+     */
     private void removeEventFromOrganizer(String eventId, OnCompleteListener<Void> completionListener) {
         DocumentReference eventRef = db.collection("Events").document(eventId);
        eventRef
@@ -283,6 +320,12 @@ public class OrganizerEventDetailsFragment extends Fragment {
                 });
     }
 
+    /**
+     * Removes the event document from the Firestore database.
+     *
+     * @param eventId           The ID of the event document to be deleted.
+     * @param completionListener A listener to be called when the deletion process is complete.
+     */
     private void removeEvent(String eventId, OnCompleteListener<Void> completionListener) {
         db.collection("Events").document(eventId)
                 .delete()
@@ -299,17 +342,32 @@ public class OrganizerEventDetailsFragment extends Fragment {
 
 
     // Interface for callback
+    /**
+     * Interface for handling event deletion callbacks.
+     */
     public interface EventDeletionListener {
+        /**
+         * Called when an event is successfully deleted.
+         */
         void onEventDeleted();
     }
 
     // Method to set the listener
+    /**
+     * Sets the listener for event deletion callbacks.
+     *
+     * @param eventDeletionListener The listener to be set.
+     */
     public void setEventDeletionListener(EventDeletionListener eventDeletionListener) {
         this.eventDeletionListener = eventDeletionListener;
         Log.d("Interface", "EventDeletionListener has been set in OrganizerEventDetailsFragment");
     }
 
     // Invoke this method when the event is successfully deleted
+    /**
+     * Notifies the registered listener that the event has been successfully deleted.
+     * This method should be invoked when the event deletion process is complete.
+     */
     private void notifyEventDeletion() {
         if (eventDeletionListener != null) {
             eventDeletionListener.onEventDeleted();
@@ -317,6 +375,11 @@ public class OrganizerEventDetailsFragment extends Fragment {
         }
     }
 
+    /**
+     * Loads the poster image from Firebase Storage and displays it using Glide.
+     *
+     * @param posterPath The path of the poster image in Firebase Storage.
+     */
     private void loadPosterImage(String posterPath) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference posterRef = storage.getReference(posterPath);

@@ -282,6 +282,11 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
     }
 
 
+    /**
+     * Initializes the profile picture ViewModel and sets up the observer for profile picture changes.
+     *
+     * @param view The fragment's root view.
+     */
 
     private void initializePicViewModel(View view){
         profilePicViewModel = new ViewModelProvider(requireActivity()).get(com.example.qreate.attendee.profilePicViewModel.class);
@@ -359,7 +364,11 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
 
 
 
-    //Creates the profile pop up menu
+    /**
+     * Displays a popup menu with options for the user, such as account profile and logout.
+     *
+     * @param view The view on which the popup menu will be anchored.
+     */
     private void showPopupMenu(View view) {
         // Initialize the PopupMenu
         PopupMenu popupMenu = new PopupMenu(getActivity(), view); // For Fragment, use getActivity() instead of this
@@ -393,6 +402,11 @@ public class OrganizerAttendeeListMenuFragment extends Fragment {
         popupMenu.show();
     }
 
+    /**
+     * Handles the fragment transaction related to the account profile.
+     * Hides the bottom navigation bar if the activity is an OrganizerActivity.
+     * Replaces the current fragment with an AccountProfileScreenFragment and adds the transaction to the back stack.
+     */
     private void accountProfile() {
         //Handles fragment transaction related to the account profile
 

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 /**
  * Adapter class for Events
- * @author Harshita
+ *
  */
 public class OrganizerEventArrayAdapter extends ArrayAdapter<AdministratorEvent> {
     private int selectedPosition = -1; // Track the selected position
