@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import android.widget.Toast;
 
@@ -49,6 +50,8 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     private String selectedImageId;
     private int selectedImageType;
     private String profileDeviceId;
+    private String attendeeId;
+    private String organizerId;
 
 
     /**
@@ -174,30 +177,6 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                     if ((navBarItemId==R.id.images_icon) && (selectedImageId != null)) {
                         deleteImage(selectedImageId);
                     }
-                    // DO NOT UNCOMMENT THIS. DELETION OF PROFILES AND IMAGES WONT WORK TEMPORARILY BUT NEED TO CREATE NEW FUNCTIONS FOR IT SO DONT TRY THAT
-//                    hideDeleteNavigationBar();
-//                    showMainBottomNavigationBar();
-//                    getSupportFragmentManager().popBackStackImmediate();
-//
-//                    if ((navBarItemId == R.id.events_icon) || (navBarItemId == R.id.profiles_icon) || (navBarItemId == R.id.images_icon)) {
-//                        selectedFragment = new AdministratorDashboardFragment();
-//                    }
-//                    if (selectedFragment != null) {
-//                        getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
-//
-//                        if (selectedFragment instanceof AdministratorDashboardFragment) {
-//                            if (navBarItemId == R.id.events_icon) {
-//                                selectedFragment.loadEvents();
-//                            } else if (navBarItemId == R.id.profiles_icon) {
-//                                selectedFragment.loadProfiles();
-//                            } else if (navBarItemId == R.id.images_icon) {
-//                                selectedFragment.loadImages();
-//                            }
-//                        }
-//                    }
-
-
-
                 }
                 return true;
             }
@@ -338,28 +317,63 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                 });
     }
 
+
     private void deleteProfile(String profileId) {
         String device_id = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        // check if the admin is trying to delete his own profile
-        checkIfOwnProfile(profileId, device_id, new OnCompleteListener<DocumentSnapshot>() {
+        checkIfOwnProfile(profileId, device_id, new ProfileDeletionCallback() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                // after checking if the profile is not the admin's, delete their attendee profile if it exists
-                removeAttendeeFromEvents(profileDeviceId, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-
-
-
-
-                    }
-
-                });
+            public void onOwnProfileChecked(boolean isOwnProfile) {
+                if (!isOwnProfile) {
+                    removeAttendeeFromEvents(profileDeviceId, new ProfileDeletionCallback() {
+                        @Override
+                        public void onAttendeeEventsRemoved(String attendeeId) {
+                            deleteAttendee(attendeeId, new ProfileDeletionCallback() {
+                                @Override
+                                public void onAttendeeDeleted() {
+                                    removeEventsForOrganizer(profileDeviceId, new ProfileDeletionCallback() {
+                                        @Override
+                                        public void onOrganizerEventsRemoved(String organizerId) {
+                                            deleteOrganizer(organizerId, new ProfileDeletionCallback() {
+                                                @Override
+                                                public void onOrganizerDeleted() {
+                                                    deleteUser(profileId, new ProfileDeletionCallback() {
+                                                        @Override
+                                                        public void onUserDeleted() {
+                                                            hideDeleteNavigationBar();
+                                                            showMainBottomNavigationBar();
+                                                            getSupportFragmentManager().popBackStackImmediate();
+                                                            AdministratorDashboardFragment selectedFragment = new AdministratorDashboardFragment();
+                                                            getSupportFragmentManager().beginTransaction().replace(R.id.administrator_handler_frame, selectedFragment).commitNow();
+                                                            selectedFragment.loadProfiles();
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    Log.d("deleteProfile", "Admin cannot delete his own profile");
+                }
             }
         });
     }
 
-    private void checkIfOwnProfile(String profileId, String device_id, OnCompleteListener<DocumentSnapshot> completionListener) {
+    private interface ProfileDeletionCallback {
+        default void onOwnProfileChecked(boolean isOwnProfile) {}
+        default void onAttendeeEventsRemoved(String attendeeId) {}
+        default void onAttendeeDeleted() {}
+        default void onOrganizerEventsRemoved(String organizerId) {}
+        default void onOrganizerDeleted() {}
+        default void onUserDeleted() {}
+    }
+
+
+
+    private void checkIfOwnProfile(String profileId, String device_id, ProfileDeletionCallback callback) {
         db.collection("Users").document(profileId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -369,79 +383,274 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
                             DocumentSnapshot document = task.getResult();
                             if (document != null && document.exists()) {
                                 profileDeviceId = document.getString("device_id");
-                                Log.d("Firestore", "device_id of the profile has been retrieved ");
+                                Log.d("Firestore", "Device ID of the profile has been retrieved: " + profileDeviceId);
+                                // Invoke the callback, passing whether the profile device ID matches the admin's device ID
                                 if (profileDeviceId.equals(device_id)) {
                                     Toast.makeText(AdministratorActivity.this,"Admin cannot delete his own profile", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    completionListener.onComplete(task);
                                 }
+                                callback.onOwnProfileChecked(profileDeviceId.equals(device_id));
                             } else {
                                 Log.d("Firestore", "Profile document does not exist");
+                                // If document does not exist, invoke the callback with false to continue deletion
+                                callback.onOwnProfileChecked(false);
                             }
                         } else {
-                            Log.d("Firestore", "Task was unsuccessful ");
+                            Log.d("Firestore", "Task was unsuccessful ", task.getException());
+                            // Handle the error scenario, you may want to stop deletion or retry
                         }
                     }
                 });
     }
 
-    private void removeAttendeeFromEvents(String profileDeviceId, OnCompleteListener<Void> completionListener) {
+    private void removeAttendeeFromEvents(String profileDeviceId, ProfileDeletionCallback callback) {
+        Log.d("Firestore", "Starting to remove attendee from events for device_id: " + profileDeviceId);
+
         db.collection("Attendees").whereEqualTo("device_id", profileDeviceId)
                 .limit(1)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         DocumentSnapshot attendeeSnapshot = queryDocumentSnapshots.getDocuments().get(0);
-                        DocumentReference attendeeRef = attendeeSnapshot.getReference();
                         String attendeeId = attendeeSnapshot.getId();
-                        Log.d("Firestore", "Attendee document acquired");
+                        Log.d("Firestore", "Attendee document acquired with ID: " + attendeeId);
+
                         db.collection("Events")
                                 .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            QuerySnapshot querySnapshot = task.getResult();
-                                            Log.d("Firestore", "Event Documents Retrieved");
-                                            if (querySnapshot != null) {
-                                                for (DocumentSnapshot document : querySnapshot) {
-                                                    Log.d("Firestore", "Event Document Retrieved");
-                                                    DocumentReference eventRef = document.getReference();
-                                                    eventRef.get().addOnSuccessListener(documentSnapshot -> {
-                                                        List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) documentSnapshot.get("signedup_attendees");
-                                                        if (signedUpAttendees != null) {
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        QuerySnapshot querySnapshot = task.getResult();
+                                        Log.d("Firestore", "Event Documents Retrieved");
+
+                                        if (querySnapshot != null) {
+                                            for (DocumentSnapshot document : querySnapshot) {
+                                                Log.d("Firestore", "Processing Event Document: " + document.getId());
+                                                DocumentReference eventRef = document.getReference();
+                                                eventRef.get().addOnSuccessListener(eventDocumentSnapshot -> {
+                                                    List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) eventDocumentSnapshot.get("signedup_attendees");
+                                                    if (signedUpAttendees != null) {
+                                                        boolean isAttendeeRemoved = false;
+                                                        for (Map<String, Object> attendee : new ArrayList<>(signedUpAttendees)) {
+                                                            DocumentReference ref = (DocumentReference) attendee.get("attendeeRef");
+                                                            if (attendeeId.equals(ref.getId())) {
+                                                                Long currentCount = eventDocumentSnapshot.getLong("signup_count");
+                                                                if (currentCount != null) {
+                                                                    eventRef.update("signup_count", currentCount - 1);
+                                                                    Log.d("Firestore", "Decreased sign-up count for event: " + document.getId());
+                                                                }
+                                                                isAttendeeRemoved = true;
+                                                            }
+                                                        }
+                                                        if (isAttendeeRemoved) {
+                                                            // remove attendee from signedup_attendees list in each event
                                                             signedUpAttendees.removeIf(attendee -> attendeeId.equals(((DocumentReference) attendee.get("attendeeRef")).getId()));
                                                             eventRef.update("signedup_attendees", signedUpAttendees)
-                                                                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                                                                        Log.d("UpdateEvent", "Attendee removed from event's signedup_attendees");
-                                                                        // decrease the sign up count
-                                                                        Long currentCount = documentSnapshot.getLong("signup_count");
-                                                                        eventRef.update("signup_count", currentCount - 1);
-                                                                    })
-                                                                    .addOnFailureListener(e -> Log.e("UpdateEvent", "Error removing attendee from event", e));
+                                                                    .addOnSuccessListener(aVoid -> Log.d("UpdateEvent", "Attendee removed from event's signedup_attendees for event: " + document.getId()))
+                                                                    .addOnFailureListener(e -> Log.e("UpdateEvent", "Error removing attendee from event: " + document.getId(), e));
                                                         }
-                                                    }).addOnFailureListener(e -> Log.e("FetchEvent", "Error fetching event document", e));
-                                                }
-                                                completionListener.onComplete(null);
-                                            } else {
-                                                Log.d("Firestore", "Event documents do not exist");
+                                                    }
+                                                }).addOnFailureListener(e -> Log.e("FetchEvent", "Error fetching event document: " + document.getId(), e));
                                             }
+                                            callback.onAttendeeEventsRemoved(attendeeId);
                                         } else {
-                                            Log.d("Firestore", "Event documents could not be retrieved");
+                                            Log.d("Firestore", "No Event documents exist");
+                                            callback.onAttendeeEventsRemoved(null);
                                         }
+                                    } else {
+                                        Log.d("Firestore", "Failed to retrieve Event documents");
+                                        callback.onAttendeeEventsRemoved(null);
                                     }
                                 });
                     } else {
-                        Log.d("Firestore", "Attendee document does not exists");
-                        completionListener.onComplete(null);
+                        Log.d("Firestore", "No Attendee document exists for device_id: " + profileDeviceId);
+                        callback.onAttendeeEventsRemoved(null);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.w("Firestore", "Error getting Attendee document", e);
-                    // If there's an error fetching the event document, notify completion listener
-                    completionListener.onComplete(null);
+                    Log.w("Firestore", "Error getting Attendee document for device_id: " + profileDeviceId, e);
+                    callback.onAttendeeEventsRemoved(null);
                 });
     }
+
+    private void deleteAttendee(String attendeeId, ProfileDeletionCallback callback) {
+        if (attendeeId == null || attendeeId.isEmpty()) {
+            Log.d("deleteAttendee", "No attendeeId provided, skipping deleteAttendee.");
+            callback.onAttendeeDeleted(); // Proceed as there is no attendee to delete.
+            return;
+        }
+
+        Log.d("Firestore", "Attempting to delete attendee with ID: " + attendeeId);
+
+        db.collection("Attendees").document(attendeeId)
+                .delete()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("deleteAttendee", "Attendee document with ID: " + attendeeId + " has been successfully deleted");
+                        callback.onAttendeeDeleted();
+                    } else {
+                        Log.e("deleteAttendee", "Failed to delete attendee document with ID: " + attendeeId, task.getException());
+                        // You may want to handle this situation or retry the deletion.
+                        // For now, we'll call the callback to proceed with the flow.
+                        callback.onAttendeeDeleted();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("deleteAttendee", "Error deleting attendee document with ID: " + attendeeId, e);
+                    // Even in case of failure, we call the callback to continue the process.
+                    callback.onAttendeeDeleted();
+                });
+    }
+
+
+    private void removeEventsForOrganizer(String profileDeviceId, ProfileDeletionCallback callback) {
+        Log.d("FirestoreOperation", "Starting to delete events for organizer with device ID: " + profileDeviceId);
+        db.collection("Organizers")
+                .whereEqualTo("device_id", profileDeviceId)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot organizerSnapshot = queryDocumentSnapshots.getDocuments().get(0);
+                        String organizerId = organizerSnapshot.getId();
+                        Log.d("FirestoreOperation", "Organizer document found: " + organizerId);
+                        List<DocumentReference> eventsList = (List<DocumentReference>) organizerSnapshot.get("events_list");
+                        if (eventsList != null && !eventsList.isEmpty()) {
+                            Log.d("FirestoreOperation", "Processing " + eventsList.size() + " events for organizer.");
+                            AtomicInteger eventsToProcess = new AtomicInteger(eventsList.size());
+
+                            for (DocumentReference eventRef : eventsList) {
+                                eventRef.get().addOnSuccessListener(eventDoc -> {
+                                    if (eventDoc.exists()) {
+                                        Log.d("FirestoreOperation", "Processing event document: " + eventDoc.getId());
+                                        List<Map<String, Object>> signedUpAttendees = (List<Map<String, Object>>) eventDoc.get("signedup_attendees");
+                                        if (signedUpAttendees != null && !signedUpAttendees.isEmpty()) {
+                                            Log.d("FirestoreOperation", "Processing " + signedUpAttendees.size() + " attendees for event: " + eventDoc.getId());
+                                            AtomicInteger attendeesToProcess = new AtomicInteger(signedUpAttendees.size());
+
+                                            for (Map<String, Object> attendeeMap : signedUpAttendees) {
+                                                DocumentReference attendeeRef = (DocumentReference) attendeeMap.get("attendeeRef");
+                                                attendeeRef.get().addOnSuccessListener(attendeeDoc -> {
+                                                    List<DocumentReference> signupEventList = (List<DocumentReference>) attendeeDoc.get("signup_event_list");
+                                                    if (signupEventList != null && signupEventList.contains(eventRef)) {
+                                                        attendeeRef.update("signup_event_list", FieldValue.arrayRemove(eventRef))
+                                                                .addOnSuccessListener(aVoid -> {
+                                                                    Log.d("FirestoreOperation", "Event reference removed from attendee's signup_event_list: " + attendeeRef.getId());
+                                                                    if (attendeesToProcess.decrementAndGet() == 0) {
+                                                                        deleteEventDocument(eventRef, eventsToProcess, organizerSnapshot, callback);
+                                                                    }
+                                                                })
+                                                                .addOnFailureListener(e -> Log.e("FirestoreOperation", "Failed to remove event reference from attendee's signup_event_list: " + attendeeRef.getId(), e));
+                                                    } else if (attendeesToProcess.decrementAndGet() == 0) {
+                                                        deleteEventDocument(eventRef, eventsToProcess, organizerSnapshot, callback);
+                                                    }
+                                                });
+                                            }
+                                        } else {
+                                            deleteEventDocument(eventRef, eventsToProcess, organizerSnapshot, callback);
+                                        }
+                                    } else if (eventsToProcess.decrementAndGet() == 0) {
+                                        clearOrganizerEventsList(organizerSnapshot, callback);
+                                    }
+                                });
+                            }
+                        } else {
+                            Log.d("FirestoreOperation", "No events found for organizer: " + organizerId);
+                            callback.onOrganizerEventsRemoved(organizerId);
+                        }
+                    } else {
+                        Log.d("FirestoreOperation", "No organizer found with the provided device ID: " + profileDeviceId);
+                        callback.onOrganizerEventsRemoved(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirestoreOperation", "Failed to query Organizers collection", e);
+                    callback.onOrganizerEventsRemoved(null);
+                });
+    }
+
+    private void deleteEventDocument(DocumentReference eventRef, AtomicInteger eventsToProcess, DocumentSnapshot organizerSnapshot, ProfileDeletionCallback callback) {
+        eventRef.delete()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FirestoreOperation", "Event document deleted successfully: " + eventRef.getId());
+                    // Check if this is the last event to process
+                    if (eventsToProcess.decrementAndGet() == 0) {
+                        // All events deleted, proceed to clear the organizer's events list
+                        clearOrganizerEventsList(organizerSnapshot, callback);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirestoreOperation", "Failed to delete event document: " + eventRef.getId(), e);
+                    // Even in case of failure, check if it's the last event to process
+                    if (eventsToProcess.decrementAndGet() == 0) {
+                        // Attempt to clear the organizer's events list regardless of individual event deletion success
+                        clearOrganizerEventsList(organizerSnapshot, callback);
+                    }
+                });
+    }
+
+
+    private void clearOrganizerEventsList(DocumentSnapshot organizerSnapshot, ProfileDeletionCallback callback) {
+        organizerSnapshot.getReference().update("events_list", FieldValue.delete())
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("FirestoreOperation", "Events list cleared from organizer document: " + organizerSnapshot.getId());
+                    // Successfully cleared the events list, invoke the callback with the organizer's ID
+                    callback.onOrganizerEventsRemoved(organizerSnapshot.getId());
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirestoreOperation", "Failed to clear events list from organizer document: " + organizerSnapshot.getId(), e);
+                    // Even in case of failure, invoke the callback to continue the flow
+                    callback.onOrganizerEventsRemoved(organizerSnapshot.getId());
+                });
+    }
+
+
+
+
+    private void deleteOrganizer(String organizerId, ProfileDeletionCallback callback) {
+        if (organizerId == null || organizerId.isEmpty()) {
+            Log.d("deleteOrganizer", "No organizerId provided, skipping deleteOrganizer operation.");
+            callback.onOrganizerDeleted(); // Proceed as there is no organizer to delete.
+            return;
+        }
+
+        Log.d("Firestore", "Attempting to delete organizer with ID: " + organizerId);
+
+        db.collection("Organizers").document(organizerId)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Successfully deleted organizer with ID: " + organizerId);
+                    callback.onOrganizerDeleted();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error deleting organizer with ID: " + organizerId, e);
+                    // Even in case of failure, we proceed with the callback to continue the process.
+                    callback.onOrganizerDeleted();
+                });
+    }
+
+
+    private void deleteUser(String profileId, ProfileDeletionCallback callback) {
+        if (profileId == null || profileId.isEmpty()) {
+            Log.d("deleteUser", "No profileId provided, skipping deleteUser operation.");
+            callback.onUserDeleted(); // Proceed as there is no user profile to delete.
+            return;
+        }
+
+        Log.d("Firestore", "Attempting to delete user with ID: " + profileId);
+
+        db.collection("Users").document(profileId)
+                .delete()
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("Firestore", "Successfully deleted user with ID: " + profileId);
+                    callback.onUserDeleted();
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error deleting user with ID: " + profileId, e);
+                    // Even in case of failure, we proceed with the callback to continue the process.
+                    callback.onUserDeleted();
+                });
+    }
+
+
 
     private void deleteImage(String imageId) {
         DocumentReference eventDoc = db.collection("Events").document(imageId);
