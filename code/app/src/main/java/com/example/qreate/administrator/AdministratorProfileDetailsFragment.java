@@ -1,6 +1,9 @@
 package com.example.qreate.administrator;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.qreate.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -54,6 +59,24 @@ public class AdministratorProfileDetailsFragment extends Fragment {
                                 profileEmail.setText(document.getString("email"));
                                 profileHomepage.setText(document.getString("homepage"));
                                 // query image once they have figured it out
+                                String profilePicUrl = document.getString("profile_pic");
+                                String generatedPicBase64 = document.getString("generated_pic");
+
+                                if (profilePicUrl != null && !profilePicUrl.isEmpty()) {
+                                    // If there is a profile picture URL, use Glide to load it
+                                    Glide.with(this)
+                                            .load(profilePicUrl)
+                                            .apply(new RequestOptions().circleCrop())
+                                            .into(profileImage);
+                                } else if (generatedPicBase64 != null && !generatedPicBase64.isEmpty()) {
+                                    // If profile_pic is not available, decode generated_pic from Base64
+                                    byte[] decodedString = Base64.decode(generatedPicBase64, Base64.DEFAULT);
+                                    Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                                    profileImage.setImageBitmap(decodedByte);
+                                } else {
+                                    // Fallback placeholder if no image is available
+                                    profileImage.setImageResource(R.drawable.profile);
+                                }
                             } else {
                                 Log.d("Firestore", "Error getting documents: ", task.getException());
                             }

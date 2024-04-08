@@ -6,6 +6,7 @@ package com.example.qreate.administrator;
 public class AdministratorProfile {
     private String profileName;
     private String profileImage;
+    private String generatedPic;
     private String id;
 
     /**
@@ -13,9 +14,10 @@ public class AdministratorProfile {
      * @param profileName the name of the profile owner
      * @param profileImage the profile picture of the profile
      */
-    public AdministratorProfile(String profileName, String profileImage, String id) {
+    public AdministratorProfile(String profileName, String profileImage,String generatedPic, String id) {
         this.profileName = profileName;
         this.profileImage = profileImage;
+        this.generatedPic = generatedPic;
         this.id = id;
     }
 
@@ -37,5 +39,8 @@ public class AdministratorProfile {
 
     public String getId() {
         return id;
+    }
+    public String getGeneratedPic() {
+        return generatedPic;
     }
 }

@@ -47,7 +47,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
     private String selectedEventId;
     private String selectedProfileId;
     private String selectedImageId;
-    private String selectedImageType;
+    private int selectedImageType;
     private String profileDeviceId;
 
 
@@ -542,7 +542,7 @@ public class AdministratorActivity extends AppCompatActivity implements EditProf
         transaction.commit();
     }
 
-    private void navigateToImageDetails(String imageId, String imageType) {
+    private void navigateToImageDetails(String imageId, int imageType) {
         AdministratorImageDetailsFragment detailsFragment = AdministratorImageDetailsFragment.newInstance(imageId, imageType);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.administrator_handler_frame, detailsFragment);

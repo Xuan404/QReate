@@ -59,11 +59,11 @@ public class AdministratorImageDetailsFragment extends Fragment {
         return view;
     }
 
-    public static AdministratorImageDetailsFragment newInstance(String imageId, String imageType) {
+    public static AdministratorImageDetailsFragment newInstance(String imageId, int imageType) {
         AdministratorImageDetailsFragment fragment = new AdministratorImageDetailsFragment();
         Bundle args = new Bundle();
         args.putString("imageId", imageId);
-        args.putString("imageType", imageType);
+        args.putInt("imageType", imageType);
         fragment.setArguments(args);
         return fragment;
     }
